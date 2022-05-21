@@ -1,2 +1,2 @@
-# 20th-Web-Team-2-BE
+# Isoland...
 [20th] Web 2팀 BackEnd
