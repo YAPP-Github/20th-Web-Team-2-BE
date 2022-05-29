@@ -1,4 +1,4 @@
-package com.isloand.userservice.domain;
+package com.isloand.userservice.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

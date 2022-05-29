@@ -1,7 +1,7 @@
 package com.isloand.userservice.repository;
 
-import com.isloand.userservice.domain.EmailToken;
+import com.isloand.userservice.entity.EmailTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EmailTokenRepository extends JpaRepository<EmailToken, Long> {
+public interface EmailTokenRepository extends JpaRepository<EmailTokenEntity, Long> {
 }

@@ -1,11 +1,11 @@
-package com.isloand.userservice.domain;
+package com.isloand.userservice.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
-public class EmailToken {
+public class EmailTokenEntity {
     @Id
     private Long id;
 
