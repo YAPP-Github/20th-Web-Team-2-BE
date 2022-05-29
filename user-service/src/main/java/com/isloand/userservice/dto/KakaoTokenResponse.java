@@ -1,10 +1,8 @@
 package com.isloand.userservice.dto;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class KakaoTokenResponse {
     private String token_type;
     private String access_token;
