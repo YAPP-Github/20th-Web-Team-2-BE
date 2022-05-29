@@ -30,7 +30,7 @@ public class OAuthController {
                 .client_id("24608dc716988209e4f923e0a8f4c495")
                 .redirect_uri("http://localhost:8080/oauth/kakao")
                 .code(code)
-                .client_secret("i3bd2fkzQJSkk19oDyJ6lrVTmcTd9UHD")
+                .client_secret("secret")
                 .build();
     }
 }
