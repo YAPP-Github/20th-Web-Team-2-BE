@@ -14,5 +14,5 @@ public class User {
 
     private String university;
 
-    private boolean isAuthenticated;
+    private Boolean isAuthenticated;
 }
