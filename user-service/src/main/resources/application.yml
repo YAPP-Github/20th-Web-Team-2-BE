@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/isoland-user
+    url: jdbc:h2:mem:user-service
     driver-class-name: org.h2.Driver
     username: sa
   jpa:
