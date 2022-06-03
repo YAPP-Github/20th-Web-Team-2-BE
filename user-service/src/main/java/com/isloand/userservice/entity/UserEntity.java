@@ -33,4 +33,8 @@ public class UserEntity {
     public void authenticatedWithEmail() {
         this.isAuthenticated = true;
     }
+
+    public void issueEmailToken(EmailTokenEntity emailToken) {
+        this.emailToken = emailToken;
+    }
 }
