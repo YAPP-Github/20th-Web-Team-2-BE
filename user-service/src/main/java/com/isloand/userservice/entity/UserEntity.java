@@ -2,6 +2,8 @@ package com.isloand.userservice.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class UserEntity {
@@ -12,7 +14,9 @@ public class UserEntity {
 
     private String universityEmail;
 
-    private String university;
+    @OneToOne
+    @JoinColumn(name = "email_token_entity_id")
+    private EmailTokenEntity emailToken;
 
     private Boolean isAuthenticated;
 }
