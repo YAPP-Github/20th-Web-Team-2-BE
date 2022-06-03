@@ -29,4 +29,8 @@ public class UserEntity {
     public void registerUniversityEmail(String universityEmail) {
         this.universityEmail = universityEmail;
     }
+
+    public void authenticatedWithEmail() {
+        this.isAuthenticated = true;
+    }
 }
