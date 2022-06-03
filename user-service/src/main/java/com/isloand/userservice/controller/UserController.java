@@ -1,12 +1,11 @@
 package com.isloand.userservice.controller;
 
+import com.isloand.userservice.dto.AuthCodeRequest;
+import com.isloand.userservice.dto.AuthCodeResponse;
 import com.isloand.userservice.service.EmailService;
 import com.isloand.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -17,18 +16,25 @@ public class UserController {
     private final EmailService emailService;
 
     @GetMapping("/email")
-    public void sendEmail() {
-        // jwt 토큰에서 유저 정보 가져오기
-        Long userId = userService.getUserIdFromJwt();
+    public void sendEmail(String email) {
 
-        // userId로 universityEmail 가져오기
-        String universityEmail = userService.getUniversityEmailById(userId);
+        // Jwt 토큰에서 유저정보 획득
+        Long userId = 1L;
 
-        emailService.sendEmail(universityEmail);
+        // 유저 대학 이메일 정보 등록
+        userService.updateUniversityEmail(userId, email);
+
+        // 인증 이메일 발송
+        emailService.sendEmail(userId, email);
     }
 
     @PostMapping("/email")
-    public void authenticateByEmail(String authCode) {
-        emailService.authenticateByEmail(authCode);
+    public AuthCodeResponse authenticateWithEmail(@RequestBody AuthCodeRequest authCodeRequest) {
+
+        // Jwt 토큰에서 유저정보 획득
+        Long userId = 1L;
+
+        // 인증토큰 검사
+        return userService.authenticateWithEmail(userId, authCodeRequest.getAuthCode());
     }
 }

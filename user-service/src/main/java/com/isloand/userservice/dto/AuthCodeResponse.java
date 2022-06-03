@@ -1,2 +1,10 @@
-package com.isloand.userservice.dto;public class AuthCodeResponse {
+package com.isloand.userservice.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class AuthCodeResponse {
+    private String message;
 }
