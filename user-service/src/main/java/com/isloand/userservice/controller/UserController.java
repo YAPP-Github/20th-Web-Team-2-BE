@@ -1,5 +1,7 @@
 package com.isloand.userservice.controller;
 
+import com.isloand.userservice.client.KakaoApiClient;
+import com.isloand.userservice.dto.KakaoTokenInfoResponse;
 import com.isloand.userservice.dto.AuthCodeRequest;
 import com.isloand.userservice.dto.AuthCodeResponse;
 import com.isloand.userservice.service.EmailService;
@@ -14,6 +16,7 @@ public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final KakaoApiClient kakaoApiClient;
 
     @GetMapping("/email")
     public void sendEmail(String email) {
@@ -36,5 +39,11 @@ public class UserController {
 
         // 인증토큰 검사
         return userService.authenticateWithEmail(userId, authCodeRequest.getAuthCode());
+    }
+
+    //token 바탕 사용자 id 얻어오는 사용 예시
+    @GetMapping("/id")
+    public KakaoTokenInfoResponse getKakaoId(@RequestHeader(value = "Authorization") String token) {
+        return kakaoApiClient.getTokenInfo(token);
     }
 }
