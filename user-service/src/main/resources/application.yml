@@ -14,12 +14,12 @@ spring:
   mail:
     host: smtp.daum.net
     port: 465
-    username: email@email.com
+    username: username
     password: password
     properties:
       mail:
         smtp:
-          starttls:
+          ssl:
             enable: true
             required: true
           auth: true

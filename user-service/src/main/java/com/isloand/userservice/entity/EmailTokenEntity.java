@@ -1,19 +1,26 @@
 package com.isloand.userservice.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmailTokenEntity {
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long userId;
+    @OneToOne(mappedBy = "emailToken")
+    private UserEntity user;
 
     private String authCode;
-
-    private Boolean isExpired;
 
     private LocalDateTime expireDate;
 }
