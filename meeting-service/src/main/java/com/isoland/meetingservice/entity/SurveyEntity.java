@@ -16,8 +16,10 @@ public class SurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
 
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private Long averageAge;
@@ -26,6 +28,7 @@ public class SurveyEntity {
     private Set<Long> ourUniversities;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     private Set<Department> ourDepartments;
 
     private Long averageHeight;
@@ -43,20 +46,25 @@ public class SurveyEntity {
     private Set<Long> preferHeight;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     private Set<Department> preferDepartments;
 
+    @Enumerated(EnumType.STRING)
     private Mindset mindSet;
 
+    @Enumerated(EnumType.STRING)
     private Play play;
 
     private Boolean isAbroad;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     private Set<DomesticArea> domesticAreas;
 
     @ElementCollection
     private Set<Long> abroadAreas;
 
+    @Enumerated(EnumType.STRING)
     private Channel channel;
 
     private Boolean agreement;
