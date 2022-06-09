@@ -3,7 +3,7 @@ package com.isoland.meetingservice.dto;
 import com.isoland.meetingservice.entity.constant.*;
 import lombok.Getter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 public class SurveyRequest {
@@ -13,21 +13,21 @@ public class SurveyRequest {
 
     private Long averageAge;
 
-    private Set<Long> ourUniversities;
+    private List<Long> ourUniversities;
 
-    private Set<Department> ourDepartments;
+    private List<Department> ourDepartments;
 
     private Long averageHeight;
 
-    private Set<Long> avoidUniversities;
+    private List<Long> avoidUniversities;
 
-    private Set<Long> preferUniversities;
+    private List<Long> preferUniversities;
 
-    private Set<Long> preferAge;
+    private List<Long> preferAge;
 
-    private Set<Long> preferHeight;
+    private List<Long> preferHeight;
 
-    private Set<Department> preferDepartments;
+    private List<Department> preferDepartments;
 
     private Mindset mindSet;
 
@@ -35,9 +35,9 @@ public class SurveyRequest {
 
     private Boolean isAbroad;
 
-    private Set<DomesticArea> domesticAreas;
+    private List<DomesticArea> domesticAreas;
 
-    private Set<Long> abroadAreas;
+    private List<Long> abroadAreas;
 
     private Channel channel;
 

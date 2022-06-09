@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -15,6 +16,8 @@ import java.util.Set;
 public class SurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
@@ -25,29 +28,29 @@ public class SurveyEntity {
     private Long averageAge;
 
     @ElementCollection
-    private Set<Long> ourUniversities;
+    private List<Long> ourUniversities;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<Department> ourDepartments;
+    private List<Department> ourDepartments;
 
     private Long averageHeight;
 
     @ElementCollection
-    private Set<Long> avoidUniversities;
+    private List<Long> avoidUniversities;
 
     @ElementCollection
-    private Set<Long> preferUniversities;
+    private List<Long> preferUniversities;
 
     @ElementCollection
-    private Set<Long> preferAge;
+    private List<Long> preferAge;
 
     @ElementCollection
-    private Set<Long> preferHeight;
+    private List<Long> preferHeight;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<Department> preferDepartments;
+    private List<Department> preferDepartments;
 
     @Enumerated(EnumType.STRING)
     private Mindset mindSet;
@@ -59,10 +62,10 @@ public class SurveyEntity {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<DomesticArea> domesticAreas;
+    private List<DomesticArea> domesticAreas;
 
     @ElementCollection
-    private Set<Long> abroadAreas;
+    private List<Long> abroadAreas;
 
     @Enumerated(EnumType.STRING)
     private Channel channel;
