@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class SurveyRequest {
+public class CreateSurveyReq {
     private TypeOfMeeting typeOfMeeting;
 
     private Gender gender;
