@@ -3,6 +3,7 @@ package com.isoland.meetingservice.entity;
 import com.isoland.meetingservice.entity.constant.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -73,4 +75,12 @@ public class SurveyEntity {
     private Boolean agreement;
 
     private String kakaoId;
+
+    private Boolean isMatched;
+
+    private Boolean isPaid;
+
+    private Boolean isRandom;
+
+    private LocalDateTime createdAt;
 }
