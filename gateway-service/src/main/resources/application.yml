@@ -15,7 +15,11 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: user-service
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+        - id: users-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/users/**
