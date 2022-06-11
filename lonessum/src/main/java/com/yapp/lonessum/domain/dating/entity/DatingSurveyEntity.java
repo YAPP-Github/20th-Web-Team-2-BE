@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.meeting.entity;
+package com.yapp.lonessum.domain.dating.entity;
 
 import com.yapp.lonessum.domain.constant.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.lang.Character;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,28 +16,36 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeetingSurveyEntity {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+public class DatingSurveyEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    private TypeOfMeeting typeOfMeeting;
-
-    @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Long averageAge;
+    private Long age;
 
-    @ElementCollection
-    private List<Long> ourUniversities;
-
-    @ElementCollection
+    // 내 학교 정보 알아야함
+    
     @Enumerated(EnumType.STRING)
-    private List<Department> ourDepartments;
+    private Department myDepartment;
 
-    private Long averageHeight;
+    private Character character;
+
+    private String mbti;
+
+    private Long myHeight;
+
+    private Body mybody;
+
+    private Boolean mySmoke;
+
+    private DateCount myDateCount;
+
+    private Boolean isSmokeOk;
 
     @ElementCollection
     private List<Long> avoidUniversities;
@@ -54,11 +63,16 @@ public class MeetingSurveyEntity {
     @Enumerated(EnumType.STRING)
     private List<Department> preferDepartments;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Mindset mindSet;
+    private List<Character> preferCharacters;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private List<Body> preferBodies;
 
     @Enumerated(EnumType.STRING)
-    private Play play;
+    private DateCount preferDateCount;
 
     private Boolean isAbroad;
 

@@ -1,5 +1,8 @@
 package com.yapp.lonessum.domain.meeting.dto;
 
+import com.yapp.lonessum.domain.constant.Mindset;
+import com.yapp.lonessum.domain.constant.Play;
+import com.yapp.lonessum.domain.constant.TypeOfMeeting;
 import com.yapp.lonessum.domain.meeting.entity.constant.*;
 import lombok.Getter;
 
