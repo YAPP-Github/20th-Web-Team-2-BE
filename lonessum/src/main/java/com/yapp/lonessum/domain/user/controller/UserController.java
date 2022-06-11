@@ -1,12 +1,12 @@
-package com.isloand.userservice.controller;
+package com.yapp.lonessum.domain.user.controller;
 
-import com.isloand.userservice.client.KakaoApiClient;
-import com.isloand.userservice.dto.KakaoTokenInfoResponse;
-import com.isloand.userservice.dto.AuthCodeRequest;
-import com.isloand.userservice.dto.AuthCodeResponse;
-import com.isloand.userservice.service.EmailService;
-import com.isloand.userservice.service.UniversityService;
-import com.isloand.userservice.service.UserService;
+import com.yapp.lonessum.domain.user.client.KakaoApiClient;
+import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
+import com.yapp.lonessum.domain.user.dto.AuthCodeResponse;
+import com.yapp.lonessum.domain.user.dto.KakaoTokenInfoResponse;
+import com.yapp.lonessum.domain.user.service.EmailService;
+import com.yapp.lonessum.domain.user.service.UniversityService;
+import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
