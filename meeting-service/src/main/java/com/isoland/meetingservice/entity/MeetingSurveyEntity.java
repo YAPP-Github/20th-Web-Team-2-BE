@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SurveyEntity {
+public class MeetingSurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
