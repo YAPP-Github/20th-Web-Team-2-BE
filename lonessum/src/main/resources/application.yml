@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: lonessum
+  datasource:
+    url: jdbc:h2:mem:lonessum
+    driver-class-name: org.h2.Driver
+    username: sa
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.daum.net
+    port: 465
+    username: username
+    password: password
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
