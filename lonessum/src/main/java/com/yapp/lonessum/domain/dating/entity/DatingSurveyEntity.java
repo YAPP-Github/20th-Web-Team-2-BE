@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "dating_survey")
 public class DatingSurveyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
