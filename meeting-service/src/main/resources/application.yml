@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:meeting-service
+    driver-class-name: org.h2.Driver
+    username: sa
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
