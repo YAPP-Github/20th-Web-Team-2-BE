@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "email_token")
 public class EmailTokenEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
