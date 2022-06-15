@@ -7,6 +7,7 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
+import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MeetingSurveyService {
+
+    private final MeetingSurveyMapper meetingSurveyMapper;
 
     private final MeetingSurveyRepository meetingSurveyRepository;
     private final UserRepository userRepository;
