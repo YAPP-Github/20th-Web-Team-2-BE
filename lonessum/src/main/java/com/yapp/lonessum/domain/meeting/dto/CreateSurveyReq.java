@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.meeting.dto;
 
 import com.yapp.lonessum.domain.constant.*;
+import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import lombok.Getter;
 
 import java.util.List;
@@ -44,4 +45,8 @@ public class CreateSurveyReq {
     private Boolean agreement;
 
     private String kakaoId;
+
+    public MeetingSurveyEntity toEntity() {
+        return null;
+    }
 }

@@ -2,6 +2,7 @@ package com.yapp.lonessum.domain.meeting.entity;
 
 import com.yapp.lonessum.domain.constant.*;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
+import com.yapp.lonessum.domain.meeting.dto.UpdateSurveyReq;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -113,4 +114,13 @@ public class MeetingSurveyEntity {
     private Boolean isRandom;
 
     private LocalDateTime createdAt;
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+        user.getMeetingSurveyEntityList().add(this);
+    }
+
+    public void update(UpdateSurveyReq updateSurveyReq) {
+
+    }
 }
