@@ -1,8 +1,6 @@
 package com.yapp.lonessum.domain.meeting.service;
 
-import com.yapp.lonessum.domain.meeting.dto.CreateSurveyReq;
-import com.yapp.lonessum.domain.meeting.dto.ReadSurveyRes;
-import com.yapp.lonessum.domain.meeting.dto.UpdateSurveyReq;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -23,25 +21,25 @@ public class MeetingSurveyService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long createSurvey(CreateSurveyReq createSurveyReq) {
+    public Long createSurvey(MeetingSurveyDto meetingSurveyDto) {
         // 토큰에서 userId 가져옴
         Long userId = null;
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        MeetingSurveyEntity meetingSurvey = createSurveyReq.toEntity();
+        MeetingSurveyEntity meetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
         meetingSurvey.setUser(user);
         return meetingSurveyRepository.save(meetingSurvey).getId();
     }
 
     @Transactional
-    public ReadSurveyRes readSurvey(Long surveyId) {
+    public MeetingSurveyDto readSurvey(Long surveyId) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findById(surveyId).orElseThrow(() -> new RuntimeException("존재하지 않는 설문입니다."));
-        return new ReadSurveyRes(meetingSurvey);
+        return meetingSurveyMapper.toDto(meetingSurvey);
     }
 
     @Transactional
-    public Long updateSurvey(Long surveyId, UpdateSurveyReq updateSurveyReq) {
+    public Long updateSurvey(Long surveyId, MeetingSurveyDto meetingSurveyDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findById(surveyId).orElseThrow(() -> new RuntimeException("존재하지 않는 설문입니다."));
-        meetingSurvey.update(updateSurveyReq);
+        meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
         return meetingSurvey.getId();
     }
 
