@@ -1,0 +1,2 @@
+[prod]
+106.10.55.114 ansible_user=root ansible_password=**** ansible_port=1422
