@@ -1,0 +1,36 @@
+---
+- name: deploy jar file
+  hosts: prod
+  remote_user: root
+
+  tasks:
+    - name: copy
+      copy:
+        src: ./target/lonessum-0.0.1-SNAPSHOT.jar
+        dest: /root/app/lonessum.jar
+
+- name: deploy restart script
+  hosts: prod
+  remote_user: root
+
+  tasks:
+    - name: copy
+      copy:
+        src: ./restart.sh
+        dest: /root/app/restart.sh
+
+- name: give permission
+  hosts: prod
+  remote_user: root
+
+  tasks:
+    - name: permission
+      shell: chmod 777 /root/app/restart.sh
+
+- name: restart app
+  hosts: prod
+  remote_user: root
+
+  tasks:
+    - name: restart
+      shell: /root/app/restart.sh
