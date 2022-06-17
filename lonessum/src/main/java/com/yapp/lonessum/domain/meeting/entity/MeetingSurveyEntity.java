@@ -1,7 +1,6 @@
 package com.yapp.lonessum.domain.meeting.entity;
 
 import com.yapp.lonessum.domain.constant.*;
-import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.*;
 
@@ -29,12 +28,6 @@ public class MeetingSurveyEntity {
 
     @OneToMany(mappedBy = "surveyB")
     private List<MeetingMatchingEntity> meetingMatchingEntityListB = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyA")
-    private List<DatingMatchingEntity> datingMatchingEntityListA = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyB")
-    private List<DatingMatchingEntity> datingMatchingEntityList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
