@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.lang.Character;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +25,12 @@ public class DatingSurveyEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "surveyA")
+    private List<DatingMatchingEntity> datingMatchingEntityListA = new ArrayList<>();
+
+    @OneToMany(mappedBy = "surveyB")
+    private List<DatingMatchingEntity> datingMatchingEntityList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
