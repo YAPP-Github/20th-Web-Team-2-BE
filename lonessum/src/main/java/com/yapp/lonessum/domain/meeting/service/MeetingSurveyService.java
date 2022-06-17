@@ -8,8 +8,8 @@ import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class MeetingSurveyService {
         return meetingSurveyRepository.save(meetingSurvey).getId();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MeetingSurveyDto readSurvey(Long surveyId) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findById(surveyId).orElseThrow(() -> new RuntimeException("존재하지 않는 설문입니다."));
         return meetingSurveyMapper.toDto(meetingSurvey);
