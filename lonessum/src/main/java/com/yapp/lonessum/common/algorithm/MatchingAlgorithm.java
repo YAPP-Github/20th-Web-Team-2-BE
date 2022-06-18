@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.meeting.algorithm;
+package com.yapp.lonessum.common.algorithm;
 
 import java.util.List;
 

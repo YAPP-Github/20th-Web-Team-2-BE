@@ -2,7 +2,8 @@ package com.yapp.lonessum.domain.meeting.utils;
 
 
 import com.yapp.lonessum.domain.constant.*;
-import com.yapp.lonessum.domain.meeting.algorithm.MeetingSurveyDto;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,6 @@ public class testDataFactory {
 
         MeetingSurveyDto dto = new MeetingSurveyDto();
         dto.setId(1L);
-        dto.setUserId(1L);
         dto.setTypeOfMeeting(TypeOfMeeting.TWO);
         dto.setGender(Gender.MALE);
         dto.setAverageAge(15L);
@@ -35,7 +35,6 @@ public class testDataFactory {
 
         MeetingSurveyDto dto2 = new MeetingSurveyDto();
         dto2.setId(2L);
-        dto2.setUserId(2L);
         dto2.setTypeOfMeeting(TypeOfMeeting.TWO);
         dto2.setGender(Gender.FEMALE);
         dto2.setAverageAge(20L);
@@ -56,7 +55,6 @@ public class testDataFactory {
 
         MeetingSurveyDto dto3 = new MeetingSurveyDto();
         dto3.setId(3L);
-        dto3.setUserId(3L);
         dto3.setTypeOfMeeting(TypeOfMeeting.TWO);
         dto3.setGender(Gender.FEMALE);
         dto3.setAverageAge(10L);

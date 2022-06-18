@@ -1,5 +1,7 @@
 package com.yapp.lonessum.domain.meeting.algorithm;
 
+import com.yapp.lonessum.common.algorithm.MatchingInfo;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
