@@ -1,10 +1,8 @@
 package com.yapp.lonessum.domain.meeting.dto;
 
+import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,9 +10,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeetingSurveyDto {
-
-    private Long id;
+@ToString
+public class MeetingSurveyDto extends SurveyDto {
 
     private TypeOfMeeting typeOfMeeting;
 

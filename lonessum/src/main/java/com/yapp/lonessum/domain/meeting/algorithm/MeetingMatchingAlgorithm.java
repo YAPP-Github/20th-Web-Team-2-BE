@@ -1,68 +1,22 @@
 package com.yapp.lonessum.domain.meeting.algorithm;
 
 import com.yapp.lonessum.common.algorithm.MatchingAlgorithm;
-import com.yapp.lonessum.common.algorithm.MatchingInfo;
 import com.yapp.lonessum.domain.constant.Department;
 import com.yapp.lonessum.domain.constant.Mindset;
 import com.yapp.lonessum.domain.constant.Play;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
-import org.springframework.data.util.Pair;
 
-import java.util.*;
+import java.util.List;
 
-import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.*;
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.findSameInEachRange;
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.isValueInRange;
 
 public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto> {
-
     @Override
-    public List<MatchingInfo<MeetingSurveyDto>> getResult(List<MeetingSurveyDto> meetingSurveyList) {
-        List<MatchingInfo<MeetingSurveyDto>> result = new ArrayList<>();
+    public <T> int calAllCasesScore(T first, T second) {
+        MeetingSurveyDto meetingSurvey1 = (MeetingSurveyDto)first;
+        MeetingSurveyDto meetingSurvey2 = (MeetingSurveyDto)second;
 
-        boolean[] visited = new boolean[meetingSurveyList.size()];
-        Arrays.fill(visited, Boolean.FALSE);
-
-        List<Pair<Integer, Integer>> cases = new ArrayList<>();
-
-        getAllCases(visited, 0, meetingSurveyList.size(), 2, cases);
-
-        for (Pair<Integer, Integer> aCase : cases) {
-            int firstIdx = aCase.getFirst();
-            int secondIdx = aCase.getSecond();
-
-            MeetingSurveyDto firstSurvey = meetingSurveyList.get(firstIdx);
-            MeetingSurveyDto secondSurvey = meetingSurveyList.get(secondIdx);
-
-            int score = calAllCasesScore(firstSurvey, secondSurvey);
-            MatchingInfo<MeetingSurveyDto> matchingInfo = new MatchingInfo(score, firstSurvey, secondSurvey);
-            result.add(matchingInfo);
-        }
-
-        return calOptimalMatchingCase(result);
-    }
-
-    private List<MatchingInfo<MeetingSurveyDto>> calOptimalMatchingCase(List<MatchingInfo<MeetingSurveyDto>> cases) {
-        List<MatchingInfo<MeetingSurveyDto>> result = new ArrayList<>();
-        Map<Long, Boolean> matchingMap = new HashMap<>();
-
-        Collections.sort(cases);
-
-        for (MatchingInfo<MeetingSurveyDto> m : cases) {
-            Long id1 = m.getFirst().getId();
-            Long id2 = m.getSecond().getId();
-
-            if (matchingMap.containsKey(id1) || matchingMap.containsKey(id2)) {
-                continue;
-            }
-            matchingMap.put(id1, true);
-            matchingMap.put(id2, true);
-
-            result.add(m);
-        }
-
-        return result;
-    }
-
-    private int calAllCasesScore(MeetingSurveyDto meetingSurvey1, MeetingSurveyDto meetingSurvey2) {
         return calAvoidUniversityScore(meetingSurvey1, meetingSurvey2) +
                 calPreferAgeScore(meetingSurvey1, meetingSurvey2) +
                 calPreferHeightScore(meetingSurvey1, meetingSurvey2) +
