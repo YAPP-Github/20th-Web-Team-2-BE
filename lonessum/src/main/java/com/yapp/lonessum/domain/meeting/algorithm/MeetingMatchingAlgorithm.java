@@ -10,6 +10,8 @@ import org.springframework.data.util.Pair;
 
 import java.util.*;
 
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.*;
+
 public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto> {
 
     @Override
@@ -70,33 +72,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
                 calPreferGameScore(meetingSurvey1, meetingSurvey2);
     }
 
-    private void getAllCases(boolean[] visited, int start, int n, int r, List<Pair<Integer, Integer>> cases) {
-        if (r == 0) {
-            Pair<Integer, Integer> order = getOrder(visited);
-            cases.add(order);
-
-            return;
-        }
-
-        for (int i = start; i < n; i++) {
-            visited[i] = true;
-            getAllCases(visited, i + 1, n, r - 1, cases);
-            visited[i] = false;
-        }
-    }
-
-    private static Pair<Integer, Integer> getOrder(boolean[] visited) {
-        List<Integer> result = new ArrayList<>();
-
-        for (int i = 0; i < visited.length; i++) {
-            if (visited[i]) {
-                result.add(i);
-            }
-        }
-
-        return Pair.of(result.get(0), result.get(1));
-    }
-
     //기피 학교 점수 계산
     private int calAvoidUniversityScore(MeetingSurveyDto group1, MeetingSurveyDto group2) {
         List<Long> group1Universities = group1.getOurUniversities();
@@ -116,13 +91,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
         return MeetingScore.ZERO_SCORE.getScore();
     }
 
-    private <T> boolean findSameInEachRange(List<T> source, List<T> target) {
-        return !source.stream()
-                .filter(target::contains)
-                .findAny()
-                .isEmpty();
-    }
-
     //선호 나이 계산
     private int calPreferAgeScore(MeetingSurveyDto group1, MeetingSurveyDto group2) {
         Long group1AverageAge = group1.getAverageAge();
@@ -139,13 +107,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
 
         }
         return MeetingScore.ZERO_SCORE.getScore();
-    }
-
-    private boolean isValueInRange(Long source, List<Long> target) {
-        Long start = target.get(0);
-        Long end = target.get(0);
-
-        return start <= source && source <= end;
     }
 
     //선호 키 계산
