@@ -24,7 +24,7 @@ public class DatingSurveyDto {
 
     private Department myDepartment;
 
-    private Character character;
+    private Characteristic character;
 
     private String mbti;
 
@@ -48,7 +48,7 @@ public class DatingSurveyDto {
 
     private List<Department> preferDepartments;
 
-    private List<Character> preferCharacters;
+    private List<Characteristic> preferCharacteristics;
 
     private List<Body> preferBodies;
 
