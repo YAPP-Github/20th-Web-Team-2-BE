@@ -61,8 +61,4 @@ public class DatingSurveyDto extends SurveyDto {
     private Boolean agreement;
 
     private String kakaoId;
-
-    private Mindset mindSet;
-
-    private Play play;
 }
