@@ -1,12 +1,8 @@
 package com.yapp.lonessum.domain.meeting.entity;
 
 import com.yapp.lonessum.domain.constant.*;
-import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,12 +29,6 @@ public class MeetingSurveyEntity {
     @OneToMany(mappedBy = "surveyB")
     private List<MeetingMatchingEntity> meetingMatchingEntityListB = new ArrayList<>();
 
-    @OneToMany(mappedBy = "surveyA")
-    private List<DatingMatchingEntity> datingMatchingEntityListA = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyB")
-    private List<DatingMatchingEntity> datingMatchingEntityList = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
 
@@ -54,8 +45,9 @@ public class MeetingSurveyEntity {
     @CollectionTable(name = "meeting_our_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Department> ourDepartments;
 
-    private Long averageHeight;
-
+    @ElementCollection
+    @CollectionTable(name = "meeting_average_height", joinColumns = @JoinColumn(name = "meeting_survey_id"))
+    private List<Long> averageHeight;
 
     @ElementCollection
     @CollectionTable(name = "meeting_avoid_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
@@ -113,4 +105,9 @@ public class MeetingSurveyEntity {
     private Boolean isRandom;
 
     private LocalDateTime createdAt;
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+        user.getMeetingSurveyEntityList().add(this);
+    }
 }
