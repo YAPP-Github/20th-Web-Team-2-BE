@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/survey")
+@RequestMapping("/meeting/survey")
 public class MeetingSurveyController {
 
     private final MeetingSurveyService meetingSurveyService;
@@ -29,7 +29,7 @@ public class MeetingSurveyController {
     }
 
     @DeleteMapping("/{surveyId}")
-    public Long deleteSurvey(@PathVariable Long surveyId) {
-        return meetingSurveyService.deleteSurvey(surveyId);
+    public ResponseEntity<Long> deleteSurvey(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(meetingSurveyService.deleteSurvey(surveyId));
     }
 }
