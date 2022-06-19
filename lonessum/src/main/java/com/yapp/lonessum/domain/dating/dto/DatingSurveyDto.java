@@ -1,21 +1,17 @@
 package com.yapp.lonessum.domain.dating.dto;
 
+import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.lang.Character;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DatingSurveyDto {
-    private Long id;
-
+@ToString
+public class DatingSurveyDto extends SurveyDto {
     private Gender gender;
 
     private Integer age;
@@ -24,7 +20,7 @@ public class DatingSurveyDto {
 
     private Department myDepartment;
 
-    private Characteristic character;
+    private Characteristic characteristic;
 
     private String mbti;
 
