@@ -1,24 +1,22 @@
 package com.yapp.lonessum.domain.dating.dto;
 
+import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.*;
-import com.yapp.lonessum.domain.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class DatingSurveyDto {
-    private Long id;
-
-    private UserEntity user;
-
+@NoArgsConstructor
+@ToString
+public class DatingSurveyDto extends SurveyDto {
     private Gender gender;
 
-    private Long age;
+    private Integer age;
+
+    private Long myUniversity;
 
     private Department myDepartment;
 
@@ -26,7 +24,7 @@ public class DatingSurveyDto {
 
     private String mbti;
 
-    private Long myHeight;
+    private Integer myHeight;
 
     private Body myBody;
 

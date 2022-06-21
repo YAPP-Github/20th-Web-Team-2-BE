@@ -1,64 +1,22 @@
 package com.yapp.lonessum.domain.meeting.algorithm;
 
-
+import com.yapp.lonessum.common.algorithm.MatchingAlgorithm;
 import com.yapp.lonessum.domain.constant.Department;
 import com.yapp.lonessum.domain.constant.Mindset;
 import com.yapp.lonessum.domain.constant.Play;
-import org.springframework.data.util.Pair;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 
-import java.util.*;
+import java.util.List;
+
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.findSameInEachRange;
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.isValueInRange;
 
 public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto> {
-
     @Override
-    public List<MatchingInfo<MeetingSurveyDto>> getResult(List<MeetingSurveyDto> meetingSurveyList) {
-        List<MatchingInfo<MeetingSurveyDto>> result = new ArrayList<>();
+    public <T> int calAllCasesScore(T first, T second) {
+        MeetingSurveyDto meetingSurvey1 = (MeetingSurveyDto)first;
+        MeetingSurveyDto meetingSurvey2 = (MeetingSurveyDto)second;
 
-        boolean[] visited = new boolean[meetingSurveyList.size()];
-        Arrays.fill(visited, Boolean.FALSE);
-
-        List<Pair<Integer, Integer>> cases = new ArrayList<>();
-
-        getAllCases(visited, 0, meetingSurveyList.size(), 2, cases);
-
-        for (Pair<Integer, Integer> aCase : cases) {
-            int firstIdx = aCase.getFirst();
-            int secondIdx = aCase.getSecond();
-
-            MeetingSurveyDto firstSurvey = meetingSurveyList.get(firstIdx);
-            MeetingSurveyDto secondSurvey = meetingSurveyList.get(secondIdx);
-
-            int score = calAllCasesScore(firstSurvey, secondSurvey);
-            MatchingInfo<MeetingSurveyDto> matchingInfo = new MatchingInfo(score, firstSurvey, secondSurvey);
-            result.add(matchingInfo);
-        }
-
-        return calOptimalMatchingCase(result);
-    }
-
-    private List<MatchingInfo<MeetingSurveyDto>> calOptimalMatchingCase(List<MatchingInfo<MeetingSurveyDto>> cases) {
-        List<MatchingInfo<MeetingSurveyDto>> result = new ArrayList<>();
-        Map<Long, Boolean> matchingMap = new HashMap<>();
-
-        Collections.sort(cases);
-
-        for (MatchingInfo<MeetingSurveyDto> m : cases) {
-            Long id1 = m.getFirst().getId();
-            Long id2 = m.getSecond().getId();
-
-            if (matchingMap.containsKey(id1) || matchingMap.containsKey(id2)) {
-                continue;
-            }
-            matchingMap.put(id1, true);
-            matchingMap.put(id2, true);
-
-            result.add(m);
-        }
-
-        return result;
-    }
-
-    private int calAllCasesScore(MeetingSurveyDto meetingSurvey1, MeetingSurveyDto meetingSurvey2) {
         return calAvoidUniversityScore(meetingSurvey1, meetingSurvey2) +
                 calPreferAgeScore(meetingSurvey1, meetingSurvey2) +
                 calPreferHeightScore(meetingSurvey1, meetingSurvey2) +
@@ -66,33 +24,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
                 calPreferDepartmentScore(meetingSurvey1, meetingSurvey2) +
                 calPreferMindsetScore(meetingSurvey1, meetingSurvey2) +
                 calPreferGameScore(meetingSurvey1, meetingSurvey2);
-    }
-
-    private void getAllCases(boolean[] visited, int start, int n, int r, List<Pair<Integer, Integer>> cases) {
-        if (r == 0) {
-            Pair<Integer, Integer> order = getOrder(visited);
-            cases.add(order);
-
-            return;
-        }
-
-        for (int i = start; i < n; i++) {
-            visited[i] = true;
-            getAllCases(visited, i + 1, n, r - 1, cases);
-            visited[i] = false;
-        }
-    }
-
-    private static Pair<Integer, Integer> getOrder(boolean[] visited) {
-        List<Integer> result = new ArrayList<>();
-
-        for (int i = 0; i < visited.length; i++) {
-            if (visited[i]) {
-                result.add(i);
-            }
-        }
-
-        return Pair.of(result.get(0), result.get(1));
     }
 
     //기피 학교 점수 계산
@@ -114,13 +45,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
         return MeetingScore.ZERO_SCORE.getScore();
     }
 
-    private <T> boolean findSameInEachRange(List<T> source, List<T> target) {
-        return !source.stream()
-                .filter(target::contains)
-                .findAny()
-                .isEmpty();
-    }
-
     //선호 나이 계산
     private int calPreferAgeScore(MeetingSurveyDto group1, MeetingSurveyDto group2) {
         Long group1AverageAge = group1.getAverageAge();
@@ -137,13 +61,6 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
 
         }
         return MeetingScore.ZERO_SCORE.getScore();
-    }
-
-    private boolean isValueInRange(Long source, List<Long> target) {
-        Long start = target.get(0);
-        Long end = target.get(0);
-
-        return start <= source && source <= end;
     }
 
     //선호 키 계산
