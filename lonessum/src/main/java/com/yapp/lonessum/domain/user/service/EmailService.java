@@ -33,10 +33,6 @@ public class EmailService {
     @Async
     @Transactional
     public void sendEmail(Long userId, String email) {
-        if (!isValidEmail(email)) {
-            throw new RuntimeException("이메일 형식이 올바르지 않습니다.");
-        }
-
         //emailToken 생성
         EmailTokenEntity emailToken = EmailTokenEntity.builder()
                 .authCode(UUID.randomUUID().toString())
@@ -58,7 +54,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    private static boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         boolean err = false;
         String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
         Pattern p = Pattern.compile(regex);
