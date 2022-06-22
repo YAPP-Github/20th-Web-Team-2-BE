@@ -1,5 +1,7 @@
 package com.yapp.lonessum.domain.meeting.algorithm;
 
+import com.yapp.lonessum.common.algorithm.MatchingInfo;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +24,8 @@ class MeetingMatchingAlgorithmTest {
         MeetingSurveyDto second = result.get(0).getSecond();
         System.out.println("second = " + second);
 
-        Assertions.assertThat(1).isEqualTo(result.size());
-        Assertions.assertThat(-23).isEqualTo(result.get(0).getScore());
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getScore()).isEqualTo(-17);
     }
 
 }

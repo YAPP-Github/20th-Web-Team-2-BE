@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.meeting.dto;
+package com.yapp.lonessum.domain.dating.dto;
 
 import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.*;
@@ -11,19 +11,28 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class MeetingSurveyDto extends SurveyDto {
-
-    private TypeOfMeeting typeOfMeeting;
-
+public class DatingSurveyDto extends SurveyDto {
     private Gender gender;
 
-    private Long averageAge;
+    private Integer age;
 
-    private List<Long> ourUniversities;
+    private Long myUniversity;
 
-    private List<Department> ourDepartments;
+    private Department myDepartment;
 
-    private Long averageHeight;
+    private Characteristic characteristic;
+
+    private String mbti;
+
+    private Integer myHeight;
+
+    private Body myBody;
+
+    private Boolean mySmoke;
+
+    private DateCount myDateCount;
+
+    private Boolean isSmokeOk;
 
     private List<Long> avoidUniversities;
 
@@ -35,9 +44,11 @@ public class MeetingSurveyDto extends SurveyDto {
 
     private List<Department> preferDepartments;
 
-    private Mindset mindSet;
+    private List<Characteristic> preferCharacteristics;
 
-    private Play play;
+    private List<Body> preferBodies;
+
+    private DateCount preferDateCount;
 
     private Boolean isAbroad;
 

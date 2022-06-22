@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum MeetingScore {
-    AVOID_UNIVERSITY_SCORE(-27, "기피 학교 점수"),
+    AVOID_UNIVERSITY_SCORE(-21, "기피 학교 점수"),
     PREFER_AGE_SCORE(+8, "선호 나이 점수"),
     PREFER_HEIGHT_SCORE(+5, "선호 키 점수"),
     PREFER_UNIVERSITY_SCORE(+3, "선호 학교 점수"),
