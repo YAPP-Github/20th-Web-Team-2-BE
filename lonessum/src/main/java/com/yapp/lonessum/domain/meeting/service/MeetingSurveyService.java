@@ -24,9 +24,14 @@ public class MeetingSurveyService {
     public Long createSurvey(MeetingSurveyDto meetingSurveyDto) {
         // 토큰에서 userId 가져옴
         Long userId = null;
-//        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+
+        if (!user.getIsAuthenticated()) {
+            throw new RuntimeException("이메일 인증이 완료되지 않은 유저입니다.");
+        }
+
         MeetingSurveyEntity meetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
-//        meetingSurvey.setUser(user);
+        meetingSurvey.setUser(user);
         return meetingSurveyRepository.save(meetingSurvey).getId();
     }
 
