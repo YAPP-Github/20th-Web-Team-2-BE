@@ -25,7 +25,7 @@ public class UserService {
     public void login(KakaoTokenResponse token) {
         KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token.getAccess_token());
         long kakaoServerId = tokenInfo.getId();
-        Optional<UserEntity> user = userRepository.findByKaKaoServerId(kakaoServerId);
+        Optional<UserEntity> user = userRepository.findByKakaoServerId(kakaoServerId);
         if (user.isEmpty()) {
             userRepository.save(UserEntity.builder()
                     .kakaoServerId(kakaoServerId)
