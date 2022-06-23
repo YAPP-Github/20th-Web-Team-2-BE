@@ -105,4 +105,8 @@ public class MeetingSurveyEntity {
         this.user = user;
         user.getMeetingSurveyEntityList().add(this);
     }
+
+    public void changeMatchStatus(MatchStatus matchStatus) {
+        this.matchStatus = matchStatus;
+    }
 }
