@@ -101,7 +101,7 @@ public class MeetingSurveyEntity {
 
     private LocalDateTime createdAt;
 
-    public void setUser(UserEntity user) {
+    public void changeUser(UserEntity user) {
         this.user = user;
         user.getMeetingSurveyEntityList().add(this);
     }

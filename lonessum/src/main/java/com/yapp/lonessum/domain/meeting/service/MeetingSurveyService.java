@@ -31,7 +31,7 @@ public class MeetingSurveyService {
         }
 
         MeetingSurveyEntity meetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
-        meetingSurvey.setUser(user);
+        meetingSurvey.changeUser(user);
         return meetingSurveyRepository.save(meetingSurvey).getId();
     }
 
