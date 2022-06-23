@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,11 +22,8 @@ public class MeetingSurveyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "surveyA")
-    private List<MeetingMatchingEntity> meetingMatchingEntityListA = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyB")
-    private List<MeetingMatchingEntity> meetingMatchingEntityListB = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private MeetingMatchingEntity meetingMatching;
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
@@ -99,8 +95,6 @@ public class MeetingSurveyEntity {
     private String kakaoId;
 
     private Boolean isMatched;
-
-    private Boolean isPaid;
 
     private Boolean isRandom;
 
