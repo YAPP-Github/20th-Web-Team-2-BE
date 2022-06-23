@@ -94,7 +94,8 @@ public class MeetingSurveyEntity {
 
     private String kakaoId;
 
-    private Boolean isMatched;
+    @Enumerated(EnumType.STRING)
+    private MatchStatus matchStatus;
 
     private Boolean isRandom;
 

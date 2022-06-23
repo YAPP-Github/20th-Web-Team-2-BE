@@ -108,7 +108,8 @@ public class DatingSurveyEntity {
 
     private String kakaoId;
 
-    private Boolean isMatched;
+    @Enumerated(EnumType.STRING)
+    private MatchStatus matchStatus;
 
     private Boolean isRandom;
 
