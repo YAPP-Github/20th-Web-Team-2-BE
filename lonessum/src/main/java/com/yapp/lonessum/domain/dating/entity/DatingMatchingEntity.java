@@ -9,10 +9,10 @@ public class DatingMatchingEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private DatingMatchingEntity surveyA;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private DatingMatchingEntity surveyB;
 
     private Boolean isPaidA;

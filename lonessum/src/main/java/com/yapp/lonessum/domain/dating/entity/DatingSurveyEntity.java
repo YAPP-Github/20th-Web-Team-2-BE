@@ -26,11 +26,8 @@ public class DatingSurveyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "surveyA")
-    private List<DatingMatchingEntity> datingMatchingEntityListA = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyB")
-    private List<DatingMatchingEntity> datingMatchingEntityList = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private DatingMatchingEntity datingMatching;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -112,8 +109,6 @@ public class DatingSurveyEntity {
     private String kakaoId;
 
     private Boolean isMatched;
-
-    private Boolean isPaid;
 
     private Boolean isRandom;
 
