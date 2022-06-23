@@ -3,6 +3,7 @@ package com.yapp.lonessum.domain.user.controller;
 import com.yapp.lonessum.domain.user.client.KakaoAuthClient;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenRequest;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
+import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/oauth")
 public class OAuthController {
     private final KakaoAuthClient kakaoAuthClient;
+    private final UserService userService;
 
     @GetMapping("/kakao")
     public ResponseEntity<KakaoTokenResponse> getKakaoAuthorization(@RequestParam String code) {
         KakaoTokenRequest kakaoTokenRequest = makeTokenRequest(code);
         KakaoTokenResponse token = kakaoAuthClient.getToken(kakaoTokenRequest);
+        userService.login(token);
 
         return ResponseEntity.ok(token);
     }

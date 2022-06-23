@@ -21,7 +21,7 @@ public class UserEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String kakaoEmail;
+    private Long kakaoServerId;
 
     private String universityEmail;
 

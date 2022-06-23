@@ -1,6 +1,9 @@
 package com.yapp.lonessum.domain.user.service;
 
+import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.AuthCodeResponse;
+import com.yapp.lonessum.domain.user.dto.KakaoTokenInfoResponse;
+import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
 import com.yapp.lonessum.domain.user.entity.EmailTokenEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
@@ -9,12 +12,26 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
+    private final KakaoApiClient kakaoApiClient;
     private final UserRepository userRepository;
+
+    @Transactional
+    public void login(KakaoTokenResponse token) {
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token.getAccess_token());
+        long kakaoServerId = tokenInfo.getId();
+        Optional<UserEntity> user = userRepository.findByKaKaoServerId(kakaoServerId);
+        if (user.isEmpty()) {
+            userRepository.save(UserEntity.builder()
+                    .kakaoServerId(kakaoServerId)
+                    .build());
+        }
+    }
 
     public void updateUniversityEmail(Long userId, String email) {
 //        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
@@ -22,7 +39,7 @@ public class UserService {
 
         //테스트용
         UserEntity user = UserEntity.builder()
-                .kakaoEmail("hi@kakao.com")
+                .kakaoServerId(123L)
                 .isAuthenticated(false)
                 .build();
         user.registerUniversityEmail(email);
