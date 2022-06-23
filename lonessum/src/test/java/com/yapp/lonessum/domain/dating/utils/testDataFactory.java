@@ -24,8 +24,6 @@ public class testDataFactory {
         dto.setPreferAge(Arrays.asList(20L, 30L));
         dto.setPreferHeight(Arrays.asList(20L, 30L));
         dto.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
-        dto.setMindSet(Mindset.FRIEND);
-        dto.setPlay(Play.GAME);
         dto.setIsAbroad(Boolean.TRUE);
         dto.setDomesticAreas(Arrays.asList(DomesticArea.GN));
         dto.setAbroadAreas(Arrays.asList(3L));
@@ -51,8 +49,6 @@ public class testDataFactory {
         dto2.setPreferAge(Arrays.asList(20L, 30L));
         dto2.setPreferHeight(Arrays.asList(20L, 30L));
         dto2.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
-        dto2.setMindSet(Mindset.FRIEND);
-        dto2.setPlay(Play.GAME);
         dto2.setIsAbroad(Boolean.TRUE);
         dto2.setDomesticAreas(Arrays.asList(DomesticArea.GN));
         dto2.setAbroadAreas(Arrays.asList(3L));
@@ -78,8 +74,6 @@ public class testDataFactory {
         dto3.setPreferAge(Arrays.asList(20L, 30L));
         dto3.setPreferHeight(Arrays.asList(20L, 30L));
         dto3.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
-        dto3.setMindSet(Mindset.FRIEND);
-        dto3.setPlay(Play.GAME);
         dto3.setIsAbroad(Boolean.TRUE);
         dto3.setDomesticAreas(Arrays.asList(DomesticArea.GN));
         dto3.setAbroadAreas(Arrays.asList(3L));
