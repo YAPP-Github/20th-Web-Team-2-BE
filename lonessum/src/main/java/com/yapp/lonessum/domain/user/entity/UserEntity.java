@@ -22,6 +22,11 @@ public class UserEntity {
     private Long id;
 
     private Long kakaoServerId;
+  
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UniversityEntity university;
+
+    private String kakaoEmail;
 
     private String universityEmail;
 
@@ -40,7 +45,8 @@ public class UserEntity {
         this.universityEmail = universityEmail;
     }
 
-    public void authenticatedWithEmail() {
+    public void authenticatedWithEmail(UniversityEntity university) {
+        this.university = university;
         this.isAuthenticated = true;
     }
 
