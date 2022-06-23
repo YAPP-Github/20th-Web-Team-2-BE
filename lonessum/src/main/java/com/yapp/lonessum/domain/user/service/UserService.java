@@ -9,8 +9,8 @@ import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -31,6 +31,13 @@ public class UserService {
                     .kakaoServerId(kakaoServerId)
                     .build());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserEntity getUserFromToken(String token) {
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token);
+        long kakaoServerId = tokenInfo.getId();
+        return userRepository.findByKakaoServerId(kakaoServerId).get();
     }
 
     public void updateUniversityEmail(Long userId, String email) {
