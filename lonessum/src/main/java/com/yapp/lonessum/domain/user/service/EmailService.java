@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -29,7 +28,7 @@ public class EmailService {
     private final Long MAX_EXPIRE_TIME = 3L;
 
     private final JavaMailSender javaMailSender;
-    private final UserService userService;
+    private final UniversityService universityService;
     private final EmailTokenRepository emailTokenRepository;
     private final UniversityRepository universityRepository;
 
@@ -37,7 +36,7 @@ public class EmailService {
     @Transactional
     public void sendEmail(UserEntity user, String email) {
         // 유저 대학 이메일 정보 등록
-        userService.updateUniversityEmail(user, email);
+        updateUniversityEmail(user, email);
 
         //emailToken 생성
         EmailTokenEntity emailToken = EmailTokenEntity.builder()
@@ -60,14 +59,19 @@ public class EmailService {
     }
 
     public boolean isValidEmail(String email) {
-        boolean err = false;
         String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        if(m.matches()) {
-            err = true;
+        return Pattern.matches(regex, email);
+    }
+
+    @Transactional
+    public void updateUniversityEmail(UserEntity user, String email) {
+        if (isValidEmail(email)) {
+            throw new RestApiException(UserErrorCode.INVALID_EMAIL);
         }
-        return err;
+        if (!universityService.isSupportedUniversity(email)) {
+            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
+        }
+        user.registerUniversityEmail(email);
     }
 
     @Transactional

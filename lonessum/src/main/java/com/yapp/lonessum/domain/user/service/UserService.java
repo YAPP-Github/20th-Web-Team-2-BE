@@ -18,8 +18,6 @@ import java.util.Optional;
 public class UserService {
 
     private final KakaoApiClient kakaoApiClient;
-    private final EmailService emailService;
-    private final UniversityService universityService;
     private final UserRepository userRepository;
 
     @Transactional
@@ -39,16 +37,5 @@ public class UserService {
         KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token);
         long kakaoServerId = tokenInfo.getId();
         return userRepository.findByKakaoServerId(kakaoServerId).get();
-    }
-
-    @Transactional
-    public void updateUniversityEmail(UserEntity user, String email) {
-        if (!emailService.isValidEmail(email)) {
-            throw new RestApiException(UserErrorCode.INVALID_EMAIL);
-        }
-        if (!universityService.isSupportedUniversity(email)) {
-            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
-        }
-        user.registerUniversityEmail(email);
     }
 }
