@@ -10,11 +10,14 @@ import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class MeetingMatchingScheduler {
 
@@ -23,6 +26,7 @@ public class MeetingMatchingScheduler {
     private final MeetingMatchingRepository meetingMatchingRepository;
 
     @Transactional
+    @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RuntimeException("매칭을 수행할 설문이 없습니다."));
