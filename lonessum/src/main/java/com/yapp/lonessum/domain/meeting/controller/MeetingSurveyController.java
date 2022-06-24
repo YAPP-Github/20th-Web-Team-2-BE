@@ -2,6 +2,8 @@ package com.yapp.lonessum.domain.meeting.controller;
 
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.service.MeetingSurveyService;
+import com.yapp.lonessum.domain.user.entity.UserEntity;
+import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,25 +13,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/meeting/survey")
 public class MeetingSurveyController {
 
+    private final UserService userService;
     private final MeetingSurveyService meetingSurveyService;
 
     @PostMapping
-    public ResponseEntity<Long> createSurvey(@RequestBody MeetingSurveyDto meetingSurveyDto) {
-        return ResponseEntity.ok(meetingSurveyService.createSurvey(meetingSurveyDto));
+    public ResponseEntity<Long> createSurvey(@RequestHeader(value = "Authorization") String token,
+                                             @RequestBody MeetingSurveyDto meetingSurveyDto) {
+        UserEntity user = userService.getUserFromToken(token);
+        return ResponseEntity.ok(meetingSurveyService.createSurvey(user, meetingSurveyDto));
     }
 
-    @GetMapping("/{surveyId}")
-    public ResponseEntity<MeetingSurveyDto> readSurvey(@PathVariable Long surveyId) {
-        return ResponseEntity.ok(meetingSurveyService.readSurvey(surveyId));
+    @GetMapping
+    public ResponseEntity<MeetingSurveyDto> readSurvey(@RequestHeader(value = "Authorization") String token) {
+        UserEntity user = userService.getUserFromToken(token);
+        return ResponseEntity.ok(meetingSurveyService.readSurvey(user));
     }
 
-    @PutMapping("/{surveyId}")
-    public ResponseEntity<Long> updateSurvey(@PathVariable Long surveyId, @RequestBody MeetingSurveyDto meetingSurveyDto) {
-        return ResponseEntity.ok(meetingSurveyService.updateSurvey(surveyId, meetingSurveyDto));
+    @PutMapping
+    public ResponseEntity<Long> updateSurvey(@RequestHeader(value = "Authorization") String token,
+                                             @RequestBody MeetingSurveyDto meetingSurveyDto) {
+        UserEntity user = userService.getUserFromToken(token);
+        return ResponseEntity.ok(meetingSurveyService.updateSurvey(user, meetingSurveyDto));
     }
 
-    @DeleteMapping("/{surveyId}")
-    public ResponseEntity<Long> deleteSurvey(@PathVariable Long surveyId) {
-        return ResponseEntity.ok(meetingSurveyService.deleteSurvey(surveyId));
+    @DeleteMapping
+    public ResponseEntity<Long> deleteSurvey(@RequestHeader(value = "Authorization") String token) {
+        UserEntity user = userService.getUserFromToken(token);
+        return ResponseEntity.ok(meetingSurveyService.deleteSurvey(user));
     }
 }
