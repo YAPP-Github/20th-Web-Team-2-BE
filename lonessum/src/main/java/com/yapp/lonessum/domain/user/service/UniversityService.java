@@ -2,6 +2,7 @@ package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.repository.UniversityRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -15,11 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UniversityService {
-    @Autowired
-    ResourceLoader resourceLoader;
-    @Autowired
-    UniversityRepository universityRepository;
+
+    private final ResourceLoader resourceLoader;
+
+    private final UniversityRepository universityRepository;
 
     public void registerUniInfo() throws IOException {
         List<UniversityEntity> csvList = new ArrayList<>();
@@ -49,5 +51,10 @@ public class UniversityService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isSupportedUniversity(String email) {
+        int idx = email.indexOf("@");
+        return universityRepository.existsByDomain(email.substring(idx+1));
     }
 }
