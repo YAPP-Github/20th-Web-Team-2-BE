@@ -47,11 +47,11 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
 
     //선호 나이 계산
     private int calPreferAgeScore(MeetingSurveyDto group1, MeetingSurveyDto group2) {
-        Long group1AverageAge = group1.getAverageAge();
-        List<Long> group2PreferAge = group2.getPreferAge();
+        Integer group1AverageAge = group1.getAverageAge();
+        List<Integer> group2PreferAge = group2.getPreferAge();
 
-        Long group2AverageAge = group2.getAverageAge();
-        List<Long> group1PreferAge = group1.getPreferAge();
+        Integer group2AverageAge = group2.getAverageAge();
+        List<Integer> group1PreferAge = group1.getPreferAge();
 
         boolean preferCase1 = isValueInRange(group1AverageAge, group2PreferAge);
         boolean preferCase2 = isValueInRange(group2AverageAge, group1PreferAge);
@@ -65,11 +65,11 @@ public class MeetingMatchingAlgorithm extends MatchingAlgorithm<MeetingSurveyDto
 
     //선호 키 계산
     private int calPreferHeightScore(MeetingSurveyDto group1, MeetingSurveyDto group2) {
-        Long group1AverageHeight = group1.getAverageHeight();
-        List<Long> group2PreferHeight = group2.getPreferHeight();
+        Integer group1AverageHeight = group1.getAverageHeight();
+        List<Integer> group2PreferHeight = group2.getPreferHeight();
 
-        Long group2AverageHeight = group2.getAverageHeight();
-        List<Long> group1PreferHeight = group1.getPreferHeight();
+        Integer group2AverageHeight = group2.getAverageHeight();
+        List<Integer> group1PreferHeight = group1.getPreferHeight();
 
         boolean preferCase1 = isValueInRange(group1AverageHeight, group2PreferHeight);
         boolean preferCase2 = isValueInRange(group2AverageHeight, group1PreferHeight);

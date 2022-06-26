@@ -56,12 +56,6 @@ public class UserService {
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         user.registerUniversityEmail(email);
-
-        //테스트용
-        UserEntity user = UserEntity.builder()
-                .kakaoServerId(123L)
-                .isAuthenticated(false)
-                .build();
       
         user.registerUniversityEmail(email);
         userRepository.save(user);
