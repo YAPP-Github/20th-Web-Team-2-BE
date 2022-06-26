@@ -21,8 +21,8 @@ public class testDataFactory {
         dto.setMyHeight(170);
         dto.setAvoidUniversities(Arrays.asList(4L, 5L));
         dto.setPreferUniversities(Arrays.asList(7L, 9L));
-        dto.setPreferAge(Arrays.asList(20L, 30L));
-        dto.setPreferHeight(Arrays.asList(20L, 30L));
+        dto.setPreferAge(Arrays.asList(20, 30));
+        dto.setPreferHeight(Arrays.asList(20, 30));
         dto.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
         dto.setIsAbroad(Boolean.TRUE);
         dto.setDomesticAreas(Arrays.asList(DomesticArea.GN));
@@ -46,8 +46,8 @@ public class testDataFactory {
         dto2.setMyHeight(170);
         dto2.setAvoidUniversities(Arrays.asList(1L, 5L));
         dto2.setPreferUniversities(Arrays.asList(7L, 9L));
-        dto2.setPreferAge(Arrays.asList(20L, 30L));
-        dto2.setPreferHeight(Arrays.asList(20L, 30L));
+        dto2.setPreferAge(Arrays.asList(20, 30));
+        dto2.setPreferHeight(Arrays.asList(20, 30));
         dto2.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
         dto2.setIsAbroad(Boolean.TRUE);
         dto2.setDomesticAreas(Arrays.asList(DomesticArea.GN));
@@ -71,8 +71,8 @@ public class testDataFactory {
         dto3.setMyHeight(170);
         dto3.setAvoidUniversities(Arrays.asList(2L, 5L));
         dto3.setPreferUniversities(Arrays.asList(15L, 9L));
-        dto3.setPreferAge(Arrays.asList(20L, 30L));
-        dto3.setPreferHeight(Arrays.asList(20L, 30L));
+        dto3.setPreferAge(Arrays.asList(20, 30));
+        dto3.setPreferHeight(Arrays.asList(20, 30));
         dto3.setPreferDepartments(Arrays.asList(Department.ATHLETIC));
         dto3.setIsAbroad(Boolean.TRUE);
         dto3.setDomesticAreas(Arrays.asList(DomesticArea.GN));

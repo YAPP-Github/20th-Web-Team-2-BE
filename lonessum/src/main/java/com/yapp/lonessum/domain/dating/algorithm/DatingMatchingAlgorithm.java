@@ -52,13 +52,13 @@ public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> 
     //선호 나이 계산
     private int calPreferAgeScore(DatingSurveyDto user1, DatingSurveyDto user2) {
         Integer user1Age = user1.getAge();
-        List<Long> user2PreferAge = user2.getPreferAge();
+        List<Integer> user2PreferAge = user2.getPreferAge();
 
         Integer user2Age = user2.getAge();
-        List<Long> user1PreferAge = user1.getPreferAge();
+        List<Integer> user1PreferAge = user1.getPreferAge();
 
-        boolean preferCase1 = isValueInRange(Long.valueOf(user1Age), user2PreferAge);
-        boolean preferCase2 = isValueInRange(Long.valueOf(user2Age), user1PreferAge);
+        boolean preferCase1 = isValueInRange(user1Age, user2PreferAge);
+        boolean preferCase2 = isValueInRange(user2Age, user1PreferAge);
 
         if (preferCase1 && preferCase2) {
             return DatingScore.PREFER_AGE_SCORE.getScore();
@@ -88,13 +88,13 @@ public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> 
     //선호 키 계산
     private int calPreferHeightScore(DatingSurveyDto user1, DatingSurveyDto user2) {
         Integer user1Height = user1.getMyHeight();
-        List<Long> user2PreferHeight = user2.getPreferHeight();
+        List<Integer> user2PreferHeight = user2.getPreferHeight();
 
         Integer user2Height = user2.getMyHeight();
-        List<Long> user1PreferHeight = user1.getPreferHeight();
+        List<Integer> user1PreferHeight = user1.getPreferHeight();
 
-        boolean preferCase1 = isValueInRange(Long.valueOf(user1Height), user2PreferHeight);
-        boolean preferCase2 = isValueInRange(Long.valueOf(user2Height), user1PreferHeight);
+        boolean preferCase1 = isValueInRange(user1Height, user2PreferHeight);
+        boolean preferCase2 = isValueInRange(user2Height, user1PreferHeight);
 
         if (preferCase1 && preferCase2) {
             return DatingScore.PREFER_HEIGHT_SCORE.getScore();

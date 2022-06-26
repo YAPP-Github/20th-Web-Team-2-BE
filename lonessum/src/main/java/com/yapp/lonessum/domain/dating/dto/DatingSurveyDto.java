@@ -38,9 +38,9 @@ public class DatingSurveyDto extends SurveyDto {
 
     private List<Long> preferUniversities;
 
-    private List<Long> preferAge;
+    private List<Integer> preferAge;
 
-    private List<Long> preferHeight;
+    private List<Integer> preferHeight;
 
     private List<Department> preferDepartments;
 

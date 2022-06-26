@@ -17,21 +17,21 @@ public class MeetingSurveyDto extends SurveyDto {
 
     private Gender gender;
 
-    private Long averageAge;
+    private Integer averageAge;
 
     private List<Long> ourUniversities;
 
     private List<Department> ourDepartments;
 
-    private Long averageHeight;
+    private Integer averageHeight;
 
     private List<Long> avoidUniversities;
 
     private List<Long> preferUniversities;
 
-    private List<Long> preferAge;
+    private List<Integer> preferAge;
 
-    private List<Long> preferHeight;
+    private List<Integer> preferHeight;
 
     private List<Department> preferDepartments;
 
