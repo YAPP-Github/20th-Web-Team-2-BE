@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -35,11 +33,11 @@ public class UserEntity {
 
     private Boolean isAuthenticated;
 
-    @OneToMany(mappedBy = "user")
-    private List<MeetingSurveyEntity> meetingSurveyEntityList = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private MeetingSurveyEntity meetingSurvey;
 
-    @OneToMany(mappedBy = "user")
-    private List<DatingSurveyEntity> datingSurveyEntityList = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private DatingSurveyEntity datingSurvey;
 
     public void registerUniversityEmail(String universityEmail) {
         this.universityEmail = universityEmail;

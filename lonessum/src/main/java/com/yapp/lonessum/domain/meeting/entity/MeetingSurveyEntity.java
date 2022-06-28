@@ -19,11 +19,8 @@ public class MeetingSurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserEntity user;
-
     @OneToOne(fetch = FetchType.LAZY)
-    private MeetingMatchingEntity meetingMatching;
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
@@ -49,21 +46,17 @@ public class MeetingSurveyEntity {
     @CollectionTable(name = "meeting_avoid_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> avoidUniversities;
 
-
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> preferUniversities;
-
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_age", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> preferAge;
 
-
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_height", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> preferHeight;
-
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))
@@ -99,14 +92,7 @@ public class MeetingSurveyEntity {
 
     private Boolean isRandom;
 
-    private LocalDateTime createdAt;
-
     public void changeUser(UserEntity user) {
         this.user = user;
-        user.getMeetingSurveyEntityList().add(this);
-    }
-
-    public void changeMatchStatus(MatchStatus matchStatus) {
-        this.matchStatus = matchStatus;
     }
 }

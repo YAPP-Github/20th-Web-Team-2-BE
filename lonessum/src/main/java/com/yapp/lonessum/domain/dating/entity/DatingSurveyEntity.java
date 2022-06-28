@@ -23,7 +23,7 @@ public class DatingSurveyEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -113,5 +113,7 @@ public class DatingSurveyEntity {
 
     private Boolean isRandom;
 
-    private LocalDateTime createdAt;
+    public void changeUser(UserEntity user) {
+        this.user = user;
+    }
 }
