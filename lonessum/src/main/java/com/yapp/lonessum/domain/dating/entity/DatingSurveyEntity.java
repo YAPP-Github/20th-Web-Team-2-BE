@@ -116,4 +116,8 @@ public class DatingSurveyEntity {
     public void changeUser(UserEntity user) {
         this.user = user;
     }
+
+    public void changeMatchStatus(MatchStatus matchStatus) {
+        this.matchStatus = matchStatus;
+    }
 }

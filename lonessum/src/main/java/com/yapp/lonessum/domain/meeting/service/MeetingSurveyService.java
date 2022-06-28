@@ -5,8 +5,7 @@ import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.exception.errorcode.ErrorCode;
-import com.yapp.lonessum.exception.errorcode.MeetingErrorCode;
+import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
@@ -51,7 +50,7 @@ public class MeetingSurveyService {
     @Transactional
     public Long rematchSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(MeetingErrorCode.NO_EXIST_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
         meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
         return meetingSurvey.getId();
     }
@@ -59,14 +58,14 @@ public class MeetingSurveyService {
     @Transactional(readOnly = true)
     public MeetingSurveyDto readSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUserAndMatchStatus(user, MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(MeetingErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
         return meetingSurveyMapper.toDto(meetingSurvey);
     }
 
     @Transactional
     public Long updateSurvey(UserEntity user, MeetingSurveyDto meetingSurveyDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUserAndMatchStatus(user, MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(MeetingErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
         meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
         return meetingSurvey.getId();
     }
@@ -74,7 +73,7 @@ public class MeetingSurveyService {
     @Transactional
     public Long deleteSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUserAndMatchStatus(user, MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(MeetingErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
         meetingSurveyRepository.delete(meetingSurvey);
         return meetingSurvey.getId();
     }
