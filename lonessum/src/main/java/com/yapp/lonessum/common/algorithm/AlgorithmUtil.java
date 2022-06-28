@@ -10,9 +10,9 @@ public class AlgorithmUtil {
                 .isEmpty();
     }
 
-    public static boolean isValueInRange(Long source, List<Long> target) {
-        Long start = target.get(0);
-        Long end = target.get(0);
+    public static boolean isValueInRange(Integer source, List<Integer> target) {
+        Integer start = target.get(0);
+        Integer end = target.get(0);
 
         return start <= source && source <= end;
     }

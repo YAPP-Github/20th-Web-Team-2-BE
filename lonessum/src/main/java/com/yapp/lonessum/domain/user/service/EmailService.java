@@ -1,20 +1,22 @@
 package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.domain.user.entity.EmailTokenEntity;
+import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.EmailTokenRepository;
-import com.yapp.lonessum.domain.user.repository.UserRepository;
+import com.yapp.lonessum.domain.user.repository.UniversityRepository;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -26,13 +28,16 @@ public class EmailService {
     private final Long MAX_EXPIRE_TIME = 3L;
 
     private final JavaMailSender javaMailSender;
-
-    private final UserRepository userRepository;
+    private final UniversityService universityService;
     private final EmailTokenRepository emailTokenRepository;
+    private final UniversityRepository universityRepository;
 
     @Async
     @Transactional
-    public void sendEmail(Long userId, String email) {
+    public void sendEmail(UserEntity user, String email) {
+        // 유저 대학 이메일 정보 등록
+        updateUniversityEmail(user, email);
+
         //emailToken 생성
         EmailTokenEntity emailToken = EmailTokenEntity.builder()
                 .authCode(UUID.randomUUID().toString())
@@ -41,7 +46,6 @@ public class EmailService {
         emailTokenRepository.save(emailToken);
 
         //유저의 emailToken 등록
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         user.issueEmailToken(emailToken);
 
         //이메일 메시지 생성
@@ -55,13 +59,42 @@ public class EmailService {
     }
 
     public boolean isValidEmail(String email) {
-        boolean err = false;
         String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        if(m.matches()) {
-            err = true;
+        return Pattern.matches(regex, email);
+    }
+
+    @Transactional
+    public void updateUniversityEmail(UserEntity user, String email) {
+        if (isValidEmail(email)) {
+            throw new RestApiException(UserErrorCode.INVALID_EMAIL);
         }
-        return err;
+        if (!universityService.isSupportedUniversity(email)) {
+            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
+        }
+        user.registerUniversityEmail(email);
+    }
+
+    @Transactional
+    public void authenticateWithEmail(UserEntity user, String authCode) {
+        EmailTokenEntity emailToken = user.getEmailToken();
+
+        String email = user.getUniversityEmail();
+        int idx = email.indexOf("@");
+        String domain = email.substring(idx+1);
+        UniversityEntity university = universityRepository.findByDomain(domain);
+
+        if (authCode.equals(emailToken.getAuthCode())) {
+            if (LocalDateTime.now().isBefore(emailToken.getExpireDate())) {
+                user.authenticatedWithEmail(university);
+            }
+            else {
+                // 유효시간 초과 -> 이메일 재전송
+                throw new RestApiException(UserErrorCode.EXPIRED_AUTHCODE);
+            }
+        }
+        else {
+            // 잘못된 인증코드 -> 재입력 시도
+            throw new RestApiException(UserErrorCode.INVALID_AUTHCODE);
+        }
     }
 }

@@ -28,7 +28,7 @@ public class MeetingSurveyEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Long averageAge;
+    private Integer averageAge;
 
     @ElementCollection
     @CollectionTable(name = "meeting_our_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
@@ -38,7 +38,7 @@ public class MeetingSurveyEntity {
     @CollectionTable(name = "meeting_our_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Department> ourDepartments;
 
-    private Long averageHeight;
+    private Integer averageHeight;
 
     @ElementCollection
     @CollectionTable(name = "meeting_avoid_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
@@ -50,11 +50,11 @@ public class MeetingSurveyEntity {
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_age", joinColumns = @JoinColumn(name = "meeting_survey_id"))
-    private List<Long> preferAge;
+    private List<Integer> preferAge;
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_height", joinColumns = @JoinColumn(name = "meeting_survey_id"))
-    private List<Long> preferHeight;
+    private List<Integer> preferHeight;
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))

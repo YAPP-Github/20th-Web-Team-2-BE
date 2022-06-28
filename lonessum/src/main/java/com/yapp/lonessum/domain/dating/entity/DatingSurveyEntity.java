@@ -32,7 +32,7 @@ public class DatingSurveyEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Long age;
+    private Integer age;
 
     // 내 학교 정보 알아야함
     
@@ -44,7 +44,7 @@ public class DatingSurveyEntity {
 
     private String mbti;
 
-    private Long myHeight;
+    private Integer myHeight;
 
     @Enumerated(EnumType.STRING)
     private Body myBody;
@@ -66,11 +66,11 @@ public class DatingSurveyEntity {
 
     @ElementCollection
     @CollectionTable(name = "dating_prefer_age", joinColumns = @JoinColumn(name = "dating_survey_id"))
-    private List<Long> preferAge;
+    private List<Integer> preferAge;
 
     @ElementCollection
     @CollectionTable(name = "dating_prefer_height", joinColumns = @JoinColumn(name = "dating_survey_id"))
-    private List<Long> preferHeight;
+    private List<Integer> preferHeight;
 
     @ElementCollection
     @CollectionTable(name = "dating_departments", joinColumns = @JoinColumn(name = "dating_survey_id"))
