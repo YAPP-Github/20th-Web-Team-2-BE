@@ -4,10 +4,11 @@ import com.yapp.lonessum.common.algorithm.MatchingInfo;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
-import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +30,7 @@ public class MeetingMatchingScheduler {
     @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RuntimeException("매칭을 수행할 설문이 없습니다."));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
 
         List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
         for (MeetingSurveyEntity ms : meetingSurveyList) {
