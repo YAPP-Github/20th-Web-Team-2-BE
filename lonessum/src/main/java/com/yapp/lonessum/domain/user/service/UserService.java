@@ -28,19 +28,20 @@ public class UserService {
 
     @Transactional
     public void login(KakaoTokenResponse token) {
-        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token.getAccess_token());
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token.getAccess_token());
         long kakaoServerId = tokenInfo.getId();
         Optional<UserEntity> user = userRepository.findByKakaoServerId(kakaoServerId);
         if (user.isEmpty()) {
             userRepository.save(UserEntity.builder()
                     .kakaoServerId(kakaoServerId)
+                    .isAuthenticated(false)
                     .build());
         }
     }
 
     @Transactional(readOnly = true)
     public UserEntity getUserFromToken(String token) {
-        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token);
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token);
         long kakaoServerId = tokenInfo.getId();
         return userRepository.findByKakaoServerId(kakaoServerId).get();
     }
@@ -58,10 +59,10 @@ public class UserService {
         user.registerUniversityEmail(email);
 
         //테스트용
-        UserEntity user = UserEntity.builder()
-                .kakaoServerId(123L)
-                .isAuthenticated(false)
-                .build();
+//        UserEntity user = UserEntity.builder()
+//                .kakaoServerId(123L)
+//                .isAuthenticated(false)
+//                .build();
       
         user.registerUniversityEmail(email);
         userRepository.save(user);
