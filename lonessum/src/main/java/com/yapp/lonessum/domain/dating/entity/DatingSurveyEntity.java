@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +21,7 @@ public class DatingSurveyEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "datingSurvey")
     private UserEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -112,10 +110,6 @@ public class DatingSurveyEntity {
     private MatchStatus matchStatus;
 
     private Boolean isRandom;
-
-    public void changeUser(UserEntity user) {
-        this.user = user;
-    }
 
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;

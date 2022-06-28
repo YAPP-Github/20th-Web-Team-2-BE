@@ -5,7 +5,6 @@ import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,7 +18,7 @@ public class MeetingSurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "meetingSurvey")
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
@@ -89,10 +88,6 @@ public class MeetingSurveyEntity {
     private MatchStatus matchStatus;
 
     private Boolean isRandom;
-
-    public void changeUser(UserEntity user) {
-        this.user = user;
-    }
 
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;
