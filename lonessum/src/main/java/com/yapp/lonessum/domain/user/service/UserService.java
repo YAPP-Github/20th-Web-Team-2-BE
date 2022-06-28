@@ -22,7 +22,7 @@ public class UserService {
 
     @Transactional
     public void login(KakaoTokenResponse token) {
-        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token.getAccess_token());
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token.getAccess_token());
         long kakaoServerId = tokenInfo.getId();
         Optional<UserEntity> user = userRepository.findByKakaoServerId(kakaoServerId);
         if (user.isEmpty()) {
