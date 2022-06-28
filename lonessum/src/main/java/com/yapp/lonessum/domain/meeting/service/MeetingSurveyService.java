@@ -40,7 +40,7 @@ public class MeetingSurveyService {
         // 설문을 작성한 적 없으면 -> 새로운 설문 추가
         else {
             MeetingSurveyEntity newMeetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
-            newMeetingSurvey.changeUser(user);
+            user.changeMeetingSurvey(newMeetingSurvey);
             // 매칭 대기 상태로 등록
             newMeetingSurvey.changeMatchStatus(MatchStatus.WAITING);
             return meetingSurveyRepository.save(newMeetingSurvey).getId();

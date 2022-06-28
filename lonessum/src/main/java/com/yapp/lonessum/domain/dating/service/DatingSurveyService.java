@@ -40,7 +40,7 @@ public class DatingSurveyService {
         // 설문을 작성한 적 없으면 -> 새로운 설문 추가
         else {
             DatingSurveyEntity newDatingSurvey = datingSurveyMapper.toEntity(datingSurveyDto);
-            newDatingSurvey.changeUser(user);
+            user.changeDatingSurvey(newDatingSurvey);
             // 매칭 대기 상태로 등록
             newDatingSurvey.changeMatchStatus(MatchStatus.WAITING);
             return datingSurveyRepository.save(newDatingSurvey).getId();

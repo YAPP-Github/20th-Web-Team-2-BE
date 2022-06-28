@@ -28,15 +28,15 @@ public class UserEntity {
 
     private String universityEmail;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private EmailTokenEntity emailToken;
 
     private Boolean isAuthenticated;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private MeetingSurveyEntity meetingSurvey;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private DatingSurveyEntity datingSurvey;
 
     public void registerUniversityEmail(String universityEmail) {
@@ -50,5 +50,13 @@ public class UserEntity {
 
     public void issueEmailToken(EmailTokenEntity emailToken) {
         this.emailToken = emailToken;
+    }
+
+    public void changeMeetingSurvey(MeetingSurveyEntity meetingSurvey) {
+        this.meetingSurvey = meetingSurvey;
+    }
+
+    public void changeDatingSurvey(DatingSurveyEntity datingSurvey) {
+        this.datingSurvey = datingSurvey;
     }
 }
