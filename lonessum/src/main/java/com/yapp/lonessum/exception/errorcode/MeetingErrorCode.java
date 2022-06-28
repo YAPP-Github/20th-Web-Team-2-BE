@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum MeetingErrorCode implements ErrorCode {
 
+    NO_EXIST_SURVEY(HttpStatus.BAD_REQUEST, "작성한 설문이 없습니다."),
     ZERO_SURVEY(HttpStatus.BAD_REQUEST, "대기 중인 설문이 없습니다."),
     ;
 

@@ -16,11 +16,26 @@ public class MeetingSurveyController {
     private final UserService userService;
     private final MeetingSurveyService meetingSurveyService;
 
+    /*
+    * 매칭 시작하기 버튼
+    * 설문을 처음부터 작성하는 경우
+    * - 설문을 등록 or 수정하고
+    * - 매칭에 참여
+    * */
     @PostMapping
     public ResponseEntity<Long> createSurvey(@RequestHeader(value = "Authorization") String token,
                                              @RequestBody MeetingSurveyDto meetingSurveyDto) {
         UserEntity user = userService.getUserFromToken(token);
         return ResponseEntity.ok(meetingSurveyService.createSurvey(user, meetingSurveyDto));
+    }
+
+    /*
+     * 현재 설문으로 재매칭
+     * */
+    @PostMapping("/rematch")
+    public ResponseEntity<Long> rematchSurvey(@RequestHeader(value = "Authorization") String token) {
+        UserEntity user = userService.getUserFromToken(token);
+        return ResponseEntity.ok(meetingSurveyService.rematchSurvey(user));
     }
 
     @GetMapping

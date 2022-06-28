@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MeetingSurveyRepository extends JpaRepository<MeetingSurveyEntity, Long> {
+    Optional<MeetingSurveyEntity> findByUser(UserEntity user);
     Optional<List<MeetingSurveyEntity>> findAllByMatchStatus(MatchStatus matchStatus);
     Optional<MeetingSurveyEntity> findByUserAndMatchStatus(UserEntity user, MatchStatus matchStatus);
 }

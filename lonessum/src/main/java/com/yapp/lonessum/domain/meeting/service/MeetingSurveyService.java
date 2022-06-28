@@ -5,7 +5,7 @@ import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.repository.UserRepository;
+import com.yapp.lonessum.exception.errorcode.ErrorCode;
 import com.yapp.lonessum.exception.errorcode.MeetingErrorCode;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.module.ResolutionException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +25,35 @@ public class MeetingSurveyService {
 
     @Transactional
     public Long createSurvey(UserEntity user, MeetingSurveyDto meetingSurveyDto) {
+        // 이메일 인증 검사
         if (!user.getIsAuthenticated()) {
             throw new RestApiException(UserErrorCode.NEED_EMAIL_AUTH);
         }
-        MeetingSurveyEntity meetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
-        meetingSurvey.changeUser(user);
-        return meetingSurveyRepository.save(meetingSurvey).getId();
+
+        Optional<MeetingSurveyEntity> meetingSurvey = meetingSurveyRepository.findByUser(user);
+        // 설문을 작성한 적 있으면 -> 기존 설문 수정
+        if (meetingSurvey.isPresent()) {
+            meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey.get());
+            // 매칭 대기 상태로 등록
+            meetingSurvey.get().changeMatchStatus(MatchStatus.WAITING);
+            return meetingSurvey.get().getId();
+        }
+        // 설문을 작성한 적 없으면 -> 새로운 설문 추가
+        else {
+            MeetingSurveyEntity newMeetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
+            newMeetingSurvey.changeUser(user);
+            // 매칭 대기 상태로 등록
+            newMeetingSurvey.changeMatchStatus(MatchStatus.WAITING);
+            return meetingSurveyRepository.save(newMeetingSurvey).getId();
+        }
+    }
+
+    @Transactional
+    public Long rematchSurvey(UserEntity user) {
+        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
+                .orElseThrow(() -> new RestApiException(MeetingErrorCode.NO_EXIST_SURVEY));
+        meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
+        return meetingSurvey.getId();
     }
 
     @Transactional(readOnly = true)

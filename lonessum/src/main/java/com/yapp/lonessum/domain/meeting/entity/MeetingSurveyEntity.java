@@ -95,4 +95,8 @@ public class MeetingSurveyEntity {
     public void changeUser(UserEntity user) {
         this.user = user;
     }
+
+    public void changeMatchStatus(MatchStatus matchStatus) {
+        this.matchStatus = matchStatus;
+    }
 }
