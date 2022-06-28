@@ -23,7 +23,7 @@ public class MeetingSurveyDto extends SurveyDto {
 
     private List<Department> ourDepartments;
 
-    private List<Long> averageHeight;
+    private Long averageHeight;
 
     private List<Long> avoidUniversities;
 

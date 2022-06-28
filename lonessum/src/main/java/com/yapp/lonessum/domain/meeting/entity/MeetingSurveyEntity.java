@@ -38,9 +38,7 @@ public class MeetingSurveyEntity {
     @CollectionTable(name = "meeting_our_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Department> ourDepartments;
 
-    @ElementCollection
-    @CollectionTable(name = "meeting_average_height", joinColumns = @JoinColumn(name = "meeting_survey_id"))
-    private List<Long> averageHeight;
+    private Long averageHeight;
 
     @ElementCollection
     @CollectionTable(name = "meeting_avoid_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
