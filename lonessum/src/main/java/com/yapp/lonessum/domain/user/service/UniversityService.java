@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.user.service;
 
+import com.yapp.lonessum.domain.user.dto.UniversityDto;
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +57,17 @@ public class UniversityService {
     public boolean isSupportedUniversity(String email) {
         int idx = email.indexOf("@");
         return universityRepository.existsByDomain(email.substring(idx+1));
+    }
+
+    public List<UniversityDto> getAllUniversities() {
+        List<UniversityEntity> universityList = universityRepository.findAll();
+        List<UniversityDto> universityDtoList = new ArrayList<>();
+        universityList.forEach(university -> {
+            universityDtoList.add(UniversityDto.builder()
+                    .id(university.getId())
+                    .name(university.getName())
+                    .build());
+        });
+        return universityDtoList;
     }
 }
