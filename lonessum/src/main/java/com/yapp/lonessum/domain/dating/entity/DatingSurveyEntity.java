@@ -24,7 +24,7 @@ public class DatingSurveyEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "datingSurvey")
     private UserEntity user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "datingSurvey")
     private DatingMatchingEntity datingMatching;
 
     @Enumerated(EnumType.STRING)

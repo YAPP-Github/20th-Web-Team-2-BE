@@ -21,6 +21,9 @@ public class MeetingSurveyEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "meetingSurvey")
     private UserEntity user;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "meetingSurvey")
+    private MeetingMatchingEntity meetingMatching;
+
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
 
