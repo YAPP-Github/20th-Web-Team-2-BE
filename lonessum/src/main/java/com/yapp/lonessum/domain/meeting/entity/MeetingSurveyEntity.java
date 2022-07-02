@@ -5,8 +5,6 @@ import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,14 +18,8 @@ public class MeetingSurveyEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "meetingSurvey")
     private UserEntity user;
-
-    @OneToMany(mappedBy = "surveyA")
-    private List<MeetingMatchingEntity> meetingMatchingEntityListA = new ArrayList<>();
-
-    @OneToMany(mappedBy = "surveyB")
-    private List<MeetingMatchingEntity> meetingMatchingEntityListB = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
@@ -51,21 +43,17 @@ public class MeetingSurveyEntity {
     @CollectionTable(name = "meeting_avoid_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> avoidUniversities;
 
-
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_universities", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Long> preferUniversities;
-
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_age", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Integer> preferAge;
 
-
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_height", joinColumns = @JoinColumn(name = "meeting_survey_id"))
     private List<Integer> preferHeight;
-
 
     @ElementCollection
     @CollectionTable(name = "meeting_prefer_departments", joinColumns = @JoinColumn(name = "meeting_survey_id"))
@@ -96,16 +84,12 @@ public class MeetingSurveyEntity {
 
     private String kakaoId;
 
-    private Boolean isMatched;
-
-    private Boolean isPaid;
+    @Enumerated(EnumType.STRING)
+    private MatchStatus matchStatus;
 
     private Boolean isRandom;
 
-    private LocalDateTime createdAt;
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-        user.getMeetingSurveyEntityList().add(this);
+    public void changeMatchStatus(MatchStatus matchStatus) {
+        this.matchStatus = matchStatus;
     }
 }

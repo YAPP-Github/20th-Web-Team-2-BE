@@ -28,13 +28,14 @@ public class UserService {
         if (user.isEmpty()) {
             userRepository.save(UserEntity.builder()
                     .kakaoServerId(kakaoServerId)
+                    .isAuthenticated(false)
                     .build());
         }
     }
 
     @Transactional(readOnly = true)
     public UserEntity getUserFromToken(String token) {
-        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo(token);
+        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token);
         long kakaoServerId = tokenInfo.getId();
         return userRepository.findByKakaoServerId(kakaoServerId).get();
     }

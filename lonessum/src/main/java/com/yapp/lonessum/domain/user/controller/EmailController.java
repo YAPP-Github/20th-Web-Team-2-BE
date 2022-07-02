@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/email")
 @RequiredArgsConstructor
@@ -17,17 +19,15 @@ public class EmailController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity sendEmail(@RequestHeader(value = "Authorization") String token, String email) {
+    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestHeader(value = "Authorization") String token, @RequestBody String email) {
         UserEntity user = userService.getUserFromToken(token);
-        emailService.sendEmail(user, email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(emailService.updateAndSendEmail(user, email));
     }
 
     @PutMapping
-    public ResponseEntity authenticateWithEmail(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<Boolean> authenticateWithEmail(@RequestHeader(value = "Authorization") String token,
                                                   @RequestBody AuthCodeRequest authCodeRequest) {
         UserEntity user = userService.getUserFromToken(token);
-        emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
 }

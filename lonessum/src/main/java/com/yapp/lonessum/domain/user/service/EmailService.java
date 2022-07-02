@@ -32,9 +32,8 @@ public class EmailService {
     private final EmailTokenRepository emailTokenRepository;
     private final UniversityRepository universityRepository;
 
-    @Async
     @Transactional
-    public void sendEmail(UserEntity user, String email) {
+    public LocalDateTime updateAndSendEmail(UserEntity user, String email) {
         // 유저 대학 이메일 정보 등록
         updateUniversityEmail(user, email);
 
@@ -48,12 +47,21 @@ public class EmailService {
         //유저의 emailToken 등록
         user.issueEmailToken(emailToken);
 
+        //이메일 전송
+        sendEmail(email, emailToken.getAuthCode());
+
+        return emailToken.getExpireDate();
+    }
+
+    @Async
+    @Transactional
+    public void sendEmail(String email, String authCode) {
         //이메일 메시지 생성
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(SERVICE_EMAIL);
         message.setTo(email);
         message.setSubject("외딴썸 이메일 인증코드입니다.");
-        message.setText("다음 인증코드를 입력해주세요.\n"+emailToken.getAuthCode());
+        message.setText("다음 인증코드를 입력해주세요.\n"+authCode);
 
         javaMailSender.send(message);
     }
@@ -65,17 +73,18 @@ public class EmailService {
 
     @Transactional
     public void updateUniversityEmail(UserEntity user, String email) {
-        if (isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             throw new RestApiException(UserErrorCode.INVALID_EMAIL);
         }
-        if (!universityService.isSupportedUniversity(email)) {
-            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
-        }
+        // 이메일 발송 테스트를 위해서 주석 처리
+//        if (!universityService.isSupportedUniversity(email)) {
+//            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
+//        }
         user.registerUniversityEmail(email);
     }
 
     @Transactional
-    public void authenticateWithEmail(UserEntity user, String authCode) {
+    public boolean authenticateWithEmail(UserEntity user, String authCode) {
         EmailTokenEntity emailToken = user.getEmailToken();
 
         String email = user.getUniversityEmail();
@@ -96,5 +105,6 @@ public class EmailService {
             // 잘못된 인증코드 -> 재입력 시도
             throw new RestApiException(UserErrorCode.INVALID_AUTHCODE);
         }
+        return user.getIsAuthenticated();
     }
 }
