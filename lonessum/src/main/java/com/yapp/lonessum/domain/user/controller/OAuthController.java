@@ -46,6 +46,9 @@ public class OAuthController {
     public ResponseEntity getUserAgeFromKakao(@RequestHeader(value = "Authorization") String token) {
         KakaoUserResponse userInfo = kakaoApiClient.getUserInfo("Bearer " + token);
         String age_range = userInfo.getKakao_account().getAge_range();
+        if (age_range == null) {
+            throw new RestApiException(UserErrorCode.NEED_AGE_AGREE);
+        }
         String[] age = age_range.split("~");
         if (Integer.parseInt(age[0]) < 20) {
             userService.checkAdult(token, false);
