@@ -33,6 +33,8 @@ public class UserEntity {
 
     private Boolean isAuthenticated;
 
+    private Boolean isAdult;
+
     @OneToOne(fetch = FetchType.LAZY)
     private MeetingSurveyEntity meetingSurvey;
 
@@ -50,6 +52,10 @@ public class UserEntity {
 
     public void issueEmailToken(EmailTokenEntity emailToken) {
         this.emailToken = emailToken;
+    }
+
+    public void changeIsAdult(Boolean isAdult) {
+        this.isAdult = isAdult;
     }
 
     public void changeMeetingSurvey(MeetingSurveyEntity meetingSurvey) {
