@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
