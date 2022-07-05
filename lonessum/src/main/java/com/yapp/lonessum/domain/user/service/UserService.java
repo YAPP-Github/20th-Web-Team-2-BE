@@ -3,6 +3,7 @@ package com.yapp.lonessum.domain.user.service;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenInfoResponse;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
+import com.yapp.lonessum.domain.user.dto.KakaoUserResponse;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
@@ -38,5 +39,11 @@ public class UserService {
         KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token);
         long kakaoServerId = tokenInfo.getId();
         return userRepository.findByKakaoServerId(kakaoServerId).get();
+    }
+
+    @Transactional
+    public void checkAdult(String token, Boolean isAdult) {
+        UserEntity user = getUserFromToken(token);
+        user.changeIsAdult(isAdult);
     }
 }

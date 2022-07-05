@@ -5,6 +5,8 @@ import com.yapp.lonessum.domain.user.client.KakaoAuthClient;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenRequest;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
 import com.yapp.lonessum.domain.user.service.UserService;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +35,25 @@ public class OAuthController {
         return KakaoTokenRequest.builder()
                 .grant_type("authorization_code")
                 .client_id("24608dc716988209e4f923e0a8f4c495")
-                .redirect_uri("http://49.50.175.112:8080/oauth/kakao")
+                .redirect_uri("http://localhost:3000/oauth/kakao")
                 .code(code)
                 .client_secret("MB1m7saXKcZdz6CdHFP8zde4Y3Zooh6g")
                 .build();
+    }
+
+    @GetMapping("/kakao/age")
+    public ResponseEntity getUserAgeFromKakao(@RequestHeader(value = "Authorization") String token) {
+        KakaoUserResponse userInfo = kakaoApiClient.getUserInfo("Bearer " + token);
+        String age_range = userInfo.getKakao_account().getAge_range();
+        if (age_range == null) {
+            throw new RestApiException(UserErrorCode.NEED_AGE_AGREE);
+        }
+        String[] age = age_range.split("~");
+        if (Integer.parseInt(age[0]) < 20) {
+            userService.checkAdult(token, false);
+            throw new RestApiException(UserErrorCode.AGE_TOO_YOUNG);
+        }
+        userService.checkAdult(token, true);
+        return ResponseEntity.ok().build();
     }
 }
