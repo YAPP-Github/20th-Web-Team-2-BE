@@ -20,4 +20,4 @@ fi
 JAR_NAME="lonessum.jar"
 echo "JAR_NAME = $JAR_NAME"
 
-nohup java -jar $REPOSITORY/$JAR_NAME 1>/dev/null 2>&1 &
+nohup /usr/lib/jvm/jdk-11/bin/java -jar $REPOSITORY/$JAR_NAME 1>/dev/null 2>&1 &

@@ -4,7 +4,6 @@ import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.client.KakaoAuthClient;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenRequest;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
-import com.yapp.lonessum.domain.user.dto.KakaoUserResponse;
 import com.yapp.lonessum.domain.user.service.UserService;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
@@ -12,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
@@ -35,10 +35,9 @@ public class OAuthController {
         return KakaoTokenRequest.builder()
                 .grant_type("authorization_code")
                 .client_id("24608dc716988209e4f923e0a8f4c495")
-                .redirect_uri("http://localhost:8080/oauth/kakao")
-//                .redirect_uri("http://localhost:3000/oauth/kakao")
+                .redirect_uri("http://localhost:3000/oauth/kakao")
                 .code(code)
-                .client_secret("{secret}")
+                .client_secret("MB1m7saXKcZdz6CdHFP8zde4Y3Zooh6g")
                 .build();
     }
 
