@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.meeting.service;
 
+import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
@@ -10,8 +11,6 @@ import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class MeetingMatchingService {
@@ -20,27 +19,38 @@ public class MeetingMatchingService {
     private final MeetingMatchingRepository meetingMatchingRepository;
 
     public Object getMatchResult(UserEntity user) {
-        Optional<MeetingSurveyEntity> meetingSurvey = meetingSurveyRepository.findByUser(user);
-        // 작성한 설문이 없을 때
-        if (meetingSurvey.isEmpty()) {
-            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
-        }
-        // 작성한 설문이 있을 때
-        else {
-            // 매칭 대기중일 떄
-            if (meetingSurvey.get().getMatchStatus() == MatchStatus.WAITING) {
-                throw new RestApiException(SurveyErrorCode.WAITING_FOR_MATCH);
-            }
-            // 매칭 성공했을 때
-            else if (meetingSurvey.get().getMatchStatus() == MatchStatus.MATCHED) {
-                // 내가 결제 안했을 때
-                
-                // 상대가 결제 안했을 때
-                
-                // 모두 결제 했을 때
+        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user).orElseThrow(() -> {
+            // 작성한 설문이 없을 때
+            throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
+        });
 
-// 여자는 결제 안해도 된다는 요구사항
+        // 작성한 설문이 있을 때
+        // 매칭 참여 안했을 때
+        if (meetingSurvey.getMatchStatus() == MatchStatus.DONE) {
+            throw new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY);
+        }
+        // 매칭 대기중일 떄
+        else if (meetingSurvey.getMatchStatus() == MatchStatus.WAITING) {
+            throw new RestApiException(SurveyErrorCode.WAITING_FOR_MATCH);
+        }
+        // 매칭 성공했을 때
+        else if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
+            // 내가 남자일 때
+            if (meetingSurvey.getGender() == Gender.MALE) {
+                // 내가 결제 안했을 때
+                if (meetingSurvey.getPayment() == null) {
+                    throw new RestApiException(SurveyErrorCode.PAY_FOR_MATCH);
+                }
             }
+            // 내가 여자일 때
+            else {
+                // 상대가 결제 안했을 때
+                if (meetingSurvey.getMeetingMatching().getMaleSurvey().getPayment() == null) {
+                    throw new RestApiException(SurveyErrorCode.WAITING_FOR_PAY);
+                }
+            }
+            // 모두 결제했을 때
+
         }
         return null;
     }

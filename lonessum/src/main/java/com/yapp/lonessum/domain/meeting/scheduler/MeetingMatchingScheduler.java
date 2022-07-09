@@ -33,7 +33,7 @@ public class MeetingMatchingScheduler {
     @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
         List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
         for (MeetingSurveyEntity ms : meetingSurveyList) {
@@ -47,8 +47,8 @@ public class MeetingMatchingScheduler {
         List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
         for (MatchingInfo mi : result) {
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity();
-            String emailA = meetingMatching.getSurveyA().getUser().getUniversityEmail();
-            String emailB = meetingMatching.getSurveyB().getUser().getUniversityEmail();
+            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
+            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
         }

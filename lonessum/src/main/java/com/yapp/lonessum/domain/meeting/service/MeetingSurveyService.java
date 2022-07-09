@@ -50,7 +50,7 @@ public class MeetingSurveyService {
     @Transactional
     public Long rematchSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
         return meetingSurvey.getId();
     }
@@ -58,14 +58,14 @@ public class MeetingSurveyService {
     @Transactional(readOnly = true)
     public MeetingSurveyDto readSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         return meetingSurveyMapper.toDto(meetingSurvey);
     }
 
     @Transactional
     public Long updateSurvey(UserEntity user, MeetingSurveyDto meetingSurveyDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
         return meetingSurvey.getId();
     }
@@ -73,7 +73,7 @@ public class MeetingSurveyService {
     @Transactional
     public Long deleteSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         meetingSurveyRepository.delete(meetingSurvey);
         return meetingSurvey.getId();
     }

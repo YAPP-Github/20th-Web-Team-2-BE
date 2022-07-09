@@ -30,7 +30,7 @@ public class DatingMatchingScheduler {
     @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
         List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
         List<DatingSurveyDto> datingSurveyDtoList = new ArrayList<>();
         for (DatingSurveyEntity ds : datingSurveyList) {

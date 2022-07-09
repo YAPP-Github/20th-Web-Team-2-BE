@@ -19,10 +19,10 @@ public class MeetingMatchingEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private MeetingSurveyEntity surveyA;
+    private MeetingSurveyEntity maleSurvey;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private MeetingSurveyEntity surveyB;
+    private MeetingSurveyEntity femaleSurvey;
 
     private LocalDateTime matchedAt;
 }
