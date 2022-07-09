@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.dating.entity;
 
 import com.yapp.lonessum.domain.constant.*;
+import com.yapp.lonessum.domain.payment.entity.Payment;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -108,6 +109,9 @@ public class DatingSurveyEntity {
 
     @Enumerated(EnumType.STRING)
     private MatchStatus matchStatus;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Payment payment;
 
     private Boolean isRandom;
 

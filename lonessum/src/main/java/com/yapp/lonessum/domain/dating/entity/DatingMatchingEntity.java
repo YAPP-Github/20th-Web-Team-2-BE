@@ -22,9 +22,5 @@ public class DatingMatchingEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private DatingMatchingEntity surveyB;
 
-    private Boolean isPaidA;
-
-    private Boolean isPaidB;
-
     private LocalDateTime matchedAt;
 }
