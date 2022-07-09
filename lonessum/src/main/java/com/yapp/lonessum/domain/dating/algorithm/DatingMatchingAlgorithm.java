@@ -1,11 +1,9 @@
 package com.yapp.lonessum.domain.dating.algorithm;
 
 import com.yapp.lonessum.common.algorithm.MatchingAlgorithm;
-import com.yapp.lonessum.domain.constant.Body;
-import com.yapp.lonessum.domain.constant.Characteristic;
-import com.yapp.lonessum.domain.constant.DateCount;
-import com.yapp.lonessum.domain.constant.Department;
+import com.yapp.lonessum.domain.constant.*;
 import com.yapp.lonessum.domain.dating.dto.DatingSurveyDto;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +17,10 @@ public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> 
         DatingSurveyDto datingSurvey1 = (DatingSurveyDto)first;
         DatingSurveyDto datingSurvey2 = (DatingSurveyDto)second;
 
+        if(!isMatchingTarget(datingSurvey1, datingSurvey2)) {
+            return Integer.MIN_VALUE;
+        }
+
         return calAvoidUniversityScore(datingSurvey1, datingSurvey2) +
                 calPreferAgeScore(datingSurvey1, datingSurvey2) +
                 calPreferHeightScore(datingSurvey1, datingSurvey2) +
@@ -28,6 +30,39 @@ public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> 
                 calPreferGameScore(datingSurvey1, datingSurvey2) +
                 calPreferDateCountScore(datingSurvey1, datingSurvey2) +
                 calPreferCharacteristicScore(datingSurvey1, datingSurvey2);
+    }
+
+
+    //필수 매칭 조건 (남,녀 and 지역)
+    private boolean isMatchingTarget(DatingSurveyDto group1, DatingSurveyDto group2) {
+        //남,녀 체크
+        if(group1.getGender() == group2.getGender()) {
+            return false;
+        }
+
+        if(group1.getIsAbroad() != group2.getIsAbroad()) {
+            return false;
+        }
+
+        //해외인 상태
+        if(group1.getIsAbroad()) {
+            List<Long> group1AbroadAreas = group1.getAbroadAreas();
+            List<Long> group2AbroadAreas = group2.getAbroadAreas();
+
+            if(findSameInEachRange(group1AbroadAreas, group2AbroadAreas)) {
+                return true;
+            }
+            return false;
+        }
+
+        //국내인 상태
+        List<DomesticArea> group1DomesticAreas = group1.getDomesticAreas();
+        List<DomesticArea> group2DomesticAreas = group2.getDomesticAreas();
+
+        if(findSameInEachRange(group1DomesticAreas, group2DomesticAreas)) {
+            return true;
+        }
+        return false;
     }
 
     //기피 학교 점수 계산
