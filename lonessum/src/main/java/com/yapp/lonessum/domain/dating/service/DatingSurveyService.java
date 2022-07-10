@@ -29,6 +29,10 @@ public class DatingSurveyService {
             throw new RestApiException(UserErrorCode.NEED_EMAIL_AUTH);
         }
 
+        if (user.getIsAdult() == null || user.getIsAdult() == false) {
+            throw new RestApiException(UserErrorCode.AGE_TOO_YOUNG);
+        }
+
         Optional<DatingSurveyEntity> datingSurvey = datingSurveyRepository.findByUser(user);
         // 설문을 작성한 적 있으면 -> 기존 설문 수정
         if (datingSurvey.isPresent()) {
