@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.meeting.entity;
 
 import com.yapp.lonessum.domain.constant.*;
+import com.yapp.lonessum.domain.payment.entity.Payment;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.*;
 
@@ -20,6 +21,9 @@ public class MeetingSurveyEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "meetingSurvey")
     private UserEntity user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private MeetingMatchingEntity meetingMatching;
 
     @Enumerated(EnumType.STRING)
     private TypeOfMeeting typeOfMeeting;
@@ -86,6 +90,9 @@ public class MeetingSurveyEntity {
 
     @Enumerated(EnumType.STRING)
     private MatchStatus matchStatus;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Payment payment;
 
     private Boolean isRandom;
 

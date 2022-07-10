@@ -2,11 +2,13 @@ package com.yapp.lonessum.domain.meeting.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,10 +23,6 @@ public class MeetingMatchingEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     private MeetingSurveyEntity surveyB;
-
-    private Boolean isPaidA;
-
-    private Boolean isPaidB;
 
     private LocalDateTime matchedAt;
 }

@@ -48,20 +48,34 @@ public class EmailService {
         user.issueEmailToken(emailToken);
 
         //이메일 전송
-        sendEmail(email, emailToken.getAuthCode());
+        sendAuthCode(email, emailToken.getAuthCode());
 
         return emailToken.getExpireDate();
     }
 
     @Async
     @Transactional
-    public void sendEmail(String email, String authCode) {
+    public void sendAuthCode(String email, String authCode) {
         //이메일 메시지 생성
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(SERVICE_EMAIL);
         message.setTo(email);
         message.setSubject("외딴썸 이메일 인증코드입니다.");
         message.setText("다음 인증코드를 입력해주세요.\n"+authCode);
+
+        javaMailSender.send(message);
+    }
+
+    @Async
+    @Transactional
+    public void sendMatchResult(String email) {
+        //이메일 메시지 생성
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(SERVICE_EMAIL);
+        message.setTo(email);
+        message.setSubject("[외딴썸] 매칭이 성사되었습니다.");
+        message.setText("지금 매칭 결과를 확인해보세요!.\n");
+        message.setText("https://www.lonessum.com\n");
 
         javaMailSender.send(message);
     }
