@@ -4,11 +4,9 @@ import com.yapp.lonessum.domain.user.dto.UniversityDto;
 import com.yapp.lonessum.domain.user.service.UniversityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -21,5 +19,12 @@ public class UniversityController {
     @GetMapping
     public ResponseEntity<List<UniversityDto>> getAllUniversities() {
         return ResponseEntity.ok(universityService.getAllUniversities());
+    }
+
+    //TODO : 이후에 제거
+    //대학교 정보 등록용 임시 api
+    @PostMapping()
+    public void registerUniversityInfo() throws IOException {
+        universityService.registerUniInfo();
     }
 }
