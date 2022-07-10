@@ -24,6 +24,10 @@ public abstract class MatchingAlgorithm<T> {
             T secondSurvey = surveyList.get(secondIdx);
 
             int score = calAllCasesScore(firstSurvey, secondSurvey);
+            if(score == Integer.MIN_VALUE) {
+                continue;
+            }
+
             MatchingInfo<T> matchingInfo = new MatchingInfo(score, firstSurvey, secondSurvey);
             result.add(matchingInfo);
         }
