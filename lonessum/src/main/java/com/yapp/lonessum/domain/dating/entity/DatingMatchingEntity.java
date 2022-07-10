@@ -17,10 +17,10 @@ public class DatingMatchingEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private DatingMatchingEntity surveyA;
+    private DatingSurveyEntity maleSurvey;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private DatingMatchingEntity surveyB;
+    private DatingSurveyEntity femaleSurvey;
 
     private LocalDateTime matchedAt;
 }

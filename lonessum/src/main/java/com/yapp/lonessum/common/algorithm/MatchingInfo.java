@@ -1,6 +1,8 @@
 package com.yapp.lonessum.common.algorithm;
 
+import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
+import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import lombok.AllArgsConstructor;
@@ -23,18 +25,40 @@ public class MatchingInfo<T> implements Comparable<MatchingInfo> {
     }
 
     public MeetingMatchingEntity toMeetingMatchingEntity() {
-        return MeetingMatchingEntity.builder()
-                .surveyA((MeetingSurveyEntity) this.first)
-                .surveyB((MeetingSurveyEntity) this.second)
-                .matchedAt(LocalDateTime.now())
-                .build();
+        MeetingSurveyEntity first = (MeetingSurveyEntity) this.first;
+        MeetingSurveyEntity second = (MeetingSurveyEntity) this.second;
+        if (first.getGender() == Gender.MALE) {
+            return MeetingMatchingEntity.builder()
+                    .maleSurvey(first)
+                    .femaleSurvey(second)
+                    .matchedAt(LocalDateTime.now())
+                    .build();
+        }
+        else {
+            return MeetingMatchingEntity.builder()
+                    .maleSurvey(second)
+                    .femaleSurvey(first)
+                    .matchedAt(LocalDateTime.now())
+                    .build();
+        }
     }
 
     public DatingMatchingEntity toDatingMatchingEntity() {
-        return DatingMatchingEntity.builder()
-                .surveyA((DatingMatchingEntity) this.first)
-                .surveyB((DatingMatchingEntity) this.second)
-                .matchedAt(LocalDateTime.now())
-                .build();
+        DatingSurveyEntity first = (DatingSurveyEntity) this.first;
+        DatingSurveyEntity second = (DatingSurveyEntity) this.second;
+        if (first.getGender() == Gender.MALE) {
+            return DatingMatchingEntity.builder()
+                    .maleSurvey(first)
+                    .femaleSurvey(second)
+                    .matchedAt(LocalDateTime.now())
+                    .build();
+        }
+        else {
+            return DatingMatchingEntity.builder()
+                    .maleSurvey(second)
+                    .femaleSurvey(first)
+                    .matchedAt(LocalDateTime.now())
+                    .build();
+        }
     }
 }
