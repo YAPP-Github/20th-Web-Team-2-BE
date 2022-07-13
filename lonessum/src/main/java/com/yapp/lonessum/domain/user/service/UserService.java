@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.user.service;
 
+import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UserService {
 
     private final KakaoApiClient kakaoApiClient;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     @Transactional
@@ -55,6 +57,13 @@ public class UserService {
 
     @Transactional
     public LoginResponse testLogin(LoginRequest loginRequest) {
-        return null;
+        UserEntity userEntity = userRepository.findByUserName(loginRequest.getUserName()).orElseThrow(() -> new RestApiException(UserErrorCode.INACTIVE_USER));
+        if (userEntity.getPassword().equals(loginRequest.getPassword())) {
+            String accessToken = jwtService.createAccessToken(userEntity.getId());
+            return new LoginResponse(accessToken);
+        }
+        else {
+            throw new RestApiException(UserErrorCode.WRONG_PASSWORD);
+        }
     }
 }

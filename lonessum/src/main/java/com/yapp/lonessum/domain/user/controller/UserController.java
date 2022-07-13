@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -25,7 +24,7 @@ public class UserController {
         return ResponseEntity.ok(userService.testJoin(joinRequest));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> testLogin(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.testLogin(loginRequest));
     }
