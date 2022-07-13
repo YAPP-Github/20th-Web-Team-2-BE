@@ -47,8 +47,10 @@ public class MeetingMatchingScheduler {
         List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
         for (MatchingInfo mi : result) {
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity();
+            
             String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
+            
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
         }
