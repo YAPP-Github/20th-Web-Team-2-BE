@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.meeting.service;
 
+import com.yapp.lonessum.domain.constant.DomesticArea;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.dto.MatchResultDto;
@@ -8,12 +9,14 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
+import com.yapp.lonessum.domain.user.service.AbroadAreaService;
 import com.yapp.lonessum.domain.user.service.UniversityService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,8 +24,8 @@ import java.util.List;
 public class MeetingMatchingService {
 
     private final UniversityService universityService;
+    private final AbroadAreaService abroadAreaService;
     private final MeetingSurveyRepository meetingSurveyRepository;
-    private final MeetingMatchingRepository meetingMatchingRepository;
 
     public MatchResultDto getMatchResult(UserEntity user) {
 
@@ -66,7 +69,17 @@ public class MeetingMatchingService {
             List<String> universityNames = universityService.getUniversityNameFromId(partnerSurvey.getOurUniversities());
             partnerSurveyDto.setUniversities(universityNames);
 
-//            partnerSurveyDto.setAreas();
+            List<String> areaNames = new ArrayList<>();
+            if (meetingSurvey.getIsAbroad()) {
+                areaNames = abroadAreaService.getAreaNameFromId(partnerSurvey.getAbroadAreas());
+            }
+            else {
+                List<DomesticArea> domesticAreas = partnerSurvey.getDomesticAreas();
+                for (DomesticArea da : domesticAreas) {
+                    areaNames.add(da.toString());
+                }
+            }
+            partnerSurveyDto.setAreas(areaNames);
             return new MatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), partnerSurveyDto);
         }
         // 매칭 실패했을 떄
