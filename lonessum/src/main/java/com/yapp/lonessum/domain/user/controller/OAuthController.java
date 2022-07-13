@@ -4,6 +4,7 @@ import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.client.KakaoAuthClient;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenRequest;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenResponse;
+import com.yapp.lonessum.domain.user.dto.KakaoUserResponse;
 import com.yapp.lonessum.domain.user.service.UserService;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
