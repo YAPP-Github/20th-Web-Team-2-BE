@@ -52,6 +52,8 @@ public class UserService {
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
+                .isAdult(true)
+                .isAuthenticated(true)
                 .build()).getId();
     }
 
