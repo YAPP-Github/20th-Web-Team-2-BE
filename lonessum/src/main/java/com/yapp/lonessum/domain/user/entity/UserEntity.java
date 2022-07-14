@@ -19,6 +19,10 @@ public class UserEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String userName;
+
+    private String password;
+
     private Long kakaoServerId;
   
     @ManyToOne(fetch = FetchType.LAZY)
