@@ -33,51 +33,60 @@ public class MeetingSurveyService {
             throw new RestApiException(UserErrorCode.AGE_TOO_YOUNG);
         }
 
-        Optional<MeetingSurveyEntity> meetingSurvey = meetingSurveyRepository.findByUser(user);
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
         // 설문을 작성한 적 있으면 -> 기존 설문 수정
-        if (meetingSurvey.isPresent()) {
-            meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey.get());
+        if (meetingSurvey != null) {
+            meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
             // 매칭 대기 상태로 등록
-            meetingSurvey.get().changeMatchStatus(MatchStatus.WAITING);
-            return meetingSurvey.get().getId();
+            meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
+            return meetingSurvey.getId();
         }
         // 설문을 작성한 적 없으면 -> 새로운 설문 추가
         else {
-            MeetingSurveyEntity newMeetingSurvey = meetingSurveyMapper.toEntity(meetingSurveyDto);
+            MeetingSurveyEntity newMeetingSurvey = meetingSurveyRepository.save(meetingSurveyMapper.toEntity(meetingSurveyDto));
             user.changeMeetingSurvey(newMeetingSurvey);
             // 매칭 대기 상태로 등록
             newMeetingSurvey.changeMatchStatus(MatchStatus.WAITING);
-            return meetingSurveyRepository.save(newMeetingSurvey).getId();
+            return newMeetingSurvey.getId();
         }
     }
 
     @Transactional
     public Long rematchSurvey(UserEntity user) {
-        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
+        if (meetingSurvey == null) {
+            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+        }
         meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
         return meetingSurvey.getId();
     }
 
     @Transactional(readOnly = true)
     public MeetingSurveyDto readSurvey(UserEntity user) {
-        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
+        if (meetingSurvey == null) {
+            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+        }
         return meetingSurveyMapper.toDto(meetingSurvey);
     }
 
     @Transactional
     public Long updateSurvey(UserEntity user, MeetingSurveyDto meetingSurveyDto) {
-        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
+        if (meetingSurvey == null) {
+            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+        }
+        meetingSurveyDto.setId(meetingSurvey.getId());
         meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
         return meetingSurvey.getId();
     }
 
     @Transactional
     public Long deleteSurvey(UserEntity user) {
-        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY));
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
+        if (meetingSurvey == null) {
+            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+        }
         meetingSurveyRepository.delete(meetingSurvey);
         return meetingSurvey.getId();
     }
