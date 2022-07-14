@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.meeting.controller;
 
+import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.service.MeetingSurveyService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/meeting/survey")
 public class MeetingSurveyController {
 
+    private final JwtService jwtService;
     private final UserService userService;
     private final MeetingSurveyService meetingSurveyService;
 
@@ -26,7 +28,8 @@ public class MeetingSurveyController {
     @PostMapping
     public ResponseEntity<Long> createSurvey(@RequestHeader(value = "Authorization") String token,
                                              @RequestBody MeetingSurveyDto meetingSurveyDto) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.createSurvey(user, meetingSurveyDto));
     }
 
@@ -35,26 +38,30 @@ public class MeetingSurveyController {
      * */
     @PostMapping("/rematch")
     public ResponseEntity<Long> rematchSurvey(@RequestHeader(value = "Authorization") String token) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.rematchSurvey(user));
     }
 
     @GetMapping
     public ResponseEntity<MeetingSurveyDto> readSurvey(@RequestHeader(value = "Authorization") String token) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.readSurvey(user));
     }
 
     @PutMapping
     public ResponseEntity<Long> updateSurvey(@RequestHeader(value = "Authorization") String token,
                                              @RequestBody MeetingSurveyDto meetingSurveyDto) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.updateSurvey(user, meetingSurveyDto));
     }
 
     @DeleteMapping
     public ResponseEntity<Long> deleteSurvey(@RequestHeader(value = "Authorization") String token) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.deleteSurvey(user));
     }
 }
