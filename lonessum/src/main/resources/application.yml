@@ -16,6 +16,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  h2:
+    console:
+      enabled: true
   mail:
     host: smtp.daum.net
     port: 465
