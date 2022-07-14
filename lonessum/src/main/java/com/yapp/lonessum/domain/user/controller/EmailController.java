@@ -1,6 +1,8 @@
 package com.yapp.lonessum.domain.user.controller;
 
+import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
+import com.yapp.lonessum.domain.user.dto.EmailRequest;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.EmailService;
 import com.yapp.lonessum.domain.user.service.UserService;
@@ -19,17 +21,21 @@ public class EmailController {
 
     private final EmailService emailService;
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestHeader(value = "Authorization") String token, @RequestBody String email) {
-        UserEntity user = userService.getUserFromToken(token);
-        return ResponseEntity.ok(emailService.updateAndSendEmail(user, email));
+    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestHeader(value = "Authorization") String token, @RequestBody EmailRequest emailRequest) {
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
+        System.out.println("user.getUserName() = " + user.getUserName());
+        return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
 
     @PutMapping
     public ResponseEntity<Boolean> authenticateWithEmail(@RequestHeader(value = "Authorization") String token,
                                                   @RequestBody AuthCodeRequest authCodeRequest) {
-        UserEntity user = userService.getUserFromToken(token);
+//        UserEntity user = userService.getUserFromToken(token);
+        UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
 }
