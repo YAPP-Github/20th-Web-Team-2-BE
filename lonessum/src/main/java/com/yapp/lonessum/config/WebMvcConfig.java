@@ -17,7 +17,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
             "/login",
             "/error",
             "/swagger-ui",
-            "/h2-console"
+            "/h2-console",
+            "/health"
     };
 
     @Override
