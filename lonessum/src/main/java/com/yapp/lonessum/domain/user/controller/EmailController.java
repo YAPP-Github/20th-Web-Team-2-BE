@@ -27,7 +27,6 @@ public class EmailController {
     public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestHeader(value = "Authorization") String token, @RequestBody EmailRequest emailRequest) {
 //        UserEntity user = userService.getUserFromToken(token);
         UserEntity user = jwtService.getUserFromJwt();
-        System.out.println("user.getUserName() = " + user.getUserName());
         return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
 
