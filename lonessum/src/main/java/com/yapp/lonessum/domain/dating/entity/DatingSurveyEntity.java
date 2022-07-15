@@ -118,4 +118,8 @@ public class DatingSurveyEntity {
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;
     }
+
+    public void changeDatingMatching(DatingMatchingEntity datingMatching) {
+        this.datingMatching = datingMatching;
+    }
 }

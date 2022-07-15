@@ -3,10 +3,13 @@ package com.yapp.lonessum.common.algorithm;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
+import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class MatchingInfo<T> implements Comparable<MatchingInfo> {
     private int score;
     private T first;
@@ -24,9 +28,7 @@ public class MatchingInfo<T> implements Comparable<MatchingInfo> {
         return o.getScore() - score;
     }
 
-    public MeetingMatchingEntity toMeetingMatchingEntity() {
-        MeetingSurveyEntity first = (MeetingSurveyEntity) this.first;
-        MeetingSurveyEntity second = (MeetingSurveyEntity) this.second;
+    public MeetingMatchingEntity toMeetingMatchingEntity(MeetingSurveyEntity first, MeetingSurveyEntity second) {
         if (first.getGender() == Gender.MALE) {
             return MeetingMatchingEntity.builder()
                     .maleSurvey(first)
@@ -43,9 +45,7 @@ public class MatchingInfo<T> implements Comparable<MatchingInfo> {
         }
     }
 
-    public DatingMatchingEntity toDatingMatchingEntity() {
-        DatingSurveyEntity first = (DatingSurveyEntity) this.first;
-        DatingSurveyEntity second = (DatingSurveyEntity) this.second;
+    public DatingMatchingEntity toDatingMatchingEntity(DatingSurveyEntity first, DatingSurveyEntity second) {
         if (first.getGender() == Gender.MALE) {
             return DatingMatchingEntity.builder()
                     .maleSurvey(first)

@@ -101,6 +101,10 @@ public class MeetingSurveyEntity {
         this.matchStatus = matchStatus;
     }
 
+    public void changeMeetingMatching(MeetingMatchingEntity meetingMatching) {
+        this.meetingMatching = meetingMatching;
+    }
+
     public PartnerSurveyDto toPartnerSurveyDto() {
         return PartnerSurveyDto.builder()
                 .averageAge(this.averageAge)
