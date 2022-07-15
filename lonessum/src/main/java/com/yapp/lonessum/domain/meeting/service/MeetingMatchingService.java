@@ -1,10 +1,14 @@
 package com.yapp.lonessum.domain.meeting.service;
 
+import com.yapp.lonessum.common.algorithm.MatchingInfo;
 import com.yapp.lonessum.domain.constant.DomesticArea;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
+import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MatchResultDto;
+import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.dto.PartnerSurveyDto;
+import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
@@ -13,11 +17,15 @@ import com.yapp.lonessum.domain.user.service.AbroadAreaService;
 import com.yapp.lonessum.domain.user.service.UniversityService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
+import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,14 +35,18 @@ public class MeetingMatchingService {
     private final AbroadAreaService abroadAreaService;
     private final MeetingSurveyRepository meetingSurveyRepository;
 
+    private final MeetingSurveyMapper meetingSurveyMapper;
+    private final MeetingMatchingRepository meetingMatchingRepository;
+
     public MatchResultDto getMatchResult(UserEntity user) {
 
+        MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
         MeetingSurveyEntity partnerSurvey;
 
-        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByUser(user).orElseThrow(() -> {
+        if (meetingSurvey == null) {
             // 작성한 설문이 없을 때
-            throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
-        });
+            return new MatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null);
+        }
 
         // 작성한 설문이 있을 때
         // 매칭 참여 안했을 때 -> 가장 최근 매칭 결과
@@ -86,5 +98,45 @@ public class MeetingMatchingService {
         else {
             return new MatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null);
         }
+    }
+
+    @Transactional
+    public List<MeetingMatchingEntity> testMatch() {
+        List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
+
+        Map<Long, MeetingSurveyEntity> meetingSurveyMap = new HashMap<>();
+        for (MeetingSurveyEntity ms : meetingSurveyList) {
+            meetingSurveyMap.put(ms.getId(), ms);
+        }
+
+        List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
+        for (MeetingSurveyEntity ms : meetingSurveyList) {
+            ms.changeMatchStatus(MatchStatus.MATCHED);
+            MeetingSurveyDto meetingSurveyDto = meetingSurveyMapper.toDto(ms);
+            meetingSurveyDto.setId(ms.getId());
+            meetingSurveyDtoList.add(meetingSurveyDto);
+        }
+
+        MeetingMatchingAlgorithm meetingMatchingAlgorithm = new MeetingMatchingAlgorithm();
+        List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
+        for (MatchingInfo mi : result) {
+            MeetingSurveyDto firstDto = (MeetingSurveyDto) mi.getFirst();
+            MeetingSurveyDto secondDto = (MeetingSurveyDto) mi.getSecond();
+
+            MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
+            MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
+
+            MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
+
+            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
+            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
+
+//            emailService.sendMatchResult(emailA);
+//            emailService.sendMatchResult(emailB);
+
+            meetingMatchingRepository.save(meetingMatching);
+        }
+        return meetingMatchingRepository.findAll();
     }
 }

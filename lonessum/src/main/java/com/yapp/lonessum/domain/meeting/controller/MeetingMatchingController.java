@@ -2,15 +2,15 @@ package com.yapp.lonessum.domain.meeting.controller;
 
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.meeting.dto.MatchResultDto;
+import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.service.MeetingMatchingService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +26,10 @@ public class MeetingMatchingController {
 //        UserEntity user = userService.getUserFromToken(token);
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingmatchingService.getMatchResult(user));
+    }
+
+    @PostMapping
+    public ResponseEntity<List<MeetingMatchingEntity>> testMatch(@RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok(meetingmatchingService.testMatch());
     }
 }
