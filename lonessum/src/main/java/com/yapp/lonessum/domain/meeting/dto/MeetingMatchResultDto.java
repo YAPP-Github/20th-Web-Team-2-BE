@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MatchResultDto {
+public class MeetingMatchResultDto {
     private int code;
     private String message;
-    private PartnerSurveyDto partnerSurvey;
+    private MeetingPartnerSurveyDto partnerSurvey;
 }

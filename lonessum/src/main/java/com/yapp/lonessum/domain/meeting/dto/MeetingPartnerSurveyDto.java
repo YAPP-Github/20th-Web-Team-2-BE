@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class PartnerSurveyDto {
+public class MeetingPartnerSurveyDto {
     private int averageAge;
     private int averageHeight;
     private List<String> universities;

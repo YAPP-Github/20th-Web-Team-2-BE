@@ -5,9 +5,9 @@ import com.yapp.lonessum.domain.constant.DomesticArea;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
-import com.yapp.lonessum.domain.meeting.dto.MatchResultDto;
+import com.yapp.lonessum.domain.meeting.dto.MeetingMatchResultDto;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
-import com.yapp.lonessum.domain.meeting.dto.PartnerSurveyDto;
+import com.yapp.lonessum.domain.meeting.dto.MeetingPartnerSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
@@ -38,24 +38,24 @@ public class MeetingMatchingService {
     private final MeetingSurveyMapper meetingSurveyMapper;
     private final MeetingMatchingRepository meetingMatchingRepository;
 
-    public MatchResultDto getMatchResult(UserEntity user) {
+    public MeetingMatchResultDto getMatchResult(UserEntity user) {
 
         MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
         MeetingSurveyEntity partnerSurvey;
 
         if (meetingSurvey == null) {
             // 작성한 설문이 없을 때
-            return new MatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null);
+            return new MeetingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null);
         }
 
         // 작성한 설문이 있을 때
         // 매칭 참여 안했을 때 -> 가장 최근 매칭 결과
         if (meetingSurvey.getMatchStatus() == MatchStatus.DONE) {
-            return new MatchResultDto(7001, SurveyErrorCode.NO_WAITING_SURVEY.getMessage(), null);
+            return new MeetingMatchResultDto(7001, SurveyErrorCode.NO_WAITING_SURVEY.getMessage(), null);
         }
         // 매칭 대기중일 떄
         else if (meetingSurvey.getMatchStatus() == MatchStatus.WAITING) {
-            return new MatchResultDto(7002, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null);
+            return new MeetingMatchResultDto(7002, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null);
         }
         // 매칭 성공했을 때
         else if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
@@ -64,22 +64,22 @@ public class MeetingMatchingService {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
                 if (meetingSurvey.getPayment() == null) {
-                    return new MatchResultDto(7003, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null);
+                    return new MeetingMatchResultDto(7003, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null);
                 }
             }
             // 내가 여자일 때
             else {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
-                if (meetingSurvey.getMeetingMatching().getMaleSurvey().getPayment() == null) {
-                    return new MatchResultDto(7004, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null);
+                if (partnerSurvey.getPayment() == null) {
+                    return new MeetingMatchResultDto(7004, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null);
                 }
             }
             // 모두 결제했을 때 -> 매칭 상대 정보
-            PartnerSurveyDto partnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
+            MeetingPartnerSurveyDto meetingPartnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
 
             List<String> universityNames = universityService.getUniversityNameFromId(partnerSurvey.getOurUniversities());
-            partnerSurveyDto.setUniversities(universityNames);
+            meetingPartnerSurveyDto.setUniversities(universityNames);
 
             List<String> areaNames = new ArrayList<>();
             if (meetingSurvey.getIsAbroad()) {
@@ -91,12 +91,12 @@ public class MeetingMatchingService {
                     areaNames.add(da.toString());
                 }
             }
-            partnerSurveyDto.setAreas(areaNames);
-            return new MatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), partnerSurveyDto);
+            meetingPartnerSurveyDto.setAreas(areaNames);
+            return new MeetingMatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), meetingPartnerSurveyDto);
         }
         // 매칭 실패했을 떄
         else {
-            return new MatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null);
+            return new MeetingMatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null);
         }
     }
 
@@ -128,6 +128,8 @@ public class MeetingMatchingService {
             MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
 
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
+            firstEntity.changeMeetingMatching(meetingMatching);
+            secondEntity.changeMeetingMatching(meetingMatching);
 
             String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
