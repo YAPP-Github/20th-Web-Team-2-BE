@@ -35,7 +35,7 @@ public class DatingSurveyEntity {
 
     private Integer age;
 
-    // 내 학교 정보 알아야함
+    private Long myUniversity;
     
     @Enumerated(EnumType.STRING)
     private Department myDepartment;
@@ -116,6 +116,10 @@ public class DatingSurveyEntity {
     private Payment payment;
 
     private Boolean isRandom;
+
+    public void changeMyUniversity(Long myUniversity) {
+        this.myUniversity = myUniversity;
+    }
 
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;
