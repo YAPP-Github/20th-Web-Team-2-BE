@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +35,12 @@ public class MeetingMatchingScheduler {
     @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.ZERO_SURVEY));
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
+
+        Map<Long, MeetingSurveyEntity> meetingSurveyMap = new HashMap<>();
+        for (MeetingSurveyEntity ms : meetingSurveyList) {
+            meetingSurveyMap.put(ms.getId(), ms);
+        }
 
         List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
         for (MeetingSurveyEntity ms : meetingSurveyList) {
@@ -46,12 +53,23 @@ public class MeetingMatchingScheduler {
         MeetingMatchingAlgorithm meetingMatchingAlgorithm = new MeetingMatchingAlgorithm();
         List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
         for (MatchingInfo mi : result) {
-            MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity();
-            String emailA = meetingMatching.getSurveyA().getUser().getUniversityEmail();
-            String emailB = meetingMatching.getSurveyB().getUser().getUniversityEmail();
+            MeetingSurveyDto firstDto = (MeetingSurveyDto) mi.getFirst();
+            MeetingSurveyDto secondDto = (MeetingSurveyDto) mi.getSecond();
+
+            MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
+            MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
+
+            MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
+            firstEntity.changeMeetingMatching(meetingMatching);
+            secondEntity.changeMeetingMatching(meetingMatching);
+
+            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
+            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
+
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
+
+            meetingMatchingRepository.save(meetingMatching);
         }
-        result.forEach(matchingInfo -> meetingMatchingRepository.save(matchingInfo.toMeetingMatchingEntity()));
     }
 }

@@ -3,6 +3,8 @@ package com.yapp.lonessum.domain.user.service;
 import com.yapp.lonessum.domain.user.dto.UniversityDto;
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.repository.UniversityRepository;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -69,5 +71,14 @@ public class UniversityService {
                     .build());
         });
         return universityDtoList;
+    }
+
+    public List<String> getUniversityNameFromId(List<Long> universityIdList) {
+        List<String> universityNames = new ArrayList<>();
+        for (Long universityId : universityIdList) {
+            UniversityEntity universityEntity = universityRepository.findById(universityId).orElseThrow(() -> new RestApiException(UserErrorCode.NO_SUCH_UNIVERSITY));
+            universityNames.add(universityEntity.getName());
+        }
+        return universityNames;
     }
 }

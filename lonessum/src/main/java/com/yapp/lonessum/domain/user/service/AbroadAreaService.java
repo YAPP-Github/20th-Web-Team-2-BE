@@ -2,7 +2,10 @@ package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.domain.user.dto.AbroadAreaDto;
 import com.yapp.lonessum.domain.user.entity.AbroadAreaEntity;
+import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.repository.AbroadAreaRepository;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -61,5 +64,15 @@ public class AbroadAreaService {
         });
 
         return abroadAreaDtoList;
+    }
+
+    public List<String> getAreaNameFromId(List<Long> areaIdList) {
+        List<String> areaNames = new ArrayList<>();
+        for (Long areaId : areaIdList) {
+            AbroadAreaEntity abroadArea = abroadAreaRepository.findById(areaId).orElseThrow(() -> new RestApiException(UserErrorCode.NO_SUCH_AREA));
+            String areaName = abroadArea.getName();
+            areaNames.add(areaName.substring(areaName.lastIndexOf(",")+1));
+        }
+        return areaNames;
     }
 }

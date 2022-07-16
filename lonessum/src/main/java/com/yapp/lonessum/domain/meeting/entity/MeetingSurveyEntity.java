@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.meeting.entity;
 
 import com.yapp.lonessum.domain.constant.*;
+import com.yapp.lonessum.domain.meeting.dto.MeetingPartnerSurveyDto;
 import com.yapp.lonessum.domain.payment.entity.Payment;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.*;
@@ -98,5 +99,20 @@ public class MeetingSurveyEntity {
 
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;
+    }
+
+    public void changeMeetingMatching(MeetingMatchingEntity meetingMatching) {
+        this.meetingMatching = meetingMatching;
+    }
+
+    public MeetingPartnerSurveyDto toPartnerSurveyDto() {
+        return MeetingPartnerSurveyDto.builder()
+                .averageAge(this.averageAge)
+                .averageHeight(this.averageHeight)
+                .departments(this.ourDepartments)
+                .mindset(this.mindSet)
+                .play(this.play)
+                .kakaoId(this.kakaoId)
+                .build();
     }
 }

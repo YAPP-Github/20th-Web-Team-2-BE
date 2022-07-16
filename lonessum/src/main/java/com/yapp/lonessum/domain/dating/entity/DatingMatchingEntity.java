@@ -2,12 +2,14 @@ package com.yapp.lonessum.domain.dating.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -17,10 +19,10 @@ public class DatingMatchingEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private DatingMatchingEntity surveyA;
+    private DatingSurveyEntity maleSurvey;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private DatingMatchingEntity surveyB;
+    private DatingSurveyEntity femaleSurvey;
 
     private LocalDateTime matchedAt;
 }

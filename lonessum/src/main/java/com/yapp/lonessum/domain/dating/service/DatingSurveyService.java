@@ -55,7 +55,7 @@ public class DatingSurveyService {
     public Long rematchSurvey(UserEntity user) {
         DatingSurveyEntity datingSurvey = user.getDatingSurvey();
         if (datingSurvey == null) {
-            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+            throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
         datingSurvey.changeMatchStatus(MatchStatus.WAITING);
         return datingSurvey.getId();
@@ -65,7 +65,7 @@ public class DatingSurveyService {
     public DatingSurveyDto readSurvey(UserEntity user) {
         DatingSurveyEntity datingSurvey = user.getDatingSurvey();
         if (datingSurvey == null) {
-            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+            throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
         return datingSurveyMapper.toDto(datingSurvey);
     }
@@ -74,7 +74,7 @@ public class DatingSurveyService {
     public Long updateSurvey(UserEntity user, DatingSurveyDto datingSurveyDto) {
         DatingSurveyEntity datingSurvey = user.getDatingSurvey();
         if (datingSurvey == null) {
-            throw new RestApiException(SurveyErrorCode.NO_EXIST_SURVEY);
+            throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
         datingSurveyDto.setId(datingSurvey.getId());
         datingSurveyMapper.updateFromDto(datingSurveyDto, datingSurvey);
