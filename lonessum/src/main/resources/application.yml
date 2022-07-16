@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.daum.net
     port: 465
-    username: username
-    password: password
+    username: ${emailUsername}
+    password: ${emailPassword}
     properties:
       mail:
         smtp:
