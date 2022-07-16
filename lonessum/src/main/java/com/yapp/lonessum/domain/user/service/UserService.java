@@ -3,7 +3,9 @@ package com.yapp.lonessum.domain.user.service;
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
+import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
+import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
@@ -20,6 +22,7 @@ public class UserService {
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final UniversityRepository universityRepository;
 
     @Transactional
     public LoginResponse login(KakaoTokenResponse token) {
@@ -56,11 +59,16 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
+        UniversityEntity university = new UniversityEntity();
+        university.setName("Seoul");
+        university.setDomain("snu.ac.kr");
+        universityRepository.save(university);
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
                 .isAuthenticated(true)
+                .university(university)
                 .build()).getId();
     }
 
