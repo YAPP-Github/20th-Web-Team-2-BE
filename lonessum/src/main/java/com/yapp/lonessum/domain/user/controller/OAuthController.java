@@ -36,7 +36,7 @@ public class OAuthController {
         return KakaoTokenRequest.builder()
                 .grant_type("authorization_code")
                 .client_id("24608dc716988209e4f923e0a8f4c495")
-                .redirect_uri("http://localhost:3000/oauth/kakao")
+                .redirect_uri("http://localhost/oauth/kakao")
                 .code(code)
                 .client_secret("MB1m7saXKcZdz6CdHFP8zde4Y3Zooh6g")
                 .build();
