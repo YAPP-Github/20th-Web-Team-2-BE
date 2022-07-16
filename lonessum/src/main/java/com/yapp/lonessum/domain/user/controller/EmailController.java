@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/email")
 @RequiredArgsConstructor

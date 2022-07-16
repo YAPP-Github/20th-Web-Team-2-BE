@@ -19,6 +19,9 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (url.contains("swagger") || url.contains("api-docs") || url.contains("webjars")) {
             return true;
         }
+        if (request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
         System.out.println("url = " + url);
         String token = request.getHeader("Authorization");
         if (token != null && token.length() > 0) {
