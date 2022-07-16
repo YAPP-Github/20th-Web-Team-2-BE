@@ -22,15 +22,22 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void login(KakaoTokenResponse token) {
+    public LoginResponse login(KakaoTokenResponse token) {
         KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token.getAccess_token());
         long kakaoServerId = tokenInfo.getId();
         Optional<UserEntity> user = userRepository.findByKakaoServerId(kakaoServerId);
         if (user.isEmpty()) {
-            userRepository.save(UserEntity.builder()
+            UserEntity newUser = userRepository.save(UserEntity.builder()
                     .kakaoServerId(kakaoServerId)
+                    .kakaoAccessToken(token.getAccess_token())
                     .isAuthenticated(false)
+                    .isAdult(false)
                     .build());
+            return new LoginResponse(jwtService.createAccessToken(newUser.getId()));
+        }
+        else {
+            user.get().changeKakaoAccessToken(token.getAccess_token());
+            return new LoginResponse(jwtService.createAccessToken(user.get().getId()));
         }
     }
 
