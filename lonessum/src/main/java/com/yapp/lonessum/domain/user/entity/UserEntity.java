@@ -24,6 +24,8 @@ public class UserEntity {
     private String password;
 
     private Long kakaoServerId;
+
+    private String kakaoAccessToken;
   
     @ManyToOne(fetch = FetchType.LAZY)
     private UniversityEntity university;
@@ -56,6 +58,10 @@ public class UserEntity {
 
     public void issueEmailToken(EmailTokenEntity emailToken) {
         this.emailToken = emailToken;
+    }
+
+    public void changeKakaoAccessToken(String kakaoAccessToken) {
+        this.kakaoAccessToken = kakaoAccessToken;
     }
 
     public void changeIsAdult(Boolean isAdult) {
