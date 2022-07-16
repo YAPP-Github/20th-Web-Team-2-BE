@@ -47,6 +47,7 @@ public class DatingSurveyService {
             user.changeDatingSurvey(newDatingSurvey);
             // 매칭 대기 상태로 등록
             newDatingSurvey.changeMatchStatus(MatchStatus.WAITING);
+            newDatingSurvey.changeMyUniversity(user.getUniversity().getId());
             return newDatingSurvey.getId();
         }
     }
