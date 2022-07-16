@@ -15,6 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final String[] EXCLUDE_PATHS = {
             "/join",
             "/login",
+            "/oauth",
             "/error",
             "/swagger-ui",
             "/h2-console",
