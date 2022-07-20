@@ -67,7 +67,7 @@ public class UserService {
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
-                .isAuthenticated(true)
+                .isAuthenticated(false)
                 .university(university)
                 .build()).getId();
     }
