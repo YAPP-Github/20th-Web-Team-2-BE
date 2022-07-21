@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface DatingSurveyRepository extends JpaRepository<DatingSurveyEntity, Long> {
     Optional<DatingSurveyEntity> findByUser(UserEntity user);
     Optional<List<DatingSurveyEntity>> findAllByMatchStatus(MatchStatus matchStatus);
+    Optional<DatingSurveyEntity> findByKakaoId(String kakaoId);
 }

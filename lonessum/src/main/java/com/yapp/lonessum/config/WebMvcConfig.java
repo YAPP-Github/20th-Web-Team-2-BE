@@ -17,6 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             "/join",
             "/login",
             "/oauth/**",
+            "/admin/**",
             "/error",
             "/swagger-ui",
             "/h2-console",
