@@ -33,14 +33,14 @@ public class MatchingInfo<T> implements Comparable<MatchingInfo> {
             return MeetingMatchingEntity.builder()
                     .maleSurvey(first)
                     .femaleSurvey(second)
-                    .matchedAt(LocalDateTime.now())
+                    .matchedTime(LocalDateTime.now())
                     .build();
         }
         else {
             return MeetingMatchingEntity.builder()
                     .maleSurvey(second)
                     .femaleSurvey(first)
-                    .matchedAt(LocalDateTime.now())
+                    .matchedTime(LocalDateTime.now())
                     .build();
         }
     }
@@ -50,14 +50,14 @@ public class MatchingInfo<T> implements Comparable<MatchingInfo> {
             return DatingMatchingEntity.builder()
                     .maleSurvey(first)
                     .femaleSurvey(second)
-                    .matchedAt(LocalDateTime.now())
+                    .matchedTime(LocalDateTime.now())
                     .build();
         }
         else {
             return DatingMatchingEntity.builder()
                     .maleSurvey(second)
                     .femaleSurvey(first)
-                    .matchedAt(LocalDateTime.now())
+                    .matchedTime(LocalDateTime.now())
                     .build();
         }
     }

@@ -2,6 +2,7 @@ package com.yapp.lonessum.domain.dating.controller;
 
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.dating.dto.DatingMatchResultDto;
+import com.yapp.lonessum.domain.dating.dto.TestDatingMatchingResultDto;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.service.DatingMatchingService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -29,7 +30,7 @@ public class DatingMatchingController {
     }
 
     @PostMapping
-    public ResponseEntity<List<DatingMatchingEntity>> testMatch(@RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<List<TestDatingMatchingResultDto>> testMatch(@RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok(datingMatchingService.testMatch());
     }
 }

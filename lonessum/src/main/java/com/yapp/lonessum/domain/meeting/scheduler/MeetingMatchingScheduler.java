@@ -44,7 +44,6 @@ public class MeetingMatchingScheduler {
 
         List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
         for (MeetingSurveyEntity ms : meetingSurveyList) {
-            ms.changeMatchStatus(MatchStatus.MATCHED);
             MeetingSurveyDto meetingSurveyDto = meetingSurveyMapper.toDto(ms);
             meetingSurveyDto.setId(ms.getId());
             meetingSurveyDtoList.add(meetingSurveyDto);
@@ -58,6 +57,9 @@ public class MeetingMatchingScheduler {
 
             MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
             MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
+
+            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
+            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
 
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeMeetingMatching(meetingMatching);
