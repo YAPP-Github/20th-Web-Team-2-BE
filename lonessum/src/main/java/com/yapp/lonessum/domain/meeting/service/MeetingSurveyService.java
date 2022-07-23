@@ -36,6 +36,7 @@ public class MeetingSurveyService {
         MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
         // 설문을 작성한 적 있으면 -> 기존 설문 수정
         if (meetingSurvey != null) {
+            meetingSurveyDto.setId(meetingSurvey.getId());
             meetingSurveyMapper.updateFromDto(meetingSurveyDto, meetingSurvey);
             // 매칭 대기 상태로 등록
             meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
