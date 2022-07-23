@@ -20,4 +20,4 @@ spring:
       enabled: true
 
 logging:
-  config: ${PWD}/src/main/resources/logback-prod.xml
+  config: ${pwd}/src/main/resources/logback-prod.xml
