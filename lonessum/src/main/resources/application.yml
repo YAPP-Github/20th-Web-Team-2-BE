@@ -34,6 +34,5 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-
 logging:
-  config: ${pwd}/src/main/resources/logback.xml
+  config: classpath:logback.xml
