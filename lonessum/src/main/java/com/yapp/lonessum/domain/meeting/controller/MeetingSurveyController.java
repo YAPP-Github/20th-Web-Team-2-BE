@@ -49,7 +49,7 @@ public class MeetingSurveyController {
         return ResponseEntity.ok(meetingSurveyService.readSurvey(user));
     }
 
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<Long> updateSurvey(@RequestHeader(value = "Authorization") String token,
                                              @RequestBody MeetingSurveyDto meetingSurveyDto) {
 //        UserEntity user = userService.getUserFromToken(token);
