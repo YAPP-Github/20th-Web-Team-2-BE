@@ -2,7 +2,6 @@ package com.yapp.lonessum.common.algorithm;
 
 import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.DomesticArea;
-import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import org.springframework.data.util.Pair;
 
 import java.util.*;
