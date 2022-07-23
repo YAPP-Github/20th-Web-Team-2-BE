@@ -14,14 +14,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final JwtInterceptor jwtInterceptor;
 
     private static final String[] EXCLUDE_PATHS = {
-            "/join",
-            "/login",
-            "/oauth/**",
-            "/admin/**",
-            "/error",
-            "/swagger-ui",
-            "/h2-console",
-            "/health"
+            "api/join",
+            "api/login",
+            "api/oauth/**",
+            "api/admin/**",
+            "api/error",
+            "api/swagger-ui",
+            "api/h2-console",
+            "api/health"
     };
 
     @Override
