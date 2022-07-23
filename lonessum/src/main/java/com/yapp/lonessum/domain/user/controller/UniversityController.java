@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/university")
+@RequestMapping("/api/university")
 @RequiredArgsConstructor
 public class UniversityController {
     private final UniversityService universityService;

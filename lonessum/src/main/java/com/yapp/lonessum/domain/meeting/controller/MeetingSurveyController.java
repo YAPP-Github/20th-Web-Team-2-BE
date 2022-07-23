@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/meeting/survey")
+@RequestMapping("/api/meeting/survey")
 public class MeetingSurveyController {
 
     private final JwtService jwtService;

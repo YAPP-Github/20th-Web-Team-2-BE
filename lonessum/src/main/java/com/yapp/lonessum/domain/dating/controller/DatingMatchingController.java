@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/dating/matching")
+@RequestMapping("/api/dating/matching")
 public class DatingMatchingController {
 
     private final JwtService jwtService;

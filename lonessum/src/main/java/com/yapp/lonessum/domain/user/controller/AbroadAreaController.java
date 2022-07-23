@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/areas")
+@RequestMapping("/api/areas")
 @RequiredArgsConstructor
 public class AbroadAreaController {
     private final AbroadAreaService abroadAreaService;
