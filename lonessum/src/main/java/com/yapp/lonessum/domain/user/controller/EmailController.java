@@ -36,7 +36,7 @@ public class EmailController {
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
 
-    @GetMapping("/test")
+    @PostMapping("/test")
     public ResponseEntity testEmail(@RequestHeader(value = "Authorization") String token, @RequestBody EmailRequest emailRequest) {
         emailService.sendAuthCode(emailRequest.getEmail(), "this is test code");
         return ResponseEntity.ok().build();
