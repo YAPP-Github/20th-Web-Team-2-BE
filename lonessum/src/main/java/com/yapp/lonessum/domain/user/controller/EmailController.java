@@ -35,4 +35,10 @@ public class EmailController {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
+
+    @GetMapping("/test")
+    public ResponseEntity testEmail(@RequestHeader(value = "Authorization") String token, @RequestBody EmailRequest emailRequest) {
+        emailService.sendAuthCode(emailRequest.getEmail(), "this is test code");
+        return ResponseEntity.ok().build();
+    }
 }
