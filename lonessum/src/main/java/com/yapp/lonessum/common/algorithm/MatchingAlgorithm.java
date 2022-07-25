@@ -10,6 +10,8 @@ import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.findSameInEachRan
 
 public abstract class MatchingAlgorithm<T> {
     public List<MatchingInfo<T>> getResult(List<T> surveyList) {
+        checkMatchingStartCondition(surveyList);
+
         List<MatchingInfo<T>> result = new ArrayList<>();
 
         boolean[] visited = new boolean[surveyList.size()];
@@ -36,6 +38,13 @@ public abstract class MatchingAlgorithm<T> {
         }
 
         return calOptimalMatchingCase(result);
+    }
+
+    //매칭 시작 조건 (적어도 2개의 설문 이상)
+    private void checkMatchingStartCondition(List<T> surveyList) {
+        if(surveyList.size() < 2) {
+            throw new IllegalArgumentException("매칭을 시작하려면 적어도 2개 이상의 설문이 필요합니다.");
+        }
     }
 
     //필수 매칭 조건 (남,녀 and 지역)
