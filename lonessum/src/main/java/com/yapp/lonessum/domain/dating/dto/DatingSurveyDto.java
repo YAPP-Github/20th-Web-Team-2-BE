@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class DatingSurveyDto extends SurveyDto {
-    private Gender gender;
-
     private Integer age;
 
     private Long myUniversity;
@@ -49,12 +47,6 @@ public class DatingSurveyDto extends SurveyDto {
     private List<Body> preferBodies;
 
     private DateCount preferDateCount;
-
-    private Boolean isAbroad;
-
-    private List<DomesticArea> domesticAreas;
-
-    private List<Long> abroadAreas;
 
     private Channel channel;
 

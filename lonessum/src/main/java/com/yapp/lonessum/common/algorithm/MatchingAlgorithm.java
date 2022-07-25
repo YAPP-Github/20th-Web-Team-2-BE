@@ -1,9 +1,12 @@
 package com.yapp.lonessum.common.algorithm;
 
 import com.yapp.lonessum.common.dto.SurveyDto;
+import com.yapp.lonessum.domain.constant.DomesticArea;
 import org.springframework.data.util.Pair;
 
 import java.util.*;
+
+import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.findSameInEachRange;
 
 public abstract class MatchingAlgorithm<T> {
     public List<MatchingInfo<T>> getResult(List<T> surveyList) {
@@ -33,6 +36,41 @@ public abstract class MatchingAlgorithm<T> {
         }
 
         return calOptimalMatchingCase(result);
+    }
+
+    //필수 매칭 조건 (남,녀 and 지역)
+    public boolean isMatchingTarget(T survey1, T survey2) {
+        SurveyDto group1 = (SurveyDto)survey1;
+        SurveyDto group2 = (SurveyDto)survey2;
+
+        //남,녀 체크
+        if(group1.getGender() == group2.getGender()) {
+            return false;
+        }
+
+        if(group1.getIsAbroad() != group2.getIsAbroad()) {
+            return false;
+        }
+
+        //해외인 상태
+        if(group1.getIsAbroad()) {
+            List<Long> group1AbroadAreas = group1.getAbroadAreas();
+            List<Long> group2AbroadAreas = group2.getAbroadAreas();
+
+            if(findSameInEachRange(group1AbroadAreas, group2AbroadAreas)) {
+                return true;
+            }
+            return false;
+        }
+
+        //국내인 상태
+        List<DomesticArea> group1DomesticAreas = group1.getDomesticAreas();
+        List<DomesticArea> group2DomesticAreas = group2.getDomesticAreas();
+
+        if(findSameInEachRange(group1DomesticAreas, group2DomesticAreas)) {
+            return true;
+        }
+        return false;
     }
 
     public List<MatchingInfo<T>> calOptimalMatchingCase(List<MatchingInfo<T>> cases) {
