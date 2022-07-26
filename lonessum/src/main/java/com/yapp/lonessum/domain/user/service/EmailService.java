@@ -8,6 +8,7 @@ import com.yapp.lonessum.domain.user.repository.EmailTokenRepository;
 import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
+import com.yapp.lonessum.utils.AuthCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,6 +29,7 @@ public class EmailService {
     private final String SERVICE_EMAIL = "korea@lonessum.com";
     private final Long MAX_EXPIRE_TIME = 3L;
 
+    private final AuthCodeGenerator authCodeGenerator;
     private final JavaMailSender javaMailSender;
     private final UniversityService universityService;
     private final EmailTokenRepository emailTokenRepository;
@@ -40,7 +42,7 @@ public class EmailService {
 
         //emailToken 생성
         EmailTokenEntity emailToken = EmailTokenEntity.builder()
-                .authCode(UUID.randomUUID().toString())
+                .authCode(authCodeGenerator.executeGenerate())
                 .expireDate(LocalDateTime.now().plusMinutes(MAX_EXPIRE_TIME))
                 .build();
         emailTokenRepository.save(emailToken);
