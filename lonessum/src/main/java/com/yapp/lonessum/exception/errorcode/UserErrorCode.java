@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
 
+    JWT_NOT_EXIST(HttpStatus.BAD_REQUEST, "유효한 인증 토큰이 존재하지 않습니다."),
+    INVALID_JWT(HttpStatus.BAD_REQUEST, "유효한 인증 토큰이 존재하지 않습니다."),
     INACTIVE_USER(HttpStatus.FORBIDDEN, "존재하지 않는 유저입니다."),
     WRONG_PASSWORD(HttpStatus.FORBIDDEN, "비밀번호가 틀렸습니다."),
     NEED_EMAIL_AUTH(HttpStatus.FORBIDDEN, "이메일 인증되지 않은 유저입니다."),

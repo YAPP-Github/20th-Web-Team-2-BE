@@ -2,6 +2,8 @@ package com.yapp.lonessum.config.jwt;
 
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -45,7 +47,7 @@ public class JwtService {
             Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            throw new RuntimeException("토큰이 유효하지 않습니다.");
+            throw new RestApiException(UserErrorCode.INVALID_JWT);
         }
     }
 
@@ -67,7 +69,7 @@ public class JwtService {
         try {
             claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(jwt); // secretKey를 사용하여 복호화
         } catch (Exception e) {
-            throw new RuntimeException("토큰 정보를 불러올 수 없습니다.");
+            throw new RestApiException(UserErrorCode.INVALID_JWT);
         }
         Object userId = claims.getBody().get("userId");
         return Long.valueOf(userId.toString());
@@ -76,7 +78,7 @@ public class JwtService {
     public UserEntity getUserFromJwt() {
         Long userId = this.getTokenInfo();
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.INACTIVE_USER));
         return user;
     }
 }
