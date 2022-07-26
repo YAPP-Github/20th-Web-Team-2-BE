@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 @RestController
@@ -21,7 +23,7 @@ public class EmailController {
     private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws UnsupportedEncodingException, MessagingException {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
@@ -39,7 +41,7 @@ public class EmailController {
     }
 
     @PostMapping("/test")
-    public ResponseEntity testEmail(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity testEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
         emailService.sendAuthCode(emailRequest.getEmail(), "this is test code");
         return ResponseEntity.ok().build();
     }
