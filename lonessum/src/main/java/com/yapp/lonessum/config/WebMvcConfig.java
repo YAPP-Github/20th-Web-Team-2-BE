@@ -16,16 +16,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/**")
+                .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/join")
                 .excludePathPatterns("/api/login")
                 .excludePathPatterns("/api/health")
                 .excludePathPatterns("/api/oauth/**")
-                .excludePathPatterns("/api/admin/**")
-                .excludePathPatterns("/swagger-ui.html")
-                .excludePathPatterns("/h2-console")
-                .excludePathPatterns("/favicon.ico")
-                .excludePathPatterns("/error");
+                .excludePathPatterns("/api/admin/**");
     }
 
     @Override
