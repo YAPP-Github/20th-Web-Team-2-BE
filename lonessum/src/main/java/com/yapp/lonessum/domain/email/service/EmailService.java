@@ -70,7 +70,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setFrom(new InternetAddress(SERVICE_EMAIL));
         message.addRecipients(MimeMessage.RecipientType.TO, email);
-        message.setSubject("[외딴썸] 이메일 인증코드입니다.");
+        message.setSubject("[외딴썸] 인증코드를 확인해주세요.");
         message.setText(setAuthCodeContext(authCode), "utf-8", "html");
 
         javaMailSender.send(message);
@@ -83,7 +83,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setFrom(new InternetAddress(SERVICE_EMAIL));
         message.addRecipients(MimeMessage.RecipientType.TO, email);
-        message.setSubject("[외딴썸] 매칭이 성사되었습니다.");
+        message.setSubject("[외딴썸] 매칭결과를 확인해주세요.");
         message.setText(setMatchResultContext(), "utf-8", "html");
 
         javaMailSender.send(message);
