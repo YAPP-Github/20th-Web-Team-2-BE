@@ -43,7 +43,7 @@ public class EmailService {
     private final UniversityRepository universityRepository;
 
     @Transactional
-    public LocalDateTime updateAndSendEmail(UserEntity user, String email) throws UnsupportedEncodingException, MessagingException {
+    public LocalDateTime updateAndSendEmail(UserEntity user, String email) throws MessagingException {
         // 유저 대학 이메일 정보 등록
         updateUniversityEmail(user, email);
 

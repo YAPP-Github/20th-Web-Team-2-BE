@@ -23,7 +23,7 @@ public class EmailController {
     private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws UnsupportedEncodingException, MessagingException {
+    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
