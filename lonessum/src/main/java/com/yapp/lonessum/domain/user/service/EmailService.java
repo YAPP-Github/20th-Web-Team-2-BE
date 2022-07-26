@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.user.service;
 
+import com.yapp.lonessum.domain.user.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.entity.EmailTokenEntity;
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -91,9 +92,9 @@ public class EmailService {
             throw new RestApiException(UserErrorCode.INVALID_EMAIL);
         }
         // 이메일 발송 테스트를 위해서 주석 처리
-//        if (!universityService.isSupportedUniversity(email)) {
-//            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
-//        }
+        if (!universityService.isSupportedUniversity(email)) {
+            throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
+        }
         user.registerUniversityEmail(email);
     }
 
@@ -120,5 +121,12 @@ public class EmailService {
             throw new RestApiException(UserErrorCode.INVALID_AUTHCODE);
         }
         return user.getIsAuthenticated();
+    }
+
+    public void addTestEmail(TestEmailRequest testEmailRequest) {
+        UniversityEntity university = new UniversityEntity();
+        university.setName(testEmailRequest.getName());
+        university.setDomain(testEmailRequest.getDomain());
+        universityRepository.save(university);
     }
 }

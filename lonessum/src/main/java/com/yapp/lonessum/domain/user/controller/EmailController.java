@@ -3,6 +3,7 @@ package com.yapp.lonessum.domain.user.controller;
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
 import com.yapp.lonessum.domain.user.dto.EmailRequest;
+import com.yapp.lonessum.domain.user.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,12 @@ public class EmailController {
     public ResponseEntity<Boolean> authenticateWithEmail(@RequestBody AuthCodeRequest authCodeRequest) {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
+    }
+
+    @PostMapping("/test/new-email")
+    public ResponseEntity addTestEmail(@RequestBody TestEmailRequest testEmailRequest) {
+        emailService.addTestEmail(testEmailRequest);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/test")
