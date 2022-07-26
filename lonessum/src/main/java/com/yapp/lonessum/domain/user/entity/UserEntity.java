@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.user.entity;
 
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
+import com.yapp.lonessum.domain.email.entity.EmailTokenEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

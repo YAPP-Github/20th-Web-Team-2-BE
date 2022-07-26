@@ -1,11 +1,11 @@
-package com.yapp.lonessum.domain.user.controller;
+package com.yapp.lonessum.domain.email.controller;
 
 import com.yapp.lonessum.config.jwt.JwtService;
+import com.yapp.lonessum.domain.email.dto.EmailRequest;
+import com.yapp.lonessum.domain.email.service.EmailService;
+import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
-import com.yapp.lonessum.domain.user.dto.EmailRequest;
-import com.yapp.lonessum.domain.user.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

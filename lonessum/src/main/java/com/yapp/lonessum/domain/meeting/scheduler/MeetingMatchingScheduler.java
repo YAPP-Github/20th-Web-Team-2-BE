@@ -8,7 +8,7 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
-import com.yapp.lonessum.domain.user.service.EmailService;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;

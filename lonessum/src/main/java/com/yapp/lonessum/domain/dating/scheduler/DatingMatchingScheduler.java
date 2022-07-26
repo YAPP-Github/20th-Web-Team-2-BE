@@ -8,7 +8,7 @@ import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
-import com.yapp.lonessum.domain.user.service.EmailService;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.DatingSurveyMapper;

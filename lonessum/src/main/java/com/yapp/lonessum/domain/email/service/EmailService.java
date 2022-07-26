@@ -1,11 +1,12 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.email.service;
 
-import com.yapp.lonessum.domain.user.dto.TestEmailRequest;
-import com.yapp.lonessum.domain.user.entity.EmailTokenEntity;
+import com.yapp.lonessum.domain.email.entity.EmailTokenEntity;
+import com.yapp.lonessum.domain.email.repository.EmailTokenRepository;
+import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.repository.EmailTokenRepository;
 import com.yapp.lonessum.domain.user.repository.UniversityRepository;
+import com.yapp.lonessum.domain.user.service.UniversityService;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.utils.AuthCodeGenerator;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
