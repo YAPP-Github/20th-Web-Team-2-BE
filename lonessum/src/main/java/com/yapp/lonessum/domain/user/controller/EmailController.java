@@ -32,7 +32,7 @@ public class EmailController {
     }
 
     @PostMapping("/test")
-    public ResponseEntity testEmail(@RequestHeader(value = "Authorization") String token, @RequestBody EmailRequest emailRequest) {
+    public ResponseEntity testEmail(@RequestBody EmailRequest emailRequest) {
         emailService.sendAuthCode(emailRequest.getEmail(), "this is test code");
         return ResponseEntity.ok().build();
     }
