@@ -13,22 +13,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtInterceptor jwtInterceptor;
 
-    private static final String[] EXCLUDE_PATHS = {
-            "/api/join",
-            "/api/login",
-            "/api/oauth/**",
-            "/api/admin/**",
-            "/api/error",
-            "/api/swagger-ui",
-            "/api/h2-console",
-            "/api/health"
-    };
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns(EXCLUDE_PATHS);
+                .excludePathPatterns("/api/join")
+                .excludePathPatterns("/api/login")
+                .excludePathPatterns("/api/health")
+                .excludePathPatterns("/api/oauth/**")
+                .excludePathPatterns("/api/admin/**")
+                .excludePathPatterns("/swagger-ui.html")
+                .excludePathPatterns("/h2-console")
+                .excludePathPatterns("/favicon.ico")
+                .excludePathPatterns("/error");
     }
 
     @Override
