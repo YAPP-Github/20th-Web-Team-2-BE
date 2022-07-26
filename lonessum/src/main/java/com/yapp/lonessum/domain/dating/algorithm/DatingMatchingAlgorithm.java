@@ -32,39 +32,6 @@ public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> 
                 calPreferCharacteristicScore(datingSurvey1, datingSurvey2);
     }
 
-
-    //필수 매칭 조건 (남,녀 and 지역)
-    private boolean isMatchingTarget(DatingSurveyDto group1, DatingSurveyDto group2) {
-        //남,녀 체크
-        if(group1.getGender() == group2.getGender()) {
-            return false;
-        }
-
-        if(group1.getIsAbroad() != group2.getIsAbroad()) {
-            return false;
-        }
-
-        //해외인 상태
-        if(group1.getIsAbroad()) {
-            List<Long> group1AbroadAreas = group1.getAbroadAreas();
-            List<Long> group2AbroadAreas = group2.getAbroadAreas();
-
-            if(findSameInEachRange(group1AbroadAreas, group2AbroadAreas)) {
-                return true;
-            }
-            return false;
-        }
-
-        //국내인 상태
-        List<DomesticArea> group1DomesticAreas = group1.getDomesticAreas();
-        List<DomesticArea> group2DomesticAreas = group2.getDomesticAreas();
-
-        if(findSameInEachRange(group1DomesticAreas, group2DomesticAreas)) {
-            return true;
-        }
-        return false;
-    }
-
     //기피 학교 점수 계산
     private int calAvoidUniversityScore(DatingSurveyDto user1, DatingSurveyDto user2) {
         Long user1University = user1.getMyUniversity();

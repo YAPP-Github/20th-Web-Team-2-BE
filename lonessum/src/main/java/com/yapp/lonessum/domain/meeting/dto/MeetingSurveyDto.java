@@ -15,8 +15,6 @@ public class MeetingSurveyDto extends SurveyDto {
 
     private TypeOfMeeting typeOfMeeting;
 
-    private Gender gender;
-
     private Integer averageAge;
 
     private List<Long> ourUniversities;
@@ -38,12 +36,6 @@ public class MeetingSurveyDto extends SurveyDto {
     private Mindset mindSet;
 
     private Play play;
-
-    private Boolean isAbroad;
-
-    private List<DomesticArea> domesticAreas;
-
-    private List<Long> abroadAreas;
 
     private Channel channel;
 
