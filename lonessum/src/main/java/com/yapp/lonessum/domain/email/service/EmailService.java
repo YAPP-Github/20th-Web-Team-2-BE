@@ -1,7 +1,5 @@
 package com.yapp.lonessum.domain.email.service;
 
-import com.yapp.lonessum.domain.email.entity.EmailTokenEntity;
-import com.yapp.lonessum.domain.email.repository.EmailTokenRepository;
 import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.entity.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -9,7 +7,6 @@ import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.domain.user.service.UniversityService;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
-import com.yapp.lonessum.utils.AuthCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -22,7 +19,6 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
@@ -32,35 +28,27 @@ import java.util.regex.Pattern;
 public class EmailService {
 
     private final String SERVICE_EMAIL = "korea@lonessum.com";
-    private final Long MAX_EXPIRE_TIME = 3L;
 
-    private final AuthCodeGenerator authCodeGenerator;
-    private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
+    private final JavaMailSender javaMailSender;
 
+    private final EmailTokenService emailTokenService;
     private final UniversityService universityService;
-    private final EmailTokenRepository emailTokenRepository;
+
     private final UniversityRepository universityRepository;
 
     @Transactional
     public LocalDateTime updateAndSendEmail(UserEntity user, String email) throws MessagingException {
         // 유저 대학 이메일 정보 등록
         updateUniversityEmail(user, email);
-
-        //emailToken 생성
-        EmailTokenEntity emailToken = EmailTokenEntity.builder()
-                .authCode(authCodeGenerator.executeGenerate())
-                .expireDate(LocalDateTime.now().plusMinutes(MAX_EXPIRE_TIME))
-                .build();
-        emailTokenRepository.save(emailToken);
-
-        //유저의 emailToken 등록
-        user.issueEmailToken(emailToken);
+        
+        // 인증코드 생성 후 Redis 저장
+        String authCode = emailTokenService.issueEmailToken(user.getId());
 
         //이메일 전송
-        sendAuthCode(email, emailToken.getAuthCode());
+        sendAuthCode(email, authCode);
 
-        return emailToken.getExpireDate();
+        return LocalDateTime.now();
     }
 
     @Async
@@ -119,27 +107,15 @@ public class EmailService {
 
     @Transactional
     public boolean authenticateWithEmail(UserEntity user, String authCode) {
-        EmailTokenEntity emailToken = user.getEmailToken();
-
-        String email = user.getUniversityEmail();
-        int idx = email.indexOf("@");
-        String domain = email.substring(idx+1);
-        UniversityEntity university = universityRepository.findByDomain(domain);
-
-        if (authCode.equals(emailToken.getAuthCode())) {
-            if (LocalDateTime.now().isBefore(emailToken.getExpireDate())) {
-                user.authenticatedWithEmail(university);
-            }
-            else {
-                // 유효시간 초과 -> 이메일 재전송
-                throw new RestApiException(UserErrorCode.EXPIRED_AUTHCODE);
-            }
+        if (emailTokenService.isValidAuthCode(user, authCode)) {
+            String email = user.getUniversityEmail();
+            int idx = email.indexOf("@");
+            String domain = email.substring(idx+1);
+            UniversityEntity university = universityRepository.findByDomain(domain);
+            user.authenticatedWithEmail(university);
+            return true;
         }
-        else {
-            // 잘못된 인증코드 -> 재입력 시도
-            throw new RestApiException(UserErrorCode.INVALID_AUTHCODE);
-        }
-        return user.getIsAuthenticated();
+        return false;
     }
 
     public void addTestEmail(TestEmailRequest testEmailRequest) {

@@ -1,7 +1,10 @@
 package com.yapp.lonessum.domain.email.repository;
 
-import com.yapp.lonessum.domain.email.entity.EmailTokenEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.yapp.lonessum.domain.email.entity.EmailToken;
+import org.springframework.data.repository.CrudRepository;
 
-public interface EmailTokenRepository extends JpaRepository<EmailTokenEntity, Long> {
+import java.util.Optional;
+
+public interface EmailTokenRepository extends CrudRepository<EmailToken, Long> {
+    Optional<EmailToken> findByUserId(Long userId);
 }

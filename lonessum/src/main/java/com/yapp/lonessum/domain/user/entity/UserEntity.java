@@ -1,7 +1,6 @@
 package com.yapp.lonessum.domain.user.entity;
 
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
-import com.yapp.lonessum.domain.email.entity.EmailTokenEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +34,6 @@ public class UserEntity {
 
     private String universityEmail;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private EmailTokenEntity emailToken;
-
     private Boolean isAuthenticated;
 
     private Boolean isAdult;
@@ -55,10 +51,6 @@ public class UserEntity {
     public void authenticatedWithEmail(UniversityEntity university) {
         this.university = university;
         this.isAuthenticated = true;
-    }
-
-    public void issueEmailToken(EmailTokenEntity emailToken) {
-        this.emailToken = emailToken;
     }
 
     public void changeKakaoAccessToken(String kakaoAccessToken) {

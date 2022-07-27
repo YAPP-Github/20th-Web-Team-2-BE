@@ -17,6 +17,7 @@ public enum UserErrorCode implements ErrorCode {
     UNSUPPORTED_EMAIL(HttpStatus.BAD_REQUEST, "지원하지 않는 대학입니다."),
     NO_SUCH_UNIVERSITY(HttpStatus.BAD_REQUEST, "존재하지 않는 대학입니다."),
     NO_SUCH_AREA(HttpStatus.BAD_REQUEST, "존재하지 않는 지역입니다."),
+    AUTH_CODE_NOT_EXIST(HttpStatus.BAD_REQUEST, "해당 유저의 인증코드가 존재하지 않습니다."),
     EXPIRED_AUTHCODE(HttpStatus.BAD_REQUEST, "인증코드의 유효기간이 만료되었습니다. 이메일 전송을 다시 요청해주세요."),
     INVALID_AUTHCODE(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다. 인증코드를 다시 입력해주세요."),
     NEED_AGE_AGREE(HttpStatus.BAD_REQUEST, "유저의 나이 정보 제공 동의가 필요합니다."),
