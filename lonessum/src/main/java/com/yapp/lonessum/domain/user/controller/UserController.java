@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.user.controller;
 
+import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.JoinRequest;
 import com.yapp.lonessum.domain.user.dto.KakaoTokenInfoResponse;
@@ -21,6 +22,7 @@ public class UserController {
 
     private final KakaoApiClient kakaoApiClient;
     private final UserService userService;
+    private final JwtService jwtService;
     private final BlackListService blackListService;
 
     @PostMapping("/join")
@@ -36,8 +38,8 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity logout(HttpServletRequest httpServletRequest) {
         String jwt = httpServletRequest.getHeader("jwt");
-        String userId = (String)httpServletRequest.getAttribute("userId");
-
+        String userId = (String) httpServletRequest.getAttribute("userId");
+//        String userId = jwtService.getUserFromJwt().getId().toString();
         blackListService.registerBlackList(userId, jwt);
 
         return ResponseEntity.ok().build();

@@ -25,6 +25,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         String token = request.getHeader("Authorization");
         if (token != null && token.length() > 0) {
+            request.setAttribute("userId", jwtService.getUserFromJwt().getId());
             return jwtService.isValid(token);
         } else {
             throw new RestApiException(UserErrorCode.JWT_NOT_EXIST);
