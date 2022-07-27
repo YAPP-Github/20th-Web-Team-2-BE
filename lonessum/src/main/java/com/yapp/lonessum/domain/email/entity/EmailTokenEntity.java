@@ -1,5 +1,6 @@
-package com.yapp.lonessum.domain.user.entity;
+package com.yapp.lonessum.domain.email.entity;
 
+import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

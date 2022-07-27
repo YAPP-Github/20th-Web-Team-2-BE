@@ -8,7 +8,7 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
-import com.yapp.lonessum.domain.user.service.EmailService;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
@@ -17,6 +17,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ public class MeetingMatchingScheduler {
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
-    public void runMatch() {
+    public void runMatch() throws MessagingException {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 

@@ -68,16 +68,16 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
-        UniversityEntity university = new UniversityEntity();
-        university.setName("Seoul");
-        university.setDomain("snu.ac.kr");
-        universityRepository.save(university);
+//        UniversityEntity university = new UniversityEntity();
+//        university.setName("Seoul");
+//        university.setDomain("snu.ac.kr");
+//        universityRepository.save(university);
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
-                .isAuthenticated(true)
-                .university(university)
+                .isAuthenticated(false)
+//                .university(university)
                 .build()).getId();
     }
 

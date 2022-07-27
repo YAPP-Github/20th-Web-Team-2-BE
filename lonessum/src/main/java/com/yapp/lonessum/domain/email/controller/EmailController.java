@@ -1,14 +1,17 @@
-package com.yapp.lonessum.domain.user.controller;
+package com.yapp.lonessum.domain.email.controller;
 
 import com.yapp.lonessum.config.jwt.JwtService;
+import com.yapp.lonessum.domain.email.dto.EmailRequest;
+import com.yapp.lonessum.domain.email.service.EmailService;
+import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
-import com.yapp.lonessum.domain.user.dto.EmailRequest;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 @RestController
@@ -20,7 +23,7 @@ public class EmailController {
     private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
@@ -31,8 +34,14 @@ public class EmailController {
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
 
+    @PostMapping("/test/new-email")
+    public ResponseEntity addTestEmail(@RequestBody TestEmailRequest testEmailRequest) {
+        emailService.addTestEmail(testEmailRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/test")
-    public ResponseEntity testEmail(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity testEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
         emailService.sendAuthCode(emailRequest.getEmail(), "this is test code");
         return ResponseEntity.ok().build();
     }
