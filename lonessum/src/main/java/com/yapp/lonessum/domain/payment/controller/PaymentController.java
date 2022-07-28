@@ -4,7 +4,6 @@ import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.payment.dto.*;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final JwtService jwtService;
-    private final UserService userService;
     private final PaymentService paymentService;
 
     /*
@@ -46,15 +44,13 @@ public class PaymentController {
     }
 
     @PostMapping("/meeting")
-    public ResponseEntity payMeeting(@RequestHeader(value = "Authorization") String token) {
-//        UserEntity user = userService.getUserFromToken(token);
+    public ResponseEntity payMeeting() {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(paymentService.payMeeting(user.getMeetingSurvey()));
     }
 
     @PostMapping("/dating")
-    public ResponseEntity payDating(@RequestHeader(value = "Authorization") String token) {
-//        UserEntity user = userService.getUserFromToken(token);
+    public ResponseEntity payDating() {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(paymentService.payDating(user.getDatingSurvey()));
     }

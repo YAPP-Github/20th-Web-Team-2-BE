@@ -6,7 +6,6 @@ import com.yapp.lonessum.domain.dating.dto.TestDatingMatchingResultDto;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.service.DatingMatchingService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +18,16 @@ import java.util.List;
 public class DatingMatchingController {
 
     private final JwtService jwtService;
-    private final UserService userService;
     private final DatingMatchingService datingMatchingService;
 
     @GetMapping
-    public ResponseEntity<DatingMatchResultDto> getMatchResult(@RequestHeader(value = "Authorization") String token) {
-//        UserEntity user = userService.getUserFromToken(token);
+    public ResponseEntity<DatingMatchResultDto> getMatchResult() {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(datingMatchingService.getMatchResult(user));
     }
 
     @PostMapping
-    public ResponseEntity<List<TestDatingMatchingResultDto>> testMatch(@RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<List<TestDatingMatchingResultDto>> testMatch() {
         return ResponseEntity.ok(datingMatchingService.testMatch());
     }
 }
