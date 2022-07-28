@@ -128,12 +128,12 @@ public class MeetingMatchingService {
             MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
             MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
 
-            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
-            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
-
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeMeetingMatching(meetingMatching);
             secondEntity.changeMeetingMatching(meetingMatching);
+
+            meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
+            meetingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
 
             String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
@@ -143,6 +143,13 @@ public class MeetingMatchingService {
 
             meetingMatchingRepository.save(meetingMatching);
         }
+
+        meetingSurveyList.forEach((meetingSurvey -> {
+            if (meetingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
+                meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
+            }
+        }));
+
         return meetingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestMeetingMatchingResultDto.builder()
                 .matchId(matchingEntity.getId())
