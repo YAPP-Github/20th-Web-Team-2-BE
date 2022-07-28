@@ -61,12 +61,12 @@ public class DatingMatchingScheduler {
             DatingSurveyEntity firstEntity = datingSurveyMap.get(firstDto.getId());
             DatingSurveyEntity secondEntity = datingSurveyMap.get(secondDto.getId());
 
-            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
-            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
-
             DatingMatchingEntity datingMatching = mi.toDatingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeDatingMatching(datingMatching);
             secondEntity.changeDatingMatching(datingMatching);
+
+            datingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
+            datingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
 
             String emailA = datingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = datingMatching.getFemaleSurvey().getUser().getUniversityEmail();
@@ -76,5 +76,11 @@ public class DatingMatchingScheduler {
 
             datingMatchingRepository.save(datingMatching);
         }
+
+        datingSurveyList.forEach((datingSurvey -> {
+            if (datingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
+                datingSurvey.changeMatchStatus(MatchStatus.FAILED);
+            }
+        }));
     }
 }

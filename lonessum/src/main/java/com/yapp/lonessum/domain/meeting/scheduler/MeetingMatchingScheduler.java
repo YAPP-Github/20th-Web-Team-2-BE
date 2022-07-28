@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,12 +59,12 @@ public class MeetingMatchingScheduler {
             MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
             MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
 
-            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
-            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
-
             MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeMeetingMatching(meetingMatching);
             secondEntity.changeMeetingMatching(meetingMatching);
+
+            meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
+            meetingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
 
             String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
@@ -75,5 +74,11 @@ public class MeetingMatchingScheduler {
 
             meetingMatchingRepository.save(meetingMatching);
         }
+
+        meetingSurveyList.forEach((meetingSurvey -> {
+            if (meetingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
+                meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
+            }
+        }));
     }
 }
