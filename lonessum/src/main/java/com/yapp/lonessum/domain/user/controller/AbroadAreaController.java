@@ -25,6 +25,6 @@ public class AbroadAreaController {
     //지역 정보 등록용 임시 api
     @PostMapping()
     public void registerAbroadAreaInfo() throws IOException {
-        abroadAreaService.registerUniInfo();
+        abroadAreaService.registerAreaInfo();
     }
 }
