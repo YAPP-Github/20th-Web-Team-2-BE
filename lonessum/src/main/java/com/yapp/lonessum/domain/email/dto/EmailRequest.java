@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.user.dto;
+package com.yapp.lonessum.domain.email.dto;
 
 import lombok.Data;
 

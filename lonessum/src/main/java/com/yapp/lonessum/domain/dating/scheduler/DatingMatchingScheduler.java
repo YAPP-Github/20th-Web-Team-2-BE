@@ -8,7 +8,7 @@ import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
-import com.yapp.lonessum.domain.user.service.EmailService;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.DatingSurveyMapper;
@@ -17,6 +17,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ public class DatingMatchingScheduler {
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
-    public void runMatch() {
+    public void runMatch() throws MessagingException {
         List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 

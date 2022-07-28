@@ -36,11 +36,20 @@ public class UserService {
                     .isAuthenticated(false)
                     .isAdult(false)
                     .build());
-            return new LoginResponse(jwtService.createAccessToken(newUser.getId()));
+
+            return LoginResponse.builder()
+                    .accessToken(jwtService.createAccessToken(newUser.getId()))
+                    .isAuthenticated(newUser.getIsAuthenticated())
+                    .isAdult(newUser.getIsAdult())
+                    .build();
         }
         else {
             user.get().changeKakaoAccessToken(token.getAccess_token());
-            return new LoginResponse(jwtService.createAccessToken(user.get().getId()));
+            return LoginResponse.builder()
+                    .accessToken(jwtService.createAccessToken(user.get().getId()))
+                    .isAuthenticated(user.get().getIsAuthenticated())
+                    .isAdult(user.get().getIsAdult())
+                    .build();
         }
     }
 
@@ -59,16 +68,16 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
-        UniversityEntity university = new UniversityEntity();
-        university.setName("Seoul");
-        university.setDomain("snu.ac.kr");
-        universityRepository.save(university);
+//        UniversityEntity university = new UniversityEntity();
+//        university.setName("Seoul");
+//        university.setDomain("snu.ac.kr");
+//        universityRepository.save(university);
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
                 .isAuthenticated(true)
-                .university(university)
+//                .university(university)
                 .build()).getId();
     }
 
@@ -77,7 +86,11 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUserName(loginRequest.getUserName()).orElseThrow(() -> new RestApiException(UserErrorCode.INACTIVE_USER));
         if (userEntity.getPassword().equals(loginRequest.getPassword())) {
             String accessToken = jwtService.createAccessToken(userEntity.getId());
-            return new LoginResponse(accessToken);
+            return LoginResponse.builder()
+                    .accessToken(accessToken)
+                    .isAuthenticated(userEntity.getIsAuthenticated())
+                    .isAdult(userEntity.getIsAdult())
+                    .build();
         }
         else {
             throw new RestApiException(UserErrorCode.WRONG_PASSWORD);

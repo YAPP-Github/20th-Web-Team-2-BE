@@ -34,9 +34,6 @@ public class UserEntity {
 
     private String universityEmail;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private EmailTokenEntity emailToken;
-
     private Boolean isAuthenticated;
 
     private Boolean isAdult;
@@ -54,10 +51,6 @@ public class UserEntity {
     public void authenticatedWithEmail(UniversityEntity university) {
         this.university = university;
         this.isAuthenticated = true;
-    }
-
-    public void issueEmailToken(EmailTokenEntity emailToken) {
-        this.emailToken = emailToken;
     }
 
     public void changeKakaoAccessToken(String kakaoAccessToken) {
