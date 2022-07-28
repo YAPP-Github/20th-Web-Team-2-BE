@@ -24,5 +24,5 @@ public class DatingMatchingEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private DatingSurveyEntity femaleSurvey;
 
-    private LocalDateTime matchedAt;
+    private LocalDateTime matchedTime;
 }

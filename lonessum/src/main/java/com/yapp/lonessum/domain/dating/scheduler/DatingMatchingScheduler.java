@@ -46,7 +46,6 @@ public class DatingMatchingScheduler {
 
         List<DatingSurveyDto> datingSurveyDtoList = new ArrayList<>();
         for (DatingSurveyEntity ds : datingSurveyList) {
-            ds.changeMatchStatus(MatchStatus.MATCHED);
             DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(ds);
             datingSurveyDto.setId(ds.getId());
             datingSurveyDtoList.add(datingSurveyDto);
@@ -61,6 +60,9 @@ public class DatingMatchingScheduler {
 
             DatingSurveyEntity firstEntity = datingSurveyMap.get(firstDto.getId());
             DatingSurveyEntity secondEntity = datingSurveyMap.get(secondDto.getId());
+
+            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
+            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
 
             DatingMatchingEntity datingMatching = mi.toDatingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeDatingMatching(datingMatching);

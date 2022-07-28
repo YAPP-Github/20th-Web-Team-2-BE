@@ -8,10 +8,12 @@ import com.yapp.lonessum.domain.dating.algorithm.DatingMatchingAlgorithm;
 import com.yapp.lonessum.domain.dating.dto.DatingMatchResultDto;
 import com.yapp.lonessum.domain.dating.dto.DatingPartnerSurveyDto;
 import com.yapp.lonessum.domain.dating.dto.DatingSurveyDto;
+import com.yapp.lonessum.domain.dating.dto.TestDatingMatchingResultDto;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
+import com.yapp.lonessum.domain.meeting.dto.TestMeetingMatchingResultDto;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.AbroadAreaService;
 import com.yapp.lonessum.domain.user.service.UniversityService;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,17 +49,17 @@ public class DatingMatchingService {
 
         if (datingSurvey == null) {
             // 작성한 설문이 없을 때
-            return new DatingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null);
+            return new DatingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null, null);
         }
 
         // 작성한 설문이 있을 때
         // 매칭 참여 안했을 때 -> 가장 최근 매칭 결과
         if (datingSurvey.getMatchStatus() == MatchStatus.DONE) {
-            return new DatingMatchResultDto(7001, SurveyErrorCode.NO_WAITING_SURVEY.getMessage(), null);
+            return new DatingMatchResultDto(7001, SurveyErrorCode.NO_WAITING_SURVEY.getMessage(), null, null);
         }
         // 매칭 대기중일 떄
         else if (datingSurvey.getMatchStatus() == MatchStatus.WAITING) {
-            return new DatingMatchResultDto(7002, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null);
+            return new DatingMatchResultDto(7002, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null);
         }
         // 매칭 성공했을 때
         else if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
@@ -65,7 +68,7 @@ public class DatingMatchingService {
                 partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
                 if (datingSurvey.getPayment() == null) {
-                    return new DatingMatchResultDto(7003, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null);
+                    return new DatingMatchResultDto(7003, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L));
                 }
             }
             // 내가 여자일 때
@@ -73,7 +76,7 @@ public class DatingMatchingService {
                 partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
                 if (partnerSurvey.getPayment() == null) {
-                    return new DatingMatchResultDto(7004, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null);
+                    return new DatingMatchResultDto(7004, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
                 }
             }
             // 모두 결제했을 때 -> 매칭 상대 정보
@@ -92,16 +95,16 @@ public class DatingMatchingService {
                 }
             }
             datingPartnerSurveyDto.setAreas(areaNames);
-            return new DatingMatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto);
+            return new DatingMatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null);
         }
         // 매칭 실패했을 떄
         else {
-            return new DatingMatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null);
+            return new DatingMatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null);
         }
     }
 
     @Transactional
-    public List<DatingMatchingEntity> testMatch() {
+    public List<TestDatingMatchingResultDto> testMatch() {
         List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
@@ -112,7 +115,6 @@ public class DatingMatchingService {
 
         List<DatingSurveyDto> datingSurveyDtoList = new ArrayList<>();
         for (DatingSurveyEntity ds : datingSurveyList) {
-            ds.changeMatchStatus(MatchStatus.MATCHED);
             DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(ds);
             datingSurveyDto.setId(ds.getId());
             datingSurveyDtoList.add(datingSurveyDto);
@@ -128,6 +130,9 @@ public class DatingMatchingService {
             DatingSurveyEntity firstEntity = datingSurveyMap.get(firstDto.getId());
             DatingSurveyEntity secondEntity = datingSurveyMap.get(secondDto.getId());
 
+            firstEntity.changeMatchStatus(MatchStatus.MATCHED);
+            secondEntity.changeMatchStatus(MatchStatus.MATCHED);
+
             DatingMatchingEntity datingMatching = mi.toDatingMatchingEntity(firstEntity, secondEntity);
             firstEntity.changeDatingMatching(datingMatching);
             secondEntity.changeDatingMatching(datingMatching);
@@ -140,6 +145,11 @@ public class DatingMatchingService {
 
             datingMatchingRepository.save(datingMatching);
         }
-        return datingMatchingRepository.findAll();
+        return datingMatchingRepository.findAll()
+                .stream().map((matchingEntity) -> TestDatingMatchingResultDto.builder()
+                        .matchId(matchingEntity.getId())
+                        .maleSurveyId(matchingEntity.getMaleSurvey().getId())
+                        .femaleSurveyId(matchingEntity.getFemaleSurvey().getId())
+                        .build()).collect(Collectors.toList());
     }
 }
