@@ -49,6 +49,12 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public UserInfoDto getMyInfo() {
+        UserEntity user = jwtService.getUserFromJwt();
+        return new UserInfoDto(user.getUniversityEmail(), user.getUniversity().getName());
+    }
+
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
 //        UniversityEntity university = new UniversityEntity();

@@ -24,9 +24,7 @@ public class AbroadAreaService {
     private final AbroadAreaRepository abroadAreaRepository;
 
     public void registerAreaInfo() throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:university/city_info.csv");
-
-        File csv = new File(resource.getURI());
+        File csv = new File("/root/app/city_info.csv");
         BufferedReader br = null;
         String line = "";
 
