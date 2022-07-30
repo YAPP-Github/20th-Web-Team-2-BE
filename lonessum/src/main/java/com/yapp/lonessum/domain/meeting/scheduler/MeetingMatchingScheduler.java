@@ -81,4 +81,15 @@ public class MeetingMatchingScheduler {
             }
         }));
     }
+
+    // 결제 마감 시간까지 결제하지 않은 유저는 MatchStatus가 MATCHED -> FAILED로 변경
+    @Transactional
+    @Scheduled(cron = "00 00 22 * * ?")
+    public void matchedToFailed() {
+        List<MeetingSurveyEntity> matchedSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.MATCHED)
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_MATCHED_SURVEY));
+        matchedSurveyList.forEach((matchedSurvey) -> {
+            matchedSurvey.changeMatchStatus(MatchStatus.FAILED);
+        });
+    }
 }

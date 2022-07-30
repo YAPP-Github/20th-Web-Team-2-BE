@@ -10,6 +10,7 @@ public enum SurveyErrorCode implements ErrorCode {
 
     NO_EXISTING_SURVEY(HttpStatus.BAD_REQUEST, "작성한 설문이 없습니다."),
     NO_WAITING_SURVEY(HttpStatus.BAD_REQUEST, "대기 중인 설문이 없습니다."),
+    NO_MATCHED_SURVEY(HttpStatus.BAD_REQUEST, "결제 미완료 설문이 없습니다."),
     WAITING_FOR_MATCH(HttpStatus.ACCEPTED, "매칭 대기중입니다."),
     MATCH_SUCCESS(HttpStatus.ACCEPTED, "매칭이 성사되었습니다."),
     MATCH_FAIL(HttpStatus.ACCEPTED, "매칭에 실패했습니다."),
