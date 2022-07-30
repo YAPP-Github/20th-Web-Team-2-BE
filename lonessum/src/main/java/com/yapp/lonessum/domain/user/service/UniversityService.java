@@ -27,10 +27,7 @@ public class UniversityService {
     private final UniversityRepository universityRepository;
 
     public void registerUniInfo() throws IOException {
-        List<UniversityEntity> csvList = new ArrayList<>();
-        Resource resource = resourceLoader.getResource("classpath:university/university_info.csv");
-
-        File csv = new File(resource.getURI());
+        File csv = new File("/root/app/university_info.csv");
         BufferedReader br = null;
         String line = "";
 
