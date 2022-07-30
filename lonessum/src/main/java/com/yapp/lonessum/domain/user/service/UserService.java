@@ -61,12 +61,6 @@ public class UserService {
     }
 
     @Transactional
-    public void checkAdult(String token, Boolean isAdult) {
-        UserEntity user = getUserFromToken(token);
-        user.changeIsAdult(isAdult);
-    }
-
-    @Transactional
     public Long testJoin(JoinRequest joinRequest) {
 //        UniversityEntity university = new UniversityEntity();
 //        university.setName("Seoul");
