@@ -64,8 +64,9 @@ public class UserEntity {
         this.kakaoAccessToken = kakaoAccessToken;
     }
 
-    public void changeIsAdult(Boolean isAdult) {
+    public boolean changeIsAdult(Boolean isAdult) {
         this.isAdult = isAdult;
+        return isAdult;
     }
 
     public void changeMeetingSurvey(MeetingSurveyEntity meetingSurvey) {
