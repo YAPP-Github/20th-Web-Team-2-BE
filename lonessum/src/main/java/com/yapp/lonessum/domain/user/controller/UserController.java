@@ -43,6 +43,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/withdraw")
+    public ResponseEntity withdraw(HttpServletRequest httpServletRequest) {
+        String userId = (String)httpServletRequest.getAttribute("userId");
+        userService.withdraw(Long.parseLong(userId));
+
+        return ResponseEntity.ok().build();
+    }
+
     //TODO : 이후에 제거
     //token 바탕 사용자 id 얻어오는 사용 예시
     @GetMapping("/id")

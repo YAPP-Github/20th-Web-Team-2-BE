@@ -53,6 +53,11 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public void withdraw(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
     @Transactional(readOnly = true)
     public UserEntity getUserFromToken(String token) {
         KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token);
