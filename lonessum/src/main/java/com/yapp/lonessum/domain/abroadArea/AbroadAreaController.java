@@ -1,8 +1,5 @@
-package com.yapp.lonessum.domain.user.controller;
+package com.yapp.lonessum.domain.abroadArea;
 
-import com.yapp.lonessum.domain.user.dto.AbroadAreaDto;
-import com.yapp.lonessum.domain.user.dto.UniversityDto;
-import com.yapp.lonessum.domain.user.service.AbroadAreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

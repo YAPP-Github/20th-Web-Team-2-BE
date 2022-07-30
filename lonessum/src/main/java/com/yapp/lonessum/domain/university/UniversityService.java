@@ -1,14 +1,9 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.university;
 
-import com.yapp.lonessum.domain.user.dto.UniversityDto;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
-import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;

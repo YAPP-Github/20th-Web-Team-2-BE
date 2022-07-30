@@ -1,10 +1,10 @@
 package com.yapp.lonessum.domain.email.service;
 
 import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
+import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.repository.UniversityRepository;
-import com.yapp.lonessum.domain.user.service.UniversityService;
+import com.yapp.lonessum.domain.university.UniversityRepository;
+import com.yapp.lonessum.domain.university.UniversityService;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
