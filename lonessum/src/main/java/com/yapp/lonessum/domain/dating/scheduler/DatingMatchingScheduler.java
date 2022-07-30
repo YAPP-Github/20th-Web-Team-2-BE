@@ -92,7 +92,10 @@ public class DatingMatchingScheduler {
         List<DatingSurveyEntity> matchedSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.MATCHED)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_MATCHED_SURVEY));
         matchedSurveyList.forEach((matchedSurvey) -> {
+            // 남자 설문
             matchedSurvey.changeMatchStatus(MatchStatus.FAILED);
+            // 그와 매칭된 여자 설문
+            matchedSurvey.getDatingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
         });
     }
 }

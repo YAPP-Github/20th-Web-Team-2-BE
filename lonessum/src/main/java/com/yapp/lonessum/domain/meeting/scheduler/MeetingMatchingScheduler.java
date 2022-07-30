@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.meeting.scheduler;
 
 import com.yapp.lonessum.common.algorithm.MatchingInfo;
+import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
@@ -89,7 +90,10 @@ public class MeetingMatchingScheduler {
         List<MeetingSurveyEntity> matchedSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.MATCHED)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_MATCHED_SURVEY));
         matchedSurveyList.forEach((matchedSurvey) -> {
+            // 남자 설문
             matchedSurvey.changeMatchStatus(MatchStatus.FAILED);
+            // 그와 매칭된 여자 설문
+            matchedSurvey.getMeetingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
         });
     }
 }
