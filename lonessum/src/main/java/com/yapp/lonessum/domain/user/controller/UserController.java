@@ -1,10 +1,7 @@
 package com.yapp.lonessum.domain.user.controller;
 
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
-import com.yapp.lonessum.domain.user.dto.JoinRequest;
-import com.yapp.lonessum.domain.user.dto.KakaoTokenInfoResponse;
-import com.yapp.lonessum.domain.user.dto.LoginRequest;
-import com.yapp.lonessum.domain.user.dto.LoginResponse;
+import com.yapp.lonessum.domain.user.dto.*;
 import com.yapp.lonessum.domain.user.repository.RedisRepository;
 import com.yapp.lonessum.domain.user.service.BlackListService;
 import com.yapp.lonessum.domain.user.service.UserService;
@@ -31,6 +28,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> testLogin(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.testLogin(loginRequest));
+    }
+
+    @GetMapping("/myInfo")
+    public ResponseEntity<UserInfoDto> getMyInfo() {
+        return ResponseEntity.ok(userService.getMyInfo());
     }
 
     @GetMapping("/logout")
