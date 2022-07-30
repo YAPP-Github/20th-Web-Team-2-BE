@@ -7,6 +7,8 @@ import com.yapp.lonessum.domain.user.repository.AbroadAreaRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -74,5 +76,10 @@ public class AbroadAreaService {
             areaNames.add(areaName.substring(areaName.lastIndexOf(",")+1));
         }
         return areaNames;
+    }
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
+        registerAreaInfo();
     }
 }
