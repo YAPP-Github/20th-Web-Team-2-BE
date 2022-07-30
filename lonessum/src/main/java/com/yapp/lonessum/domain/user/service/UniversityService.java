@@ -84,7 +84,7 @@ public class UniversityService {
         return universityNames;
     }
 
-    @EventListener
+//    @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
         registerUniInfo();
     }
