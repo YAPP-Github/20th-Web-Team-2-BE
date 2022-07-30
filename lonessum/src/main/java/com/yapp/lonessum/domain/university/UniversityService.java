@@ -4,6 +4,7 @@ import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -79,8 +80,20 @@ public class UniversityService {
         return universityNames;
     }
 
-//    @EventListener
+    @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
-        registerUniInfo();
+//        registerUniInfo();
+        UniversityEntity university1 = new UniversityEntity();
+        university1.setDomain("google.com");
+        university1.setName("GOOGLE");
+        UniversityEntity university2 = new UniversityEntity();
+        university2.setDomain("naver.com");
+        university2.setName("NAVER");
+        UniversityEntity university3 = new UniversityEntity();
+        university3.setDomain("kakao.com");
+        university3.setName("KAKAO");
+        universityRepository.save(university1);
+        universityRepository.save(university2);
+        universityRepository.save(university3);
     }
 }
