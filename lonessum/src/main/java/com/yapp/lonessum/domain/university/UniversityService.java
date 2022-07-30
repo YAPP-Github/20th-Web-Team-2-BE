@@ -1,12 +1,8 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.university;
 
-import com.yapp.lonessum.domain.user.dto.UniversityDto;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
-import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
@@ -81,8 +77,20 @@ public class UniversityService {
         return universityNames;
     }
 
-//    @EventListener
+    @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
-        registerUniInfo();
+//        registerUniInfo();
+        UniversityEntity university1 = new UniversityEntity();
+        university1.setDomain("google.com");
+        university1.setName("GOOGLE");
+        UniversityEntity university2 = new UniversityEntity();
+        university2.setDomain("naver.com");
+        university2.setName("NAVER");
+        UniversityEntity university3 = new UniversityEntity();
+        university3.setDomain("kakao.com");
+        university3.setName("KAKAO");
+        universityRepository.save(university1);
+        universityRepository.save(university2);
+        universityRepository.save(university3);
     }
 }

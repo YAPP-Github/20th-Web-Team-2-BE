@@ -1,7 +1,5 @@
-package com.yapp.lonessum.domain.user.controller;
+package com.yapp.lonessum.domain.university;
 
-import com.yapp.lonessum.domain.user.dto.UniversityDto;
-import com.yapp.lonessum.domain.user.service.UniversityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

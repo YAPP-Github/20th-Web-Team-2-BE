@@ -1,14 +1,9 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.abroadArea;
 
-import com.yapp.lonessum.domain.user.dto.AbroadAreaDto;
-import com.yapp.lonessum.domain.user.entity.AbroadAreaEntity;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
-import com.yapp.lonessum.domain.user.repository.AbroadAreaRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -19,7 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
