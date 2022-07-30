@@ -7,6 +7,8 @@ import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -77,5 +79,10 @@ public class UniversityService {
             universityNames.add(universityEntity.getName());
         }
         return universityNames;
+    }
+
+//    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
+        registerUniInfo();
     }
 }

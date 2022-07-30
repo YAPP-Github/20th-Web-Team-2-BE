@@ -13,6 +13,7 @@ import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,6 +44,7 @@ public class OAuthController {
                 .build();
     }
 
+    @Transactional
     @GetMapping("/kakao/age")
     public ResponseEntity<Boolean> getUserAgeFromKakao(@RequestParam String code, @RequestParam String type) {
         KakaoTokenRequest kakaoTokenRequest = makeTokenRequestForUserInfo(code, type);

@@ -32,11 +32,9 @@ public class UserService {
         if (user.isEmpty()) {
             UserEntity newUser = userRepository.save(UserEntity.builder()
                     .kakaoServerId(kakaoServerId)
-                    .kakaoAccessToken(token.getAccess_token())
                     .isAuthenticated(false)
                     .isAdult(false)
                     .build());
-
             return LoginResponse.builder()
                     .accessToken(jwtService.createAccessToken(newUser.getId()))
                     .isAuthenticated(newUser.getIsAuthenticated())
@@ -44,7 +42,6 @@ public class UserService {
                     .build();
         }
         else {
-            user.get().changeKakaoAccessToken(token.getAccess_token());
             return LoginResponse.builder()
                     .accessToken(jwtService.createAccessToken(user.get().getId()))
                     .isAuthenticated(user.get().getIsAuthenticated())
@@ -54,10 +51,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserEntity getUserFromToken(String token) {
-        KakaoTokenInfoResponse tokenInfo = kakaoApiClient.getTokenInfo("Bearer " + token);
-        long kakaoServerId = tokenInfo.getId();
-        return userRepository.findByKakaoServerId(kakaoServerId).get();
+    public UserInfoDto getMyInfo() {
+        UserEntity user = jwtService.getUserFromJwt();
+        return new UserInfoDto(user.getUniversityEmail(), user.getUniversity().getName());
     }
 
     @Transactional
