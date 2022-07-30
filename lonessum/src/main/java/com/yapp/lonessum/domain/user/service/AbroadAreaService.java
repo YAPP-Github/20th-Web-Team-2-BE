@@ -78,7 +78,7 @@ public class AbroadAreaService {
         return areaNames;
     }
 
-    @EventListener
+//    @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
         registerAreaInfo();
     }
