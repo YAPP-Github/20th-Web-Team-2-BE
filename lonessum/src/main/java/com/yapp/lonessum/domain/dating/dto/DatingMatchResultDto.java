@@ -12,4 +12,5 @@ public class DatingMatchResultDto {
     private String message;
     private DatingPartnerSurveyDto partnerSurvey;
     private LocalDateTime payDeadLine;
+    private String payName;
 }

@@ -47,13 +47,13 @@ public class MeetingMatchingService {
 
         if (meetingSurvey == null) {
             // 작성한 설문이 없을 때
-            return new MeetingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null, null);
+            return new MeetingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null, null, null);
         }
 
         // 작성한 설문이 있을 때
         // 매칭 대기중일 떄
         if (meetingSurvey.getMatchStatus() == MatchStatus.WAITING) {
-            return new MeetingMatchResultDto(7001, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null);
+            return new MeetingMatchResultDto(7001, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null, null);
         }
         // 매칭 성공했을 때
         else if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
@@ -62,7 +62,7 @@ public class MeetingMatchingService {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
                 if (!meetingSurvey.getMeetingMatching().getPayment().isPaid()) {
-                    return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L));
+                    return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), meetingSurvey.getMeetingMatching().getPayment().getPayName());
                 }
             }
             // 내가 여자일 때
@@ -70,7 +70,7 @@ public class MeetingMatchingService {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
                 if (!partnerSurvey.getMeetingMatching().getPayment().isPaid()) {
-                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
+                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
                 }
             }
             // 모두 결제했을 때 -> 매칭 상대 정보
@@ -90,11 +90,11 @@ public class MeetingMatchingService {
                 }
             }
             meetingPartnerSurveyDto.setAreas(areaNames);
-            return new MeetingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), meetingPartnerSurveyDto, null);
+            return new MeetingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), meetingPartnerSurveyDto, null, null);
         }
         // 매칭 실패했을 떄
         else {
-            return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null);
+            return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
     }
 
