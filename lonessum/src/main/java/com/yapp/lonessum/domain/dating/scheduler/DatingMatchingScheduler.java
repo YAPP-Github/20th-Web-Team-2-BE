@@ -9,7 +9,10 @@ import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
 import com.yapp.lonessum.domain.email.service.EmailService;
-import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
+import com.yapp.lonessum.domain.payment.entity.Payment;
+import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
+import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.DatingSurveyMapper;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,8 @@ public class DatingMatchingScheduler {
     private final DatingSurveyMapper datingSurveyMapper;
     private final DatingSurveyRepository datingSurveyRepository;
     private final DatingMatchingRepository datingMatchingRepository;
+    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
@@ -54,7 +58,6 @@ public class DatingMatchingScheduler {
 
         DatingMatchingAlgorithm datingMatchingAlgorithm = new DatingMatchingAlgorithm();
         List<MatchingInfo<DatingSurveyDto>> result = datingMatchingAlgorithm.getResult(datingSurveyDtoList);
-
         for (MatchingInfo mi : result) {
             DatingSurveyDto firstDto = (DatingSurveyDto) mi.getFirst();
             DatingSurveyDto secondDto = (DatingSurveyDto) mi.getSecond();
@@ -74,6 +77,13 @@ public class DatingMatchingScheduler {
 
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
+
+            paymentRepository.save(Payment.builder()
+                    .payName(paymentService.generatePayName())
+                    .matchType(MatchType.MEETING)
+                    .datingMatching(datingMatching)
+                    .isPaid(false)
+                    .build());
 
             datingMatchingRepository.save(datingMatching);
         }
