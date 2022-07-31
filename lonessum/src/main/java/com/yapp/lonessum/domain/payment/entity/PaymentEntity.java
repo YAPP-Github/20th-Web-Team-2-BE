@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Payment {
+public class PaymentEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -30,13 +30,15 @@ public class Payment {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "payment")
     private DatingMatchingEntity datingMatching;
 
-    private boolean isPaid;
+    private Boolean isPaid;
 
-    private boolean doesNeedRefund;
-
-    private boolean doneRefund;
+    private Boolean isNeedRefund;
 
     private LocalDateTime paidTime;
+
+    public void updateNeedRefundStatus(Boolean isNeedRefund) {
+        this.isNeedRefund = isNeedRefund;
+    }
 
     public void payForMatching(MatchType matchType) {
         this.isPaid = true;
