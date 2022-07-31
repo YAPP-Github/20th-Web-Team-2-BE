@@ -3,10 +3,7 @@ package com.yapp.lonessum.domain.dating.entity;
 import com.yapp.lonessum.domain.constant.*;
 import com.yapp.lonessum.domain.dating.dto.DatingPartnerSurveyDto;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
