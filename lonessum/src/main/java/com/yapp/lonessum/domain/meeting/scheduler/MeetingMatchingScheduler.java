@@ -10,7 +10,7 @@ import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.payment.entity.MatchType;
-import com.yapp.lonessum.domain.payment.entity.Payment;
+import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
@@ -78,7 +78,7 @@ public class MeetingMatchingScheduler {
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
 
-            paymentRepository.save(Payment.builder()
+            paymentRepository.save(PaymentEntity.builder()
                     .payName(paymentService.generatePayName())
                     .matchType(MatchType.MEETING)
                     .meetingMatching(meetingMatching)
