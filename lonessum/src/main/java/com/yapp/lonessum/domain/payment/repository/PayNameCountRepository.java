@@ -22,10 +22,10 @@ public class PayNameCountRepository {
         valueOperations.set(key, count.toString());
     }
 
-    public Long countWithPreValue() {
+    public Integer countWithPreValue() {
         String curCnt = redisTemplate.opsForValue().get(key);
         redisTemplate.opsForValue().set(key, curCnt + 1);
 
-        return Long.parseLong(curCnt);
+        return Integer.parseInt(curCnt);
     }
 }
