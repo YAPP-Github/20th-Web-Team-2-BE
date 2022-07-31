@@ -1,6 +1,7 @@
 package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.config.jwt.JwtService;
+import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -57,16 +58,14 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
-//        UniversityEntity university = new UniversityEntity();
-//        university.setName("Seoul");
-//        university.setDomain("snu.ac.kr");
-//        universityRepository.save(university);
+        UniversityEntity university = universityRepository.findByDomain("google.com");
+        universityRepository.save(university);
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
                 .isAuthenticated(true)
-//                .university(university)
+                .university(university)
                 .build()).getId();
     }
 
