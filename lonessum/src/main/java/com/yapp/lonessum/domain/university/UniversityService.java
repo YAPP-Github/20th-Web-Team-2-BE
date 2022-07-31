@@ -1,12 +1,10 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.university;
 
-import com.yapp.lonessum.domain.user.dto.UniversityDto;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
-import com.yapp.lonessum.domain.user.repository.UniversityRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -27,10 +25,7 @@ public class UniversityService {
     private final UniversityRepository universityRepository;
 
     public void registerUniInfo() throws IOException {
-        List<UniversityEntity> csvList = new ArrayList<>();
-        Resource resource = resourceLoader.getResource("classpath:university/university_info.csv");
-
-        File csv = new File(resource.getURI());
+        File csv = new File("/root/app/university_info.csv");
         BufferedReader br = null;
         String line = "";
 
@@ -80,5 +75,22 @@ public class UniversityService {
             universityNames.add(universityEntity.getName());
         }
         return universityNames;
+    }
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
+//        registerUniInfo();
+        UniversityEntity university1 = new UniversityEntity();
+        university1.setDomain("google.com");
+        university1.setName("GOOGLE");
+        UniversityEntity university2 = new UniversityEntity();
+        university2.setDomain("naver.com");
+        university2.setName("NAVER");
+        UniversityEntity university3 = new UniversityEntity();
+        university3.setDomain("kakao.com");
+        university3.setName("KAKAO");
+        universityRepository.save(university1);
+        universityRepository.save(university2);
+        universityRepository.save(university3);
     }
 }

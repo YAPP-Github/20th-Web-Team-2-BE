@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.user.entity;
+package com.yapp.lonessum.domain.abroadArea;
 
 import lombok.Getter;
 import lombok.Setter;

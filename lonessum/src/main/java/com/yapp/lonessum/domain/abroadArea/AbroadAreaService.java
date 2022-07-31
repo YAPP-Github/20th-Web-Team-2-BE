@@ -1,12 +1,9 @@
-package com.yapp.lonessum.domain.user.service;
+package com.yapp.lonessum.domain.abroadArea;
 
-import com.yapp.lonessum.domain.user.dto.AbroadAreaDto;
-import com.yapp.lonessum.domain.user.entity.AbroadAreaEntity;
-import com.yapp.lonessum.domain.user.entity.UniversityEntity;
-import com.yapp.lonessum.domain.user.repository.AbroadAreaRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -18,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class AbroadAreaService {
@@ -28,9 +24,7 @@ public class AbroadAreaService {
     private final AbroadAreaRepository abroadAreaRepository;
 
     public void registerAreaInfo() throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:university/city_info.csv");
-
-        File csv = new File(resource.getURI());
+        File csv = new File("/root/app/city_info.csv");
         BufferedReader br = null;
         String line = "";
 
@@ -74,5 +68,10 @@ public class AbroadAreaService {
             areaNames.add(areaName.substring(areaName.lastIndexOf(",")+1));
         }
         return areaNames;
+    }
+
+//    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
+        registerAreaInfo();
     }
 }

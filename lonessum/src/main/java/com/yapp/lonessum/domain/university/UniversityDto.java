@@ -1,4 +1,4 @@
-package com.yapp.lonessum.domain.user.dto;
+package com.yapp.lonessum.domain.university;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

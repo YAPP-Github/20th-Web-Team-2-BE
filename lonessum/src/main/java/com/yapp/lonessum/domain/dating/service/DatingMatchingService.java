@@ -13,10 +13,9 @@ import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
-import com.yapp.lonessum.domain.meeting.dto.TestMeetingMatchingResultDto;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
-import com.yapp.lonessum.domain.user.service.AbroadAreaService;
-import com.yapp.lonessum.domain.user.service.UniversityService;
+import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
+import com.yapp.lonessum.domain.university.UniversityService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.DatingSurveyMapper;
@@ -53,13 +52,9 @@ public class DatingMatchingService {
         }
 
         // 작성한 설문이 있을 때
-        // 매칭 참여 안했을 때 -> 가장 최근 매칭 결과
-        if (datingSurvey.getMatchStatus() == MatchStatus.DONE) {
-            return new DatingMatchResultDto(7001, SurveyErrorCode.NO_WAITING_SURVEY.getMessage(), null, null);
-        }
         // 매칭 대기중일 떄
-        else if (datingSurvey.getMatchStatus() == MatchStatus.WAITING) {
-            return new DatingMatchResultDto(7002, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null);
+        if (datingSurvey.getMatchStatus() == MatchStatus.WAITING) {
+            return new DatingMatchResultDto(7001, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null);
         }
         // 매칭 성공했을 때
         else if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
@@ -67,16 +62,16 @@ public class DatingMatchingService {
             if (datingSurvey.getGender() == Gender.MALE) {
                 partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
-                if (datingSurvey.getPayment() == null) {
-                    return new DatingMatchResultDto(7003, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L));
+                if (!datingSurvey.getDatingMatching().getPayment().isPaid()) {
+                    return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L));
                 }
             }
             // 내가 여자일 때
             else {
                 partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
-                if (partnerSurvey.getPayment() == null) {
-                    return new DatingMatchResultDto(7004, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
+                if (!partnerSurvey.getDatingMatching().getPayment().isPaid()) {
+                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
                 }
             }
             // 모두 결제했을 때 -> 매칭 상대 정보
@@ -95,11 +90,11 @@ public class DatingMatchingService {
                 }
             }
             datingPartnerSurveyDto.setAreas(areaNames);
-            return new DatingMatchResultDto(7005, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null);
+            return new DatingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null);
         }
         // 매칭 실패했을 떄
         else {
-            return new DatingMatchResultDto(7006, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null);
+            return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null);
         }
     }
 
