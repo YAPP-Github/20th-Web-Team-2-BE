@@ -30,6 +30,10 @@ public class Payment {
 
     private boolean isPaid;
 
+    private boolean doesNeedRefund;
+
+    private boolean doneRefund;
+
     private LocalDateTime paidTime;
 
     public void payForMatching(MatchType matchType) {
