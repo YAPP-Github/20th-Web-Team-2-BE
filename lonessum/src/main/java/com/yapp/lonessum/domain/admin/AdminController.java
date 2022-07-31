@@ -34,4 +34,14 @@ public class AdminController {
         adminService.setUserDatingPayment(paymentDto);
         return ResponseEntity.ok(adminService.getUserDatingStatusList());
     }
+
+    @GetMapping("/meeting/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getMeetingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getMeetingPaymentTargetList());
+    }
+
+    @GetMapping("/dating/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getDatingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getDatingPaymentTargetList());
+    }
 }
