@@ -1,7 +1,6 @@
 package com.yapp.lonessum.domain.meeting.scheduler;
 
 import com.yapp.lonessum.common.algorithm.MatchingInfo;
-import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
@@ -10,6 +9,10 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.email.service.EmailService;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
+import com.yapp.lonessum.domain.payment.entity.Payment;
+import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
+import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
@@ -28,10 +31,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MeetingMatchingScheduler {
 
+    private final EmailService emailService;
     private final MeetingSurveyMapper meetingSurveyMapper;
     private final MeetingSurveyRepository meetingSurveyRepository;
     private final MeetingMatchingRepository meetingMatchingRepository;
-    private final EmailService emailService;
+    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
@@ -72,6 +77,13 @@ public class MeetingMatchingScheduler {
 
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
+
+            paymentRepository.save(Payment.builder()
+                    .payName(paymentService.generatePayName())
+                    .matchType(MatchType.MEETING)
+                    .meetingMatching(meetingMatching)
+                    .isPaid(false)
+                    .build());
 
             meetingMatchingRepository.save(meetingMatching);
         }

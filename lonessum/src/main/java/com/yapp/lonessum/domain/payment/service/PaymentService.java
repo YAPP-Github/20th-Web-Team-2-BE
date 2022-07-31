@@ -18,6 +18,10 @@ public class PaymentService {
     private final PayplePartnerAuthClient payplePartnerAuthClient;
     private final PayplePaymentCertClient payplePaymentCertClient;
 
+    public String generatePayName() {
+        return null;
+    }
+
     public PayplePartnerAuthResponse getPartnerAuth() {
         PayplePartnerAuthRequest payplePartnerAuthRequest = new PayplePartnerAuthRequest();
         payplePartnerAuthRequest.setCst_id("test");

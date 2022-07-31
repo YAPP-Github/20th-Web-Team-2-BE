@@ -1,23 +1,48 @@
 package com.yapp.lonessum.domain.payment.entity;
 
-import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
-import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
+import com.yapp.lonessum.domain.constant.MatchStatus;
+import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
+import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Builder
+@NoArgsConstructor
 @Entity
 public class Payment {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String payName;
+
     private MatchType matchType;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "payment")
-    private MeetingSurveyEntity meetingSurvey;
+    private MeetingMatchingEntity meetingMatching;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "payment")
-    private DatingSurveyEntity datingSurvey;
+    private DatingMatchingEntity datingMatching;
 
-    private LocalDateTime paidAt;
+    private boolean isPaid;
+
+    private boolean doesNeedRefund;
+
+    private boolean doneRefund;
+
+    private LocalDateTime paidTime;
+
+    public void payForMatching(MatchType matchType) {
+        this.isPaid = true;
+        if (matchType.equals(MatchType.MEETING)) {
+            this.meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.PAID);
+        }
+        else {
+            this.datingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.PAID);
+        }
+    }
 }

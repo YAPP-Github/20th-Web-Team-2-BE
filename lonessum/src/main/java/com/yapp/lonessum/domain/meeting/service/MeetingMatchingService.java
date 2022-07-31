@@ -61,7 +61,7 @@ public class MeetingMatchingService {
             if (meetingSurvey.getGender() == Gender.MALE) {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
-                if (meetingSurvey.getPayment() == null) {
+                if (!meetingSurvey.getMeetingMatching().getPayment().isPaid()) {
                     return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L));
                 }
             }
@@ -69,7 +69,7 @@ public class MeetingMatchingService {
             else {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
-                if (partnerSurvey.getPayment() == null) {
+                if (!partnerSurvey.getMeetingMatching().getPayment().isPaid()) {
                     return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
                 }
             }
