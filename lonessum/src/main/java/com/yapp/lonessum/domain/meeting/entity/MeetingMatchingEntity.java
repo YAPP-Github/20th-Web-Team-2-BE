@@ -1,6 +1,6 @@
 package com.yapp.lonessum.domain.meeting.entity;
 
-import com.yapp.lonessum.domain.payment.entity.Payment;
+import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class MeetingMatchingEntity {
     private MeetingSurveyEntity femaleSurvey;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private Payment payment;
+    private PaymentEntity payment;
 
     private LocalDateTime matchedTime;
 }
