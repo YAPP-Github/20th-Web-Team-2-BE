@@ -62,7 +62,7 @@ public class DatingMatchingService {
             if (datingSurvey.getGender() == Gender.MALE) {
                 partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
-                if (datingSurvey.getPayment() == null) {
+                if (!datingSurvey.getDatingMatching().getPayment().isPaid()) {
                     return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L));
                 }
             }
@@ -70,7 +70,7 @@ public class DatingMatchingService {
             else {
                 partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
-                if (partnerSurvey.getPayment() == null) {
+                if (!partnerSurvey.getDatingMatching().getPayment().isPaid()) {
                     return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
                 }
             }
