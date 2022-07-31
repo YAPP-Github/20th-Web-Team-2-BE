@@ -48,13 +48,13 @@ public class DatingMatchingService {
 
         if (datingSurvey == null) {
             // 작성한 설문이 없을 때
-            return new DatingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null, null);
+            return new DatingMatchResultDto(7000, SurveyErrorCode.NO_EXISTING_SURVEY.getMessage(), null, null, null);
         }
 
         // 작성한 설문이 있을 때
         // 매칭 대기중일 떄
         if (datingSurvey.getMatchStatus() == MatchStatus.WAITING) {
-            return new DatingMatchResultDto(7001, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null);
+            return new DatingMatchResultDto(7001, SurveyErrorCode.WAITING_FOR_MATCH.getMessage(), null, null, null);
         }
         // 매칭 성공했을 때
         else if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
@@ -63,7 +63,7 @@ public class DatingMatchingService {
                 partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
                 // 내가 결제 안했을 때
                 if (!datingSurvey.getDatingMatching().getPayment().isPaid()) {
-                    return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L));
+                    return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), datingSurvey.getDatingMatching().getPayment().getPayName());
                 }
             }
             // 내가 여자일 때
@@ -71,7 +71,7 @@ public class DatingMatchingService {
                 partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
                 // 상대가 결제 안했을 때
                 if (!partnerSurvey.getDatingMatching().getPayment().isPaid()) {
-                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null);
+                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
                 }
             }
             // 모두 결제했을 때 -> 매칭 상대 정보
@@ -90,11 +90,11 @@ public class DatingMatchingService {
                 }
             }
             datingPartnerSurveyDto.setAreas(areaNames);
-            return new DatingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null);
+            return new DatingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null, null);
         }
         // 매칭 실패했을 떄
         else {
-            return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null);
+            return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
     }
 
