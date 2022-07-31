@@ -1,5 +1,6 @@
 package com.yapp.lonessum.domain.payment.entity;
 
+import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import lombok.Builder;
@@ -30,4 +31,14 @@ public class Payment {
     private boolean isPaid;
 
     private LocalDateTime paidTime;
+
+    public void payForMatching(MatchType matchType) {
+        this.isPaid = true;
+        if (matchType.equals(MatchType.MEETING)) {
+            this.meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.PAID);
+        }
+        else {
+            this.datingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.PAID);
+        }
+    }
 }

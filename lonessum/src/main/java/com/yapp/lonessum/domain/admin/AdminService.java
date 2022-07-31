@@ -5,6 +5,7 @@ import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -66,17 +67,13 @@ public class AdminService {
     public void setUserMeetingPayment(PaymentDto paymentDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
-        if (meetingSurvey.getMatchStatus().equals(MatchStatus.MATCHED)) {
-            meetingSurvey.changeMatchStatus(MatchStatus.PAID);
-        }
+        meetingSurvey.getMeetingMatching().getPayment().payForMatching(MatchType.MEETING);
     }
 
     @Transactional
     public void setUserDatingPayment(PaymentDto paymentDto) {
         DatingSurveyEntity datingSurvey = datingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
-        if (datingSurvey.getMatchStatus().equals(MatchStatus.MATCHED)) {
-            datingSurvey.changeMatchStatus(MatchStatus.PAID);
-        }
+        datingSurvey.getDatingMatching().getPayment().payForMatching(MatchType.DATING);
     }
 }
