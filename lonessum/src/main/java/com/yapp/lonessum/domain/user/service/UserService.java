@@ -9,6 +9,7 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
+import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -31,6 +32,7 @@ public class UserService {
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final UniversityRepository universityRepository;
     private final MeetingMatchingRepository meetingMatchingRepository;
     private final DatingMatchingRepository datingMatchingRepository;
 
@@ -127,16 +129,14 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
-//        UniversityEntity university = new UniversityEntity();
-//        university.setName("Seoul");
-//        university.setDomain("snu.ac.kr");
-//        universityRepository.save(university);
+        UniversityEntity university = universityRepository.findByDomain("google.com");
+        universityRepository.save(university);
         return userRepository.save(UserEntity.builder()
                 .userName(joinRequest.getUserName())
                 .password(joinRequest.getPassword())
                 .isAdult(true)
                 .isAuthenticated(true)
-//                .university(university)
+                .university(university)
                 .build()).getId();
     }
 
