@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity logout(HttpServletRequest httpServletRequest) {
-        String jwt = httpServletRequest.getHeader("jwt");
+        String jwt = httpServletRequest.getHeader("Authorization");
         String userId = httpServletRequest.getAttribute("userId").toString();
 
         blackListService.registerBlackList(userId, jwt);
