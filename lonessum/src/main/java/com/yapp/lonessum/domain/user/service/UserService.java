@@ -91,10 +91,12 @@ public class UserService {
                 if (meetingMatchingEntity.isPresent()) {
                     PaymentEntity payment = meetingMatchingEntity.get().getPayment();
 
-                    payment.updateNeedRefundStatus(true);
+                    if(payment.getIsPaid()) {
+                        payment.updateNeedRefundStatus(true);
 
-                    //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-                    meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+                        //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+                    }
                 }
             }
         }
@@ -113,10 +115,12 @@ public class UserService {
                 if (datingMatchingEntity.isPresent()) {
                     PaymentEntity payment = datingMatchingEntity.get().getPayment();
 
-                    payment.updateNeedRefundStatus(true);
+                    if(payment.getIsPaid()) {
+                        payment.updateNeedRefundStatus(true);
 
-                    //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-                    datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+                        //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
+                        datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+                    }
                 }
             }
         }
