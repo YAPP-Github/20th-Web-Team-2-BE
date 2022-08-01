@@ -44,3 +44,7 @@ server:
     key-store-password: lonessum
     key-alias: lonessum
     enabled: true
+
+payname:
+  resource:
+    path: /Users/kakao/Desktop/island/lonessum/lonessum/src/main/resources/payNameInfo.txt

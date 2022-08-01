@@ -21,4 +21,11 @@ public class PayNameCountRepository {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, count.toString());
     }
+
+    public Integer countWithPreValue() {
+        String curCnt = redisTemplate.opsForValue().get(key);
+        redisTemplate.opsForValue().set(key, curCnt + 1);
+
+        return Integer.parseInt(curCnt);
+    }
 }

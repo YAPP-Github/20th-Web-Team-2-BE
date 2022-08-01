@@ -80,7 +80,7 @@ public class MeetingMatchingScheduler {
             emailService.sendMatchResult(emailB);
 
             paymentRepository.save(PaymentEntity.builder()
-                    .payName(payNameService.issuePayName())
+                    .payName(payNameService.getPayName())
                     .matchType(MatchType.MEETING)
                     .meetingMatching(meetingMatching)
                     .isPaid(false)
