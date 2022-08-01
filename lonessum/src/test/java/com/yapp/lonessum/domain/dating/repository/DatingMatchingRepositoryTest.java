@@ -33,7 +33,7 @@ class DatingMatchingRepositoryTest {
         PaymentEntity payment = paymentRepository.save(PaymentEntity.builder().build());
 
         datingMatchingRepository.save(DatingMatchingEntity.builder()
-                .maleSurvey(surveyEntity)
+                .femaleSurvey(surveyEntity)
                 .payment(payment)
                 .build());
 
@@ -43,6 +43,6 @@ class DatingMatchingRepositoryTest {
                 datingMatchingRepository.findWithFeMaleSurvey(surveyEntity.getId()).get();
 
         //then
-        Assertions.assertEquals(surveyEntity.getId(), datingMatchingEntity.getMaleSurvey().getId());
+        Assertions.assertEquals(surveyEntity.getId(), datingMatchingEntity.getFemaleSurvey().getId());
     }
 }
