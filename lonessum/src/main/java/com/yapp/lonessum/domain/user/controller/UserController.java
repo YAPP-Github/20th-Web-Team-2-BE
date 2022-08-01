@@ -1,8 +1,9 @@
 package com.yapp.lonessum.domain.user.controller;
 
+import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
-import com.yapp.lonessum.domain.user.repository.RedisRepository;
+import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.BlackListService;
 import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     private final KakaoApiClient kakaoApiClient;
+    private final JwtService jwtService;
     private final UserService userService;
     private final BlackListService blackListService;
 
@@ -32,7 +34,8 @@ public class UserController {
 
     @GetMapping("/myInfo")
     public ResponseEntity<UserInfoDto> getMyInfo() {
-        return ResponseEntity.ok(userService.getMyInfo());
+        UserEntity user = jwtService.getUserFromJwt();
+        return ResponseEntity.ok(userService.getMyInfo(user));
     }
 
     @GetMapping("/logout")
@@ -46,10 +49,9 @@ public class UserController {
     }
 
     @DeleteMapping("/withdraw")
-    public ResponseEntity withdraw(HttpServletRequest httpServletRequest) {
-        String userId = (String)httpServletRequest.getAttribute("userId");
-        userService.withdraw(Long.parseLong(userId));
-
+    public ResponseEntity withdraw() {
+        UserEntity user = jwtService.getUserFromJwt();
+        userService.withdraw(user.getId());
         return ResponseEntity.ok().build();
     }
 
