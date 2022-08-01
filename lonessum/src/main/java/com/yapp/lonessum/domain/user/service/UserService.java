@@ -2,6 +2,7 @@ package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.constant.Gender;
+import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
@@ -81,6 +82,7 @@ public class UserService {
             //남자 탈퇴 (여자는 환불 필요 x)
             if (meetingSurvey.getGender() == Gender.MALE) {
                 //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
+                meetingSurvey.getMeetingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
             } else if (meetingSurvey.getGender() == Gender.FEMALE) {
                 //여자 탈퇴 (남자 환불 필요 o)
                 Optional<MeetingMatchingEntity> meetingMatchingEntity =
@@ -92,7 +94,7 @@ public class UserService {
                     payment.updateNeedRefundStatus(true);
 
                     //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-
+                    meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
                 }
             }
         }
@@ -102,6 +104,7 @@ public class UserService {
             //남자 탈퇴 (여자는 환불 필요 x)
             if (datingSurvey.getGender() == Gender.MALE) {
                 //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
+                datingSurvey.getDatingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
             } else if (datingSurvey.getGender() == Gender.FEMALE) {
                 //여자 탈퇴 (남자 환불 필요 o)
                 Optional<DatingMatchingEntity> datingMatchingEntity =
@@ -113,7 +116,7 @@ public class UserService {
                     payment.updateNeedRefundStatus(true);
 
                     //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-
+                    datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
                 }
             }
         }
