@@ -1,6 +1,14 @@
 package com.yapp.lonessum.domain.user.service;
 
 import com.yapp.lonessum.config.jwt.JwtService;
+import com.yapp.lonessum.domain.constant.Gender;
+import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
+import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
+import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
+import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
+import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
+import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
+import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
@@ -13,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,6 +33,8 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
+    private final MeetingMatchingRepository meetingMatchingRepository;
+    private final DatingMatchingRepository datingMatchingRepository;
 
     @Transactional
     public LoginResponse login(KakaoTokenResponse token) {
@@ -40,14 +52,73 @@ public class UserService {
                     .isAuthenticated(newUser.getIsAuthenticated())
                     .isAdult(newUser.getIsAdult())
                     .build();
-        }
-        else {
+        } else {
             return LoginResponse.builder()
                     .accessToken(jwtService.createAccessToken(user.get().getId()))
                     .isAuthenticated(user.get().getIsAuthenticated())
                     .isAdult(user.get().getIsAdult())
                     .build();
         }
+    }
+
+    @Transactional
+    public void withdraw(Long userId) {
+        UserEntity withdrawUser = userRepository.findUserWithSurveys(userId)
+                .orElseThrow(() -> new NoSuchElementException("유저 정보가 존재하지 않습니다."));
+
+
+        MeetingSurveyEntity meetingSurvey = withdrawUser.getMeetingSurvey();
+        DatingSurveyEntity datingSurvey = withdrawUser.getDatingSurvey();
+
+        //meeting dating 매칭된 것 없는 case
+        if (Objects.isNull(meetingSurvey) && Objects.isNull(datingSurvey)) {
+            userRepository.deleteById(userId);
+            return;
+        }
+
+        //미팅 case
+        if (!Objects.isNull(meetingSurvey)) {
+            //남자 탈퇴 (여자는 환불 필요 x)
+            if (meetingSurvey.getGender() == Gender.MALE) {
+                //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
+            } else if (meetingSurvey.getGender() == Gender.FEMALE) {
+                //여자 탈퇴 (남자 환불 필요 o)
+                Optional<MeetingMatchingEntity> meetingMatchingEntity =
+                        meetingMatchingRepository.findWithFeMaleSurvey(meetingSurvey.getId());
+
+                if (meetingMatchingEntity.isPresent()) {
+                    PaymentEntity payment = meetingMatchingEntity.get().getPayment();
+
+                    payment.updateNeedRefundStatus(true);
+
+                    //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
+
+                }
+            }
+        }
+
+        //dating case
+        if (!Objects.isNull(datingSurvey)) {
+            //남자 탈퇴 (여자는 환불 필요 x)
+            if (datingSurvey.getGender() == Gender.MALE) {
+                //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
+            } else if (datingSurvey.getGender() == Gender.FEMALE) {
+                //여자 탈퇴 (남자 환불 필요 o)
+                Optional<DatingMatchingEntity> datingMatchingEntity =
+                        datingMatchingRepository.findWithFeMaleSurvey(datingSurvey.getId());
+
+                if (datingMatchingEntity.isPresent()) {
+                    PaymentEntity payment = datingMatchingEntity.get().getPayment();
+
+                    payment.updateNeedRefundStatus(true);
+
+                    //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
+
+                }
+            }
+        }
+
+        userRepository.deleteById(userId);
     }
 
     @Transactional(readOnly = true)
@@ -79,8 +150,7 @@ public class UserService {
                     .isAuthenticated(userEntity.getIsAuthenticated())
                     .isAdult(userEntity.getIsAdult())
                     .build();
-        }
-        else {
+        } else {
             throw new RestApiException(UserErrorCode.WRONG_PASSWORD);
         }
     }
