@@ -95,8 +95,11 @@ public class DatingMatchingService {
             return new DatingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), datingPartnerSurveyDto, null, null);
         }
         // 매칭 실패했을 떄
-        else {
+        else if (datingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
+        }
+        else {
+            return new DatingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
         }
     }
 

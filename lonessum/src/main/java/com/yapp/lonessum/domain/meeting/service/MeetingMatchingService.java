@@ -95,8 +95,11 @@ public class MeetingMatchingService {
             return new MeetingMatchResultDto(7004, SurveyErrorCode.SHOW_MATCH_RESULT.getMessage(), meetingPartnerSurveyDto, null, null);
         }
         // 매칭 실패했을 떄
-        else {
+        else if(meetingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
+        }
+        else {
+            return new MeetingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
         }
     }
 
