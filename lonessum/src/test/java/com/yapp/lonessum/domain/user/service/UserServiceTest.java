@@ -73,6 +73,7 @@ class UserServiceTest {
         //결제 정보
         PaymentEntity payment = PaymentEntity
                 .builder()
+                .isPaid(true)
                 .isNeedRefund(false).build();
         payment = paymentRepository.save(payment);
 
@@ -122,6 +123,7 @@ class UserServiceTest {
         //결제 정보
         PaymentEntity payment = PaymentEntity
                 .builder()
+                .isPaid(false)
                 .isNeedRefund(false).build();
         payment = paymentRepository.save(payment);
 
