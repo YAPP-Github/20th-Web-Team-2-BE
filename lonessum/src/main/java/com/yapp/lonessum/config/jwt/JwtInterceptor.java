@@ -26,10 +26,10 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("Authorization");
-        if (blackListService.isJwtInBlackList(token)) {
-            throw new RestApiException(UserErrorCode.INVALID_JWT);
-        }
         if (token != null && token.length() > 0) {
+            if (blackListService.isJwtInBlackList(token)) {
+                throw new RestApiException(UserErrorCode.INVALID_JWT);
+            }
             request.setAttribute("userId", jwtService.getUserFromJwt().getId());
             return jwtService.isValid(token);
         } else {
