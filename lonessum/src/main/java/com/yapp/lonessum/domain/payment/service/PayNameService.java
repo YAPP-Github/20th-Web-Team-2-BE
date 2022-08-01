@@ -1,6 +1,5 @@
 package com.yapp.lonessum.domain.payment.service;
 
-import com.yapp.lonessum.domain.payment.entity.PayName;
 import com.yapp.lonessum.domain.payment.repository.PayNameCountRepository;
 import com.yapp.lonessum.domain.payment.repository.PayNameRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +33,8 @@ public class PayNameService {
         while(scanner.hasNextLine()) {
             payNameList.add(scanner.nextLine());
         }
+
+        payNameCountRepository.setPayNameCounter(0);
     }
 
     @Transactional
@@ -51,15 +52,16 @@ public class PayNameService {
 
     @Transactional
     public String issuePayName() {
-        Long payNameCounter = payNameCountRepository.getPayNameCounter();
-        PayName payName = payNameRepository.findByPayNameId(payNameCounter);
-        payName.setIsUsing(true);
-        payNameRepository.updatePayName(payNameCounter, payName);
-        payNameCounter += 1;
-        if (payNameCounter >= 300L) {
-            payNameCounter = 1L;
-        }
-        payNameCountRepository.setPayNameCounter(payNameCounter);
-        return payName.getPayName();
+//        Long payNameCounter = payNameCountRepository.getPayNameCounter();
+//        PayName payName = payNameRepository.findByPayNameId(payNameCounter);
+//        payName.setIsUsing(true);
+//        payNameRepository.updatePayName(payNameCounter, payName);
+//        payNameCounter += 1;
+//        if (payNameCounter >= 300L) {
+//            payNameCounter = 1L;
+//        }
+//        payNameCountRepository.setPayNameCounter(payNameCounter);
+//        return payName.getPayName();
+        return "temp";
     }
 }
