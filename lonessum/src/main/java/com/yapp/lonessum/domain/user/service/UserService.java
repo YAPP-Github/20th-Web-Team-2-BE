@@ -125,8 +125,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoDto getMyInfo() {
-        UserEntity user = jwtService.getUserFromJwt();
+    public UserInfoDto getMyInfo(UserEntity user) {
         return new UserInfoDto(user.getUniversityEmail(), user.getUniversity().getName());
     }
 
