@@ -1,9 +1,13 @@
 package com.yapp.lonessum.domain.admin;
 
 import com.yapp.lonessum.domain.constant.MatchStatus;
+import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
+import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
+import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
+import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
@@ -14,12 +18,43 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
     private final MeetingSurveyRepository meetingSurveyRepository;
     private final DatingSurveyRepository datingSurveyRepository;
+    private final MeetingMatchingRepository meetingMatchingRepository;
+    private final DatingMatchingRepository datingMatchingRepository;
+
+    @Transactional(readOnly = true)
+    public List<PaymentTargetDto> getMeetingPaymentTargetList() {
+        List<MeetingMatchingEntity> paymentTargetList = meetingMatchingRepository.findPaymentTargetList();
+
+        return paymentTargetList.stream()
+                .map(p -> new PaymentTargetDto(
+                                p.getMaleSurvey().getKakaoId(),
+                                p.getFemaleSurvey().getKakaoId(),
+                                p.getPayment().getPayName()
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PaymentTargetDto> getDatingPaymentTargetList() {
+        List<DatingMatchingEntity> paymentTargetList = datingMatchingRepository.findPaymentTargetList();
+
+        return paymentTargetList.stream()
+                .map(p -> new PaymentTargetDto(
+                                p.getMaleSurvey().getKakaoId(),
+                                p.getFemaleSurvey().getKakaoId(),
+                                p.getPayment().getPayName()
+                        )
+                )
+                .collect(Collectors.toList());
+    }
 
     @Transactional(readOnly = true)
     public List<UserStatusDto> getUserMeetingStatusList() {
@@ -29,8 +64,7 @@ public class AdminService {
             boolean isPaid;
             if (ms.getMatchStatus().equals(MatchStatus.PAID)) {
                 isPaid = true;
-            }
-            else {
+            } else {
                 isPaid = false;
             }
             userStatusDtoList.add(UserStatusDto.builder()
@@ -50,8 +84,7 @@ public class AdminService {
             boolean isPaid;
             if (ms.getMatchStatus().equals(MatchStatus.PAID)) {
                 isPaid = true;
-            }
-            else {
+            } else {
                 isPaid = false;
             }
             userStatusDtoList.add(UserStatusDto.builder()

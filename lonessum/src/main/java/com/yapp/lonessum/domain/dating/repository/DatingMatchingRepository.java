@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DatingMatchingRepository extends JpaRepository<DatingMatchingEntity, Long> {
     @Query("select d from DatingMatchingEntity d join fetch d.payment where d.femaleSurvey.id=:surveyId")
     Optional<DatingMatchingEntity> findWithFeMaleSurvey(@Param("surveyId") Long surveyId);
+
+    @Query("select d from DatingMatchingEntity d join fetch d.payment join fetch d.maleSurvey join fetch d.femaleSurvey")
+    List<DatingMatchingEntity> findPaymentTargetList();
 }

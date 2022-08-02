@@ -12,6 +12,7 @@ import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
+import com.yapp.lonessum.domain.payment.service.PayNameService;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
@@ -35,7 +36,7 @@ public class DatingMatchingScheduler {
     private final DatingSurveyMapper datingSurveyMapper;
     private final DatingSurveyRepository datingSurveyRepository;
     private final DatingMatchingRepository datingMatchingRepository;
-    private final PaymentService paymentService;
+    private final PayNameService payNameService;
     private final PaymentRepository paymentRepository;
 
     @Transactional
@@ -79,7 +80,7 @@ public class DatingMatchingScheduler {
             emailService.sendMatchResult(emailB);
 
             paymentRepository.save(PaymentEntity.builder()
-                    .payName(paymentService.generatePayName())
+                    .payName(payNameService.getPayName())
                     .matchType(MatchType.MEETING)
                     .datingMatching(datingMatching)
                     .isPaid(false)
