@@ -2,6 +2,8 @@ package com.yapp.lonessum.common.algorithm;
 
 import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.constant.DomesticArea;
+import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.exception.RestApiException;
 import org.springframework.data.util.Pair;
 
 import java.util.*;
@@ -43,7 +45,7 @@ public abstract class MatchingAlgorithm<T> {
     //매칭 시작 조건 (적어도 2개의 설문 이상)
     private void checkMatchingStartCondition(List<T> surveyList) {
         if(surveyList.size() < 2) {
-            throw new IllegalArgumentException("매칭을 시작하려면 적어도 2개 이상의 설문이 필요합니다.");
+            throw new RestApiException(SurveyErrorCode.INSUFFICIENT_SURVEY);
         }
     }
 
