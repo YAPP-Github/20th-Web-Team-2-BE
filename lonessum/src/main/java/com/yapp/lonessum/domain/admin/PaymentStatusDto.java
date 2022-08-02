@@ -5,9 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PaymentTargetDto {
-    private String maleId;
-    private String femaleId;
-    private String payName;
+public class PaymentStatusDto {
     private Boolean isPaid;
 }
