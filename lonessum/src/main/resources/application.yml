@@ -47,4 +47,4 @@ server:
 
 payname:
   resource:
-    path: /Users/kakao/Desktop/island/lonessum/lonessum/src/main/resources/payNameInfo.txt
+    path: C:\Users\rlacksgus\Desktop\isoland\20th-Web-Team-2-BE\lonessum\src\main\resources\payNameInfo.txt
