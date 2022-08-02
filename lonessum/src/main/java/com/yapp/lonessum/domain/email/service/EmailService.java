@@ -5,6 +5,7 @@ import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.university.UniversityRepository;
 import com.yapp.lonessum.domain.university.UniversityService;
+import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,9 @@ public class EmailService {
     private final EmailTokenService emailTokenService;
     private final UniversityService universityService;
 
+    private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
 
-    @Transactional
     public LocalDateTime updateAndSendEmail(UserEntity user, String email) throws MessagingException {
         // 유저 대학 이메일 정보 등록
         updateUniversityEmail(user, email);
@@ -93,7 +94,6 @@ public class EmailService {
         return Pattern.matches(regex, email);
     }
 
-    @Transactional
     public void updateUniversityEmail(UserEntity user, String email) {
         if (!isValidEmail(email)) {
             throw new RestApiException(UserErrorCode.INVALID_EMAIL);
@@ -103,6 +103,7 @@ public class EmailService {
             throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
         }
         user.registerUniversityEmail(email);
+        userRepository.save(user);
     }
 
     @Transactional
