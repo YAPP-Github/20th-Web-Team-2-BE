@@ -25,7 +25,7 @@ class EmailTokenServiceTest {
         String authCode = emailTokenService.issueEmailToken(123L);
 
         //when
-        EmailToken result = emailTokenRepository.findById(123L).get();
+        EmailToken result = emailTokenRepository.findById("123").get();
 
         //then
         Assertions.assertThat(authCode).isEqualTo(result.getAuthCode());
@@ -33,7 +33,7 @@ class EmailTokenServiceTest {
         System.out.println("result.getUserId() = " + result.getUserId());
 
         Thread.sleep(4000);
-        EmailToken result2 = emailTokenRepository.findById(123L).get();
+        EmailToken result2 = emailTokenRepository.findById("123").get();
         Assertions.assertThat(result2).isNull();
 
     }

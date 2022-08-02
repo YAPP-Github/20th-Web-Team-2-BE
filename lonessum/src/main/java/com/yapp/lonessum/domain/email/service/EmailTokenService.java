@@ -19,14 +19,14 @@ public class EmailTokenService {
     public String issueEmailToken(Long userId) {
         String authCode = authCodeGenerator.executeGenerate();
         emailTokenRepository.save(EmailToken.builder()
-                .userId(userId)
+                .userId(userId.toString())
                 .authCode(authCode)
                 .build());
         return authCode;
     }
 
     public Boolean isValidAuthCode(UserEntity user, String authCode) {
-        EmailToken emailToken = emailTokenRepository.findById(user.getId())
+        EmailToken emailToken = emailTokenRepository.findById(user.getId().toString())
                 .orElseThrow(() -> new RestApiException(UserErrorCode.EXPIRED_AUTHCODE));
         if (authCode.equals(emailToken.getAuthCode())) {
             return true;

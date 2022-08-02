@@ -13,7 +13,7 @@ import java.io.Serializable;
 @RedisHash(value = "emailToken", timeToLive = 180L)
 public class EmailToken implements Serializable {
     @Id
-    private Long userId;
+    private String userId;
     @Indexed
     private String authCode;
 }

@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface EmailTokenRepository extends CrudRepository<EmailToken, Long> {
-    Optional<EmailToken> findById(Long userId);
+public interface EmailTokenRepository extends CrudRepository<EmailToken, String> {
+    Optional<EmailToken> findById(String userId);
 }
