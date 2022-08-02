@@ -21,3 +21,7 @@ spring:
 
 logging:
   config: classpath:logback-prod.xml
+
+payname:
+  resource:
+    path: /root/app/payNameInfo.txt
