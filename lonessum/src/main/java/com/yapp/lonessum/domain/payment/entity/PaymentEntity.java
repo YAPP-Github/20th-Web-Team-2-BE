@@ -40,6 +40,14 @@ public class PaymentEntity {
         this.isNeedRefund = isNeedRefund;
     }
 
+    public void changeMeetingMatching(MeetingMatchingEntity meetingMatching) {
+        this.meetingMatching = meetingMatching;
+    }
+
+    public void changeDatingMatching(DatingMatchingEntity datingMatching) {
+        this.datingMatching = datingMatching;
+    }
+
     public void payForMatching(MatchType matchType) {
         this.isPaid = true;
         if (matchType.equals(MatchType.MEETING)) {

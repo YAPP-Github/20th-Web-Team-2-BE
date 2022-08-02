@@ -36,7 +36,8 @@ public class AdminService {
                 .map(p -> new PaymentTargetDto(
                                 p.getMaleSurvey().getKakaoId(),
                                 p.getFemaleSurvey().getKakaoId(),
-                                p.getPayment().getPayName()
+                                p.getPayment().getPayName(),
+                                p.getPayment().getIsPaid()
                         )
                 )
                 .collect(Collectors.toList());
@@ -50,7 +51,8 @@ public class AdminService {
                 .map(p -> new PaymentTargetDto(
                                 p.getMaleSurvey().getKakaoId(),
                                 p.getFemaleSurvey().getKakaoId(),
-                                p.getPayment().getPayName()
+                                p.getPayment().getPayName(),
+                                p.getPayment().getIsPaid()
                         )
                 )
                 .collect(Collectors.toList());
@@ -97,16 +99,18 @@ public class AdminService {
     }
 
     @Transactional
-    public void setUserMeetingPayment(PaymentDto paymentDto) {
+    public PaymentStatusDto setUserMeetingPayment(PaymentDto paymentDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         meetingSurvey.getMeetingMatching().getPayment().payForMatching(MatchType.MEETING);
+        return new PaymentStatusDto(meetingSurvey.getMeetingMatching().getPayment().getIsPaid());
     }
 
     @Transactional
-    public void setUserDatingPayment(PaymentDto paymentDto) {
+    public PaymentStatusDto setUserDatingPayment(PaymentDto paymentDto) {
         DatingSurveyEntity datingSurvey = datingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
         datingSurvey.getDatingMatching().getPayment().payForMatching(MatchType.DATING);
+        return new PaymentStatusDto(datingSurvey.getDatingMatching().getPayment().getIsPaid());
     }
 }
