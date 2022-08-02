@@ -17,14 +17,14 @@ public class PayNameCountRepository {
         return Long.parseLong(valueOperations.get(key));
     }
 
-    public void setPayNameCounter(Long count) {
+    public void setPayNameCounter(Integer count) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, count.toString());
     }
 
     public Integer countWithPreValue() {
         String curCnt = redisTemplate.opsForValue().get(key);
-        redisTemplate.opsForValue().set(key, curCnt + 1);
+        redisTemplate.opsForValue().set(key, String.valueOf(Integer.parseInt(curCnt) + 1));
 
         return Integer.parseInt(curCnt);
     }
