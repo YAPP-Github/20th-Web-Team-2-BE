@@ -26,7 +26,7 @@ public class EmailTokenService {
     }
 
     public Boolean isValidAuthCode(UserEntity user, String authCode) {
-        EmailToken emailToken = emailTokenRepository.findByUserId(user.getId())
+        EmailToken emailToken = emailTokenRepository.findById(user.getId())
                 .orElseThrow(() -> new RestApiException(UserErrorCode.EXPIRED_AUTHCODE));
         if (authCode.equals(emailToken.getAuthCode())) {
             return true;
