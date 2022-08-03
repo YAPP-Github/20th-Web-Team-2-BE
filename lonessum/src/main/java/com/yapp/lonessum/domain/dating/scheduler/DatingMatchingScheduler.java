@@ -15,9 +15,11 @@ import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
 import com.yapp.lonessum.domain.payment.service.PayNameService;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.DatingSurveyMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DatingMatchingScheduler {
 
     private final EmailService emailService;
@@ -76,8 +79,14 @@ public class DatingMatchingScheduler {
             String emailA = datingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = datingMatching.getFemaleSurvey().getUser().getUniversityEmail();
 
-            emailService.sendMatchResult(emailA);
-            emailService.sendMatchResult(emailB);
+            try {
+                emailService.sendMatchResult(emailA);
+                emailService.sendMatchResult(emailB);
+            } catch (MessagingException e) {
+                log.warn("매칭 결과 이메일 전송 실패", emailA);
+                log.warn("매칭 결과 이메일 전송 실패", emailB);
+                throw new RestApiException(UserErrorCode.FAIL_TO_SEND_EMAIL);
+            }
 
             PaymentEntity payment = PaymentEntity.builder()
                     .payName(payNameService.getPayName())

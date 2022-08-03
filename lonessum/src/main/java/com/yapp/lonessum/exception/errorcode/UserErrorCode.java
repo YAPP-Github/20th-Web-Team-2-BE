@@ -14,6 +14,7 @@ public enum UserErrorCode implements ErrorCode {
     WRONG_PASSWORD(HttpStatus.FORBIDDEN, "비밀번호가 틀렸습니다."),
     NEED_EMAIL_AUTH(HttpStatus.FORBIDDEN, "이메일 인증되지 않은 유저입니다."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "잘못된 이메일 형식입니다."),
+    FAIL_TO_SEND_EMAIL(HttpStatus.BAD_REQUEST, "이메일 전송에 실패하였습니다."),
     UNSUPPORTED_EMAIL(HttpStatus.BAD_REQUEST, "지원하지 않는 대학입니다."),
     NO_SUCH_UNIVERSITY(HttpStatus.BAD_REQUEST, "존재하지 않는 대학입니다."),
     NO_SUCH_AREA(HttpStatus.BAD_REQUEST, "존재하지 않는 지역입니다."),
