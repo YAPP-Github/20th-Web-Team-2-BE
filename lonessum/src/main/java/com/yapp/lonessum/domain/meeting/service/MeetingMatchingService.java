@@ -25,6 +25,7 @@ import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MeetingMatchingService {
 
     private final MeetingMatchingScheduler meetingMatchingScheduler;
@@ -117,8 +119,12 @@ public class MeetingMatchingService {
     @Transactional
     public List<TestMeetingMatchingResultDto> testMatch() {
         meetingMatchingScheduler.runMatch();
-
-        return meetingMatchingRepository.findAll()
+        List<MeetingMatchingEntity> matchingEntityList = meetingMatchingRepository.findAll();
+        if (matchingEntityList == null || matchingEntityList.size() == 0) {
+            log.info("matching size is 0");
+            return new ArrayList<>();
+        }
+        return matchingEntityList
                 .stream().map((matchingEntity) -> TestMeetingMatchingResultDto.builder()
                 .matchId(matchingEntity.getId())
                 .maleKakaoId(matchingEntity.getMaleSurvey().getKakaoId())
