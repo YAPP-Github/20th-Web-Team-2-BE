@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "payment")
 public class PaymentEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

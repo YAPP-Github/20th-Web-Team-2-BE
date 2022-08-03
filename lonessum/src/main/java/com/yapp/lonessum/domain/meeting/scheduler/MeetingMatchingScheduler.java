@@ -93,6 +93,7 @@ public class MeetingMatchingScheduler {
                     .matchType(MatchType.MEETING)
                     .meetingMatching(meetingMatching)
                     .isPaid(false)
+                    .isNeedRefund(false)
                     .build();
             paymentRepository.save(payment);
 
