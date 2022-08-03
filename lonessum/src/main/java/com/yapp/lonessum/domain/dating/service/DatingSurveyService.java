@@ -90,4 +90,11 @@ public class DatingSurveyService {
         datingSurveyMapper.updateFromDto(datingSurveyDto, datingSurvey);
         return datingSurvey.getId();
     }
+
+    @Transactional
+    public void rollBackToWaiting() {
+        datingSurveyRepository.findAll().forEach((datingSurvey -> {
+            datingSurvey.changeMatchStatus(MatchStatus.WAITING);
+        }));
+    }
 }

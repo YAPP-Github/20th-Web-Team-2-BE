@@ -101,4 +101,11 @@ public class MeetingSurveyService {
         meetingSurveyRepository.delete(meetingSurvey);
         return meetingSurvey.getId();
     }
+
+    @Transactional
+    public void rollBackToWaiting() {
+        meetingSurveyRepository.findAll().forEach((meetingSurvey -> {
+            meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
+        }));
+    }
 }

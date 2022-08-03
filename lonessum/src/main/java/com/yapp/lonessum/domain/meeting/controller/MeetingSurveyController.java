@@ -55,4 +55,10 @@ public class MeetingSurveyController {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(meetingSurveyService.deleteSurvey(user));
     }
+
+    @PutMapping("/rollback")
+    public ResponseEntity rollBackToWaiting() {
+        meetingSurveyService.rollBackToWaiting();
+        return ResponseEntity.ok().build();
+    }
 }

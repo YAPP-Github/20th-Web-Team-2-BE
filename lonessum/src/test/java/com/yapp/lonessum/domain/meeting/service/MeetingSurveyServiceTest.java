@@ -4,15 +4,19 @@ import com.yapp.lonessum.common.dto.SurveyDto;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaEntity;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaRepository;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
+import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.dto.MyMeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.domain.meeting.scheduler.MeetingMatchingScheduler;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +38,9 @@ class MeetingSurveyServiceTest {
     @Autowired
     MeetingSurveyRepository meetingSurveyRepository;
 
+    @Autowired
+    MeetingMatchingScheduler meetingMatchingScheduler;
+
     @Test
     void readSurvey() {
         UserEntity user = UserEntity.builder()
@@ -53,5 +60,25 @@ class MeetingSurveyServiceTest {
 
         MyMeetingSurveyDto myMeetingSurveyDto = meetingSurveyService.readSurvey(user);
         System.out.println("myMeetingSurveyDto.getStringAbroadAreas() = " + myMeetingSurveyDto.getStringAbroadAreas());
+    }
+
+    @Test
+    @Transactional
+    public void 모든_설문을_대기상태로_변경() {
+        getTestDataEntity().forEach((meetingSurvey -> {
+            meetingSurveyRepository.save(meetingSurvey);
+        }));
+
+        meetingMatchingScheduler.runMatch();
+
+        meetingSurveyRepository.findAll().forEach((meetingSurvey -> {
+            Assertions.assertThat(meetingSurvey.getMatchStatus()).isNotEqualTo(MatchStatus.WAITING);
+        }));
+
+        meetingSurveyService.rollBackToWaiting();
+
+        meetingSurveyRepository.findAll().forEach((meetingSurvey -> {
+            Assertions.assertThat(meetingSurvey.getMatchStatus()).isEqualTo(MatchStatus.WAITING);
+        }));
     }
 }
