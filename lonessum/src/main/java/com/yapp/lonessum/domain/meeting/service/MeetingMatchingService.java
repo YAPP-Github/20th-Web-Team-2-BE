@@ -121,8 +121,8 @@ public class MeetingMatchingService {
         return meetingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestMeetingMatchingResultDto.builder()
                 .matchId(matchingEntity.getId())
-                .maleSurveyId(matchingEntity.getMaleSurvey().getId())
-                .femaleSurveyId(matchingEntity.getFemaleSurvey().getId())
+                .maleKakaoId(matchingEntity.getMaleSurvey().getKakaoId())
+                .femaleKakaoId(matchingEntity.getFemaleSurvey().getKakaoId())
                 .build()).collect(Collectors.toList());
     }
 }

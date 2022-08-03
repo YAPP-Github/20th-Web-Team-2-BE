@@ -116,8 +116,8 @@ public class DatingMatchingService {
         return datingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestDatingMatchingResultDto.builder()
                         .matchId(matchingEntity.getId())
-                        .maleSurveyId(matchingEntity.getMaleSurvey().getId())
-                        .femaleSurveyId(matchingEntity.getFemaleSurvey().getId())
+                        .maleKakaoId(matchingEntity.getMaleSurvey().getKakaoId())
+                        .femaleKakaoId(matchingEntity.getFemaleSurvey().getKakaoId())
                         .build()).collect(Collectors.toList());
     }
 }
