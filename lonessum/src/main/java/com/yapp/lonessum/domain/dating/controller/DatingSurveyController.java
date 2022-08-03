@@ -40,4 +40,10 @@ public class DatingSurveyController {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(datingSurveyService.updateSurvey(user, datingSurveyDto));
     }
+
+    @PutMapping("/rollback")
+    public ResponseEntity rollBackToWaiting() {
+        datingSurveyService.rollBackToWaiting();
+        return ResponseEntity.ok().build();
+    }
 }
