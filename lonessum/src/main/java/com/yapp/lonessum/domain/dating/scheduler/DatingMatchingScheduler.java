@@ -104,6 +104,13 @@ public class DatingMatchingScheduler {
         datingSurveyList.forEach((datingSurvey -> {
             if (datingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
                 datingSurvey.changeMatchStatus(MatchStatus.FAILED);
+                String email = datingSurvey.getUser().getUniversityEmail();
+                try {
+                    emailService.sendMatchResult(email);
+                } catch (MessagingException e) {
+                    log.warn("매칭 결과 이메일 전송 실패", email);
+                    throw new RestApiException(UserErrorCode.FAIL_TO_SEND_EMAIL);
+                }
             }
         }));
     }
