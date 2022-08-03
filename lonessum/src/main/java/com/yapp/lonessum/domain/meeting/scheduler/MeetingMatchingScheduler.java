@@ -41,7 +41,7 @@ public class MeetingMatchingScheduler {
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
-    public void runMatch() throws MessagingException {
+    public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
@@ -73,18 +73,21 @@ public class MeetingMatchingScheduler {
             meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
             meetingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
 
-            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
-            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
+//            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
+//            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
 
-            emailService.sendMatchResult(emailA);
-            emailService.sendMatchResult(emailB);
+//            emailService.sendMatchResult(emailA);
+//            emailService.sendMatchResult(emailB);
 
-            paymentRepository.save(PaymentEntity.builder()
+            PaymentEntity payment = PaymentEntity.builder()
                     .payName(payNameService.getPayName())
                     .matchType(MatchType.MEETING)
                     .meetingMatching(meetingMatching)
                     .isPaid(false)
-                    .build());
+                    .build();
+            paymentRepository.save(payment);
+
+            meetingMatching.changePayment(payment);
 
             meetingMatchingRepository.save(meetingMatching);
         }

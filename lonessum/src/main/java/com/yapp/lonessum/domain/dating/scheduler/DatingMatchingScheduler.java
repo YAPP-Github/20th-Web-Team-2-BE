@@ -79,12 +79,15 @@ public class DatingMatchingScheduler {
             emailService.sendMatchResult(emailA);
             emailService.sendMatchResult(emailB);
 
-            paymentRepository.save(PaymentEntity.builder()
+            PaymentEntity payment = PaymentEntity.builder()
                     .payName(payNameService.getPayName())
-                    .matchType(MatchType.MEETING)
+                    .matchType(MatchType.DATING)
                     .datingMatching(datingMatching)
                     .isPaid(false)
-                    .build());
+                    .build();
+            paymentRepository.save(payment);
+
+            datingMatching.changePayment(payment);
 
             datingMatchingRepository.save(datingMatching);
         }
