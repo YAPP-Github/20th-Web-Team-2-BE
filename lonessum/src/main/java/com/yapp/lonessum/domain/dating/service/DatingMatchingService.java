@@ -58,25 +58,29 @@ public class DatingMatchingService {
         }
         // 매칭 성공했을 때
         else if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
-            // 내가 남자일 때
-            if (datingSurvey.getGender() == Gender.MALE) {
-                partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
-                // 내가 결제 안했을 때
-
-                if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
-                    return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), datingSurvey.getDatingMatching().getPayment().getPayName());
-                }
+            // 내가 남자일 때만 해당
+            // 내가 결제 안했을 때
+            if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
+                return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), datingSurvey.getDatingMatching().getPayment().getPayName());
             }
+        }
+        else if (datingSurvey.getMatchStatus() == MatchStatus.PAID) {
             // 내가 여자일 때
-            else {
-                partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
+            if (datingSurvey.getGender() == Gender.FEMALE) {
                 // 상대가 결제 안했을 때
-
-                if (!partnerSurvey.getDatingMatching().getPayment().getIsPaid()) {
+                if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
                     return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
                 }
             }
+
             // 모두 결제했을 때 -> 매칭 상대 정보
+            if (datingSurvey.getGender() == Gender.MALE) {
+                partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
+            }
+            else {
+                partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
+            }
+
             DatingPartnerSurveyDto datingPartnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
 
             datingPartnerSurveyDto.setUniversity(partnerSurvey.getUser().getUniversity().getName());
@@ -98,9 +102,8 @@ public class DatingMatchingService {
         else if (datingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
-        else {
-            return new DatingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
-        }
+        // 환불이 필요한 경우
+        return new DatingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional

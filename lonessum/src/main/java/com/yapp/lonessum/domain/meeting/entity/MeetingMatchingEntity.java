@@ -29,4 +29,8 @@ public class MeetingMatchingEntity {
     private PaymentEntity payment;
 
     private LocalDateTime matchedTime;
+
+    public void changePayment(PaymentEntity payment) {
+        this.payment = payment;
+    }
 }
