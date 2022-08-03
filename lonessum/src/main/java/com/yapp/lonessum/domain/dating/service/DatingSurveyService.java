@@ -1,7 +1,9 @@
 package com.yapp.lonessum.domain.dating.service;
 
+import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.dating.dto.DatingSurveyDto;
+import com.yapp.lonessum.domain.dating.dto.MyDatingSurveyDto;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -13,12 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DatingSurveyService {
 
+    private final AbroadAreaService abroadAreaService;
     private final DatingSurveyMapper datingSurveyMapper;
     private final DatingSurveyRepository datingSurveyRepository;
 
@@ -63,12 +67,17 @@ public class DatingSurveyService {
     }
 
     @Transactional(readOnly = true)
-    public DatingSurveyDto readSurvey(UserEntity user) {
+    public MyDatingSurveyDto readSurvey(UserEntity user) {
         DatingSurveyEntity datingSurvey = user.getDatingSurvey();
         if (datingSurvey == null) {
             throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
-        return datingSurveyMapper.toDto(datingSurvey);
+        DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(datingSurvey);
+        List<String> stringAbroadAreas = abroadAreaService.getAreaNameFromId(datingSurvey.getAbroadAreas());
+        return MyDatingSurveyDto.builder()
+                .datingSurveyDto(datingSurveyDto)
+                .stringAbroadAreas(stringAbroadAreas)
+                .build();
     }
 
     @Transactional

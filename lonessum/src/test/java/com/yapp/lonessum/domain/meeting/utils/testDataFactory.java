@@ -101,7 +101,7 @@ public class testDataFactory {
         survey.setPlay(Play.GAME);
         survey.setIsAbroad(Boolean.TRUE);
         survey.setDomesticAreas(Arrays.asList(DomesticArea.GN));
-        survey.setAbroadAreas(Arrays.asList(3L));
+        survey.setAbroadAreas(Arrays.asList(5L));
         survey.setAgreement(Boolean.TRUE);
         survey.setMatchStatus(MatchStatus.WAITING);
 
@@ -122,7 +122,7 @@ public class testDataFactory {
         survey2.setPlay(Play.GAME);
         survey2.setIsAbroad(Boolean.TRUE);
         survey2.setDomesticAreas(Arrays.asList(DomesticArea.GN));
-        survey2.setAbroadAreas(Arrays.asList(3L));
+        survey2.setAbroadAreas(Arrays.asList(5L));
         survey2.setAgreement(Boolean.TRUE);
         survey2.setMatchStatus(MatchStatus.WAITING);
 
@@ -143,7 +143,7 @@ public class testDataFactory {
         survey3.setPlay(Play.GAME);
         survey3.setIsAbroad(Boolean.TRUE);
         survey3.setDomesticAreas(Arrays.asList(DomesticArea.GN));
-        survey3.setAbroadAreas(Arrays.asList(3L));
+        survey3.setAbroadAreas(Arrays.asList(5L));
         survey3.setAgreement(Boolean.TRUE);
         survey3.setMatchStatus(MatchStatus.WAITING);
 
