@@ -44,7 +44,7 @@ public class DatingMatchingScheduler {
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
-    public void runMatch() throws MessagingException {
+    public void runMatch() {
         List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 

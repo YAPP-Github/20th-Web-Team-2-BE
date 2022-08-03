@@ -13,6 +13,7 @@ import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
+import com.yapp.lonessum.domain.dating.scheduler.DatingMatchingScheduler;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.university.UniversityService;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DatingMatchingService {
+
+    private final DatingMatchingScheduler datingMatchingScheduler;
 
     private final UniversityService universityService;
     private final AbroadAreaService abroadAreaService;
@@ -108,52 +111,7 @@ public class DatingMatchingService {
 
     @Transactional
     public List<TestDatingMatchingResultDto> testMatch() {
-        List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
-
-        Map<Long, DatingSurveyEntity> datingSurveyMap = new HashMap<>();
-        for (DatingSurveyEntity ds : datingSurveyList) {
-            datingSurveyMap.put(ds.getId(), ds);
-        }
-
-        List<DatingSurveyDto> datingSurveyDtoList = new ArrayList<>();
-        for (DatingSurveyEntity ds : datingSurveyList) {
-            DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(ds);
-            datingSurveyDto.setId(ds.getId());
-            datingSurveyDtoList.add(datingSurveyDto);
-        }
-
-        DatingMatchingAlgorithm datingMatchingAlgorithm = new DatingMatchingAlgorithm();
-        List<MatchingInfo<DatingSurveyDto>> result = datingMatchingAlgorithm.getResult(datingSurveyDtoList);
-
-        for (MatchingInfo mi : result) {
-            DatingSurveyDto firstDto = (DatingSurveyDto) mi.getFirst();
-            DatingSurveyDto secondDto = (DatingSurveyDto) mi.getSecond();
-
-            DatingSurveyEntity firstEntity = datingSurveyMap.get(firstDto.getId());
-            DatingSurveyEntity secondEntity = datingSurveyMap.get(secondDto.getId());
-
-            DatingMatchingEntity datingMatching = mi.toDatingMatchingEntity(firstEntity, secondEntity);
-            firstEntity.changeDatingMatching(datingMatching);
-            secondEntity.changeDatingMatching(datingMatching);
-
-            datingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
-            datingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
-
-            String emailA = datingMatching.getMaleSurvey().getUser().getUniversityEmail();
-            String emailB = datingMatching.getFemaleSurvey().getUser().getUniversityEmail();
-
-//            emailService.sendMatchResult(emailA);
-//            emailService.sendMatchResult(emailB);
-
-            datingMatchingRepository.save(datingMatching);
-        }
-
-        datingSurveyList.forEach((datingSurvey -> {
-            if (datingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
-                datingSurvey.changeMatchStatus(MatchStatus.FAILED);
-            }
-        }));
+        datingMatchingScheduler.runMatch();
 
         return datingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestDatingMatchingResultDto.builder()

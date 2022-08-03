@@ -4,6 +4,7 @@ import com.yapp.lonessum.common.algorithm.MatchingInfo;
 import com.yapp.lonessum.domain.constant.DomesticArea;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MeetingMatchResultDto;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
@@ -13,16 +14,21 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.domain.meeting.scheduler.MeetingMatchingScheduler;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
+import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.university.UniversityService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +38,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MeetingMatchingService {
+
+    private final MeetingMatchingScheduler meetingMatchingScheduler;
 
     private final UniversityService universityService;
     private final AbroadAreaService abroadAreaService;
@@ -108,51 +116,7 @@ public class MeetingMatchingService {
 
     @Transactional
     public List<TestMeetingMatchingResultDto> testMatch() {
-        List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
-
-        Map<Long, MeetingSurveyEntity> meetingSurveyMap = new HashMap<>();
-        for (MeetingSurveyEntity ms : meetingSurveyList) {
-            meetingSurveyMap.put(ms.getId(), ms);
-        }
-
-        List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
-        for (MeetingSurveyEntity ms : meetingSurveyList) {
-            MeetingSurveyDto meetingSurveyDto = meetingSurveyMapper.toDto(ms);
-            meetingSurveyDto.setId(ms.getId());
-            meetingSurveyDtoList.add(meetingSurveyDto);
-        }
-
-        MeetingMatchingAlgorithm meetingMatchingAlgorithm = new MeetingMatchingAlgorithm();
-        List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
-        for (MatchingInfo mi : result) {
-            MeetingSurveyDto firstDto = (MeetingSurveyDto) mi.getFirst();
-            MeetingSurveyDto secondDto = (MeetingSurveyDto) mi.getSecond();
-
-            MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
-            MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
-
-            MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
-            firstEntity.changeMeetingMatching(meetingMatching);
-            secondEntity.changeMeetingMatching(meetingMatching);
-
-            meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
-            meetingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
-
-            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
-            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
-
-//            emailService.sendMatchResult(emailA);
-//            emailService.sendMatchResult(emailB);
-
-            meetingMatchingRepository.save(meetingMatching);
-        }
-
-        meetingSurveyList.forEach((meetingSurvey -> {
-            if (meetingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
-                meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
-            }
-        }));
+        meetingMatchingScheduler.runMatch();
 
         return meetingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestMeetingMatchingResultDto.builder()
