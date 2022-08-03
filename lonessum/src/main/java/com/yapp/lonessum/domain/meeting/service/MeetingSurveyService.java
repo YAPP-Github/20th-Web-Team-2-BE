@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,12 +71,8 @@ public class MeetingSurveyService {
         if (meetingSurvey == null) {
             throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
-        MeetingSurveyDto meetingSurveyDto = meetingSurveyMapper.toDto(meetingSurvey);
         List<String> stringAbroadAreas = abroadAreaService.getAreaNameFromId(meetingSurvey.getAbroadAreas());
-        return MyMeetingSurveyDto.builder()
-                .meetingSurveyDto(meetingSurveyDto)
-                .stringAbroadAreas(stringAbroadAreas)
-                .build();
+        return new MyMeetingSurveyDto(meetingSurveyMapper.toDto(meetingSurvey), stringAbroadAreas);
     }
 
     @Transactional

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -72,12 +71,8 @@ public class DatingSurveyService {
         if (datingSurvey == null) {
             throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
-        DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(datingSurvey);
         List<String> stringAbroadAreas = abroadAreaService.getAreaNameFromId(datingSurvey.getAbroadAreas());
-        return MyDatingSurveyDto.builder()
-                .datingSurveyDto(datingSurveyDto)
-                .stringAbroadAreas(stringAbroadAreas)
-                .build();
+        return new MyDatingSurveyDto(datingSurveyMapper.toDto(datingSurvey), stringAbroadAreas);
     }
 
     @Transactional
