@@ -72,7 +72,7 @@ public class DatingMatchingService {
             if (datingSurvey.getGender() == Gender.FEMALE) {
                 // 상대가 결제 안했을 때
                 if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
-                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
+                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), null);
                 }
             }
 

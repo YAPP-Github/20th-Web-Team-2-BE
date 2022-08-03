@@ -76,7 +76,7 @@ public class MeetingMatchingService {
             if (meetingSurvey.getGender() == Gender.FEMALE) {
                 // 상대가 결제 안했을 때
                 if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
-                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
+                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), null);
                 }
             }
 
