@@ -110,6 +110,10 @@ public class DatingSurveyEntity {
 
     private Boolean isRandom;
 
+    public void changeUser(UserEntity user) {
+        this.user = user;
+    }
+
     public void changeMyUniversity(Long myUniversity) {
         this.myUniversity = myUniversity;
     }

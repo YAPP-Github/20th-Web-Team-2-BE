@@ -57,25 +57,29 @@ public class MeetingMatchingService {
         }
         // 매칭 성공했을 때
         else if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
-            // 내가 남자일 때
-            if (meetingSurvey.getGender() == Gender.MALE) {
-                partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
-                // 내가 결제 안했을 때
-
-                if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
-                    return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), meetingSurvey.getMeetingMatching().getPayment().getPayName());
-                }
+            // 내가 남자일 때만 해당
+            // 내가 결제 안했을 때
+            if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
+                return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), meetingSurvey.getMeetingMatching().getPayment().getPayName());
             }
+        }
+        else if (meetingSurvey.getMatchStatus() == MatchStatus.PAID) {
             // 내가 여자일 때
-            else {
-                partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
+            if (meetingSurvey.getGender() == Gender.FEMALE) {
                 // 상대가 결제 안했을 때
-
-                if (!partnerSurvey.getMeetingMatching().getPayment().getIsPaid()) {
+                if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
                     return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
                 }
             }
+
             // 모두 결제했을 때 -> 매칭 상대 정보
+            if (meetingSurvey.getGender() == Gender.MALE) {
+                partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
+            }
+            else {
+                partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
+            }
+
             MeetingPartnerSurveyDto meetingPartnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
 
             List<String> universityNames = universityService.getUniversityNameFromId(partnerSurvey.getOurUniversities());
@@ -98,9 +102,8 @@ public class MeetingMatchingService {
         else if(meetingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
-        else {
-            return new MeetingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
-        }
+        //환불이 필요한 경우
+        return new MeetingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional
