@@ -4,6 +4,7 @@ import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -65,7 +66,7 @@ public class AbroadAreaService {
         for (Long areaId : areaIdList) {
             AbroadAreaEntity abroadArea = abroadAreaRepository.findById(areaId).orElseThrow(() -> new RestApiException(UserErrorCode.NO_SUCH_AREA));
             String areaName = abroadArea.getName();
-            areaNames.add(areaName.substring(areaName.lastIndexOf(",")+1));
+            areaNames.add(areaName.substring(0, areaName.lastIndexOf(",")));
         }
         return areaNames;
     }
