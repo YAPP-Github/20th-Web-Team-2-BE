@@ -106,7 +106,7 @@ public class DatingMatchingService {
             return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
         // 환불이 필요한 경우
-        return new DatingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
+        return new DatingMatchResultDto(7006, SurveyErrorCode.CANCELED_OR_NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional

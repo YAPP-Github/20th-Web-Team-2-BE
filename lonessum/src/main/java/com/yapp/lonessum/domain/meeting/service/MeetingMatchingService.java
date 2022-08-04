@@ -113,7 +113,7 @@ public class MeetingMatchingService {
             return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
         //환불이 필요한 경우
-        return new MeetingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
+        return new MeetingMatchResultDto(7006, SurveyErrorCode.CANCELED_OR_NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional

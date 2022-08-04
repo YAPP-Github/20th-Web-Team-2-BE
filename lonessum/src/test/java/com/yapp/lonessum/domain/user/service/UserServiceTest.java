@@ -6,6 +6,7 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -96,7 +97,7 @@ class UserServiceTest {
         Assertions.assertThat(result.getIsNeedRefund())
                 .isEqualTo(true);
         Assertions.assertThat(meetingMatching.getMaleSurvey().getMatchStatus())
-                .isEqualTo(MatchStatus.NEED_REFUND);
+                .isEqualTo(MatchStatus.CANCELED_OR_NEED_REFUND);
     }
 
     @Test
@@ -104,14 +105,14 @@ class UserServiceTest {
     public void 남자_탈퇴_시_해당_매칭은_환불이_필요없다() {
         //given
         //남자 설문
-        MeetingSurveyEntity maleSurvey = MeetingSurveyEntity.builder().gender(Gender.MALE).build();
+        MeetingSurveyEntity maleSurvey = MeetingSurveyEntity.builder().gender(Gender.MALE).matchStatus(MatchStatus.WAITING).build();
         maleSurvey = meetingSurveyRepository.save(maleSurvey);
 
         //남자 유저
         UserEntity male = UserEntity.builder().meetingSurvey(maleSurvey).build();
 
         //여자 설문
-        MeetingSurveyEntity femaleSurvey = MeetingSurveyEntity.builder().gender(Gender.FEMALE).build();
+        MeetingSurveyEntity femaleSurvey = MeetingSurveyEntity.builder().gender(Gender.FEMALE).matchStatus(MatchStatus.WAITING).build();
         femaleSurvey = meetingSurveyRepository.save(femaleSurvey);
 
         //여자 유저
@@ -120,30 +121,36 @@ class UserServiceTest {
         male = userRepository.save(male);
         female = userRepository.save(female);
 
-        //결제 정보
-        PaymentEntity payment = PaymentEntity
-                .builder()
-                .isPaid(false)
-                .isNeedRefund(false).build();
-        payment = paymentRepository.save(payment);
-
         MeetingMatchingEntity meetingMatching = MeetingMatchingEntity.builder()
                 .maleSurvey(maleSurvey)
                 .femaleSurvey(femaleSurvey)
-                .payment(payment)
                 .build();
 
         maleSurvey.changeMeetingMatching(meetingMatching);
         femaleSurvey.changeMeetingMatching(meetingMatching);
 
+        //결제 정보
+        PaymentEntity payment = PaymentEntity
+                .builder()
+                .meetingMatching(meetingMatching)
+                .isPaid(false)
+                .isNeedRefund(false).build();
+        payment = paymentRepository.save(payment);
+
+        meetingMatching.changePayment(payment);
+
+        maleSurvey.changeMatchStatus(MatchStatus.MATCHED);
+        femaleSurvey.changeMatchStatus(MatchStatus.PAID);
+
         meetingMatchingRepository.save(meetingMatching);
+
+        payment.payForMatching(MatchType.MEETING);
 
         //when
         userService.withdraw(male.getId());
 
         //then
-        PaymentEntity result = paymentRepository.findById(payment.getId()).get();
-        Assertions.assertThat(result.getIsNeedRefund())
+        Assertions.assertThat(payment.getIsNeedRefund())
                 .isEqualTo(false);
         Assertions.assertThat(meetingMatching.getFemaleSurvey().getMatchStatus())
                 .isEqualTo(MatchStatus.FAILED);
