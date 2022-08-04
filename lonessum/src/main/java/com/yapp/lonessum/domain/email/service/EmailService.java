@@ -72,8 +72,21 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setFrom(new InternetAddress(SERVICE_EMAIL));
         message.addRecipients(MimeMessage.RecipientType.TO, email);
-        message.setSubject("[외딴썸] 매칭결과를 확인해주세요.");
+        message.setSubject("[외딴썸] 매칭 결과를 확인해주세요.");
         message.setText(setMatchResultContext(), "utf-8", "html");
+
+        javaMailSender.send(message);
+    }
+
+    @Async
+    @Transactional
+    public void sendPartnerSurvey(String email) throws MessagingException {
+        //이메일 메시지 생성
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.setFrom(new InternetAddress(SERVICE_EMAIL));
+        message.addRecipients(MimeMessage.RecipientType.TO, email);
+        message.setSubject("[외딴썸] 매칭된 상대의 정보를 확인해주세요.");
+        message.setText(setPartnerSurveyContext(), "utf-8", "html");
 
         javaMailSender.send(message);
     }
@@ -87,6 +100,11 @@ public class EmailService {
     private String setMatchResultContext() { // 타임리프 설정하는 코드
         Context context = new Context();
         return templateEngine.process("MatchResult", context); // MatchResult.html
+    }
+
+    private String setPartnerSurveyContext() { // 타임리프 설정하는 코드
+        Context context = new Context();
+        return templateEngine.process("PartnerSurvey", context); // MatchResult.html
     }
 
     public boolean isValidEmail(String email) {
