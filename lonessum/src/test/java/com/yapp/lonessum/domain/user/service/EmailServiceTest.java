@@ -13,7 +13,7 @@ class EmailServiceTest {
         String email = "lonessum@gmail.com";
 
         // when
-        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        String regex = "^[a-zA-Z0-9+-\\_.]+@(?:\\w+\\.)+\\w+$";
         boolean result = Pattern.matches(regex, email);
 
         // then
@@ -23,10 +23,10 @@ class EmailServiceTest {
     @Test
     void 유효한_이메일2() {
         // given
-        String email = "lonessum77@gmail.com";
+        String email = "lonessum77@gmail.ac.kr";
 
         // when
-        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        String regex = "^[a-zA-Z0-9+-\\_.]+@(?:\\w+\\.)+\\w+$";
         boolean result = Pattern.matches(regex, email);
 
         // then
@@ -36,10 +36,10 @@ class EmailServiceTest {
     @Test
     void 유효하지_않은_이메일1() {
         // given
-        String email = "lonessum@gmail..com";
+        String email = "lone!ssum@gmail.com";
 
         // when
-        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        String regex = "^[a-zA-Z0-9+-\\_.]+@(?:\\w+\\.)+\\w+$";
         boolean result = Pattern.matches(regex, email);
 
         // then
@@ -52,7 +52,7 @@ class EmailServiceTest {
         String email = "lone?ssum@gma-il..com";
 
         // when
-        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        String regex = "^[a-zA-Z0-9+-\\_.]+@(?:\\w+\\.)+\\w+$";
         boolean result = Pattern.matches(regex, email);
 
         // then

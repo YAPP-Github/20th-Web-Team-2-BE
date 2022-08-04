@@ -13,14 +13,14 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping("/users/meeting/status")
-    public ResponseEntity<List<UserStatusDto>> getUserMeetingStatusList() {
-        return ResponseEntity.ok(adminService.getUserMeetingStatusList());
+    @GetMapping("/meeting/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getMeetingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getMeetingPaymentTargetList());
     }
 
-    @GetMapping("/users/dating/status")
-    public ResponseEntity<List<UserStatusDto>> getUserDatingStatusList() {
-        return ResponseEntity.ok(adminService.getUserDatingStatusList());
+    @GetMapping("/dating/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getDatingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getDatingPaymentTargetList());
     }
 
     @PatchMapping("/users/meeting/payment")
@@ -33,13 +33,23 @@ public class AdminController {
         return ResponseEntity.ok(adminService.setUserDatingPayment(paymentDto));
     }
 
-    @GetMapping("/meeting/payment-targets")
-    public ResponseEntity<List<PaymentTargetDto>> getMeetingPaymentTargets() {
-        return ResponseEntity.ok(adminService.getMeetingPaymentTargetList());
+    @GetMapping("/meeting/refund-targets")
+    public ResponseEntity<List<RefundTargetDto>> getMeetingRefundTargets() {
+        return ResponseEntity.ok(adminService.getMeetingRefundTargets());
     }
 
-    @GetMapping("/dating/payment-targets")
-    public ResponseEntity<List<PaymentTargetDto>> getDatingPaymentTargets() {
-        return ResponseEntity.ok(adminService.getDatingPaymentTargetList());
+    @GetMapping("/dating/refund-refund")
+    public ResponseEntity<List<RefundTargetDto>> getDatingRefundTargets() {
+        return ResponseEntity.ok(adminService.getDatingRefundTargets());
+    }
+
+    @PatchMapping("/users/meeting/refund")
+    public ResponseEntity<PaymentStatusDto> setUserMeetingRefund(@RequestBody PaymentDto paymentDto) {
+        return ResponseEntity.ok(adminService.setUserMeetingRefund(paymentDto));
+    }
+
+    @PatchMapping("/users/dating/refund")
+    public ResponseEntity<PaymentStatusDto> setUserDatingRefund(@RequestBody PaymentDto paymentDto) {
+        return ResponseEntity.ok(adminService.setUserDatingRefund(paymentDto));
     }
 }
