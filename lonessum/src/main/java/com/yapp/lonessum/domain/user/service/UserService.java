@@ -132,15 +132,19 @@ public class UserService {
 
     @Transactional
     public Long testJoin(JoinRequest joinRequest) {
-        UniversityEntity university = universityRepository.findByDomain("google.com");
-        universityRepository.save(university);
-        return userRepository.save(UserEntity.builder()
-                .userName(joinRequest.getUserName())
-                .password(joinRequest.getPassword())
-                .isAdult(true)
-                .isAuthenticated(true)
-                .university(university)
-                .build()).getId();
+        Optional<UniversityEntity> university = universityRepository.findByDomain("lonessum.com");
+        if (university.isPresent()) {
+            return userRepository.save(UserEntity.builder()
+                    .userName(joinRequest.getUserName())
+                    .password(joinRequest.getPassword())
+                    .isAdult(true)
+                    .isAuthenticated(true)
+                    .university(university.get())
+                    .build()).getId();
+        }
+        else {
+            throw new RestApiException(UserErrorCode.NO_SUCH_UNIVERSITY);
+        }
     }
 
     @Transactional
