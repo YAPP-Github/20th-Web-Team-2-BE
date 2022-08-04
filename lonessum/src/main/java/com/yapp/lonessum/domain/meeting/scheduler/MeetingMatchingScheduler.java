@@ -11,6 +11,7 @@ import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
+import com.yapp.lonessum.domain.payment.repository.PayNameCountRepository;
 import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
 import com.yapp.lonessum.domain.payment.service.PayNameService;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
@@ -41,10 +42,14 @@ public class MeetingMatchingScheduler {
     private final MeetingMatchingRepository meetingMatchingRepository;
     private final PayNameService payNameService;
     private final PaymentRepository paymentRepository;
+    private final PayNameCountRepository payNameCountRepository;
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
     public void runMatch() {
+
+        payNameCountRepository.setPayNameCounter(0);
+
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
