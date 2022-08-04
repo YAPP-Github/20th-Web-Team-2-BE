@@ -71,23 +71,27 @@ class UserServiceTest {
         male = userRepository.save(male);
         female = userRepository.save(female);
 
-        //결제 정보
-        PaymentEntity payment = PaymentEntity
-                .builder()
-                .isPaid(true)
-                .isNeedRefund(false).build();
-        payment = paymentRepository.save(payment);
-
         MeetingMatchingEntity meetingMatching = MeetingMatchingEntity.builder()
                 .maleSurvey(maleSurvey)
                 .femaleSurvey(femaleSurvey)
-                .payment(payment)
                 .build();
+
+        //결제 정보
+        PaymentEntity payment = PaymentEntity
+                .builder()
+                .meetingMatching(meetingMatching)
+                .isPaid(false)
+                .isNeedRefund(false).build();
+        payment = paymentRepository.save(payment);
+
+        meetingMatching.changePayment(payment);
 
         maleSurvey.changeMeetingMatching(meetingMatching);
         femaleSurvey.changeMeetingMatching(meetingMatching);
 
         meetingMatchingRepository.save(meetingMatching);
+
+        payment.payForMatching(MatchType.MEETING);
 
         //when
         userService.withdraw(female.getId());
@@ -153,6 +157,6 @@ class UserServiceTest {
         Assertions.assertThat(payment.getIsNeedRefund())
                 .isEqualTo(false);
         Assertions.assertThat(meetingMatching.getFemaleSurvey().getMatchStatus())
-                .isEqualTo(MatchStatus.FAILED);
+                .isEqualTo(MatchStatus.PAID);
     }
 }

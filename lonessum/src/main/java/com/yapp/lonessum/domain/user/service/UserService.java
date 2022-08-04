@@ -77,10 +77,6 @@ public class UserService {
                 if (meetingSurvey.getGender() == Gender.MALE) {
                     meetingSurvey.getMeetingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
                 }
-                // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
-                else {
-                    meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
-                }
             }
             else if (meetingSurvey.getMatchStatus() == MatchStatus.PAID) {
                 if (meetingSurvey.getGender() == Gender.FEMALE) {
@@ -89,6 +85,13 @@ public class UserService {
                         meetingSurvey.getMeetingMatching().getPayment().updateNeedRefundStatus(true);
                         meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
                     }
+                    // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
+                    else {
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
+                    }
+                }
+                else {
+                    // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
         }
@@ -100,10 +103,6 @@ public class UserService {
                 if (datingSurvey.getGender() == Gender.MALE) {
                     datingSurvey.getDatingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
                 }
-                // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
-                else {
-                    datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
-                }
             }
             else if (datingSurvey.getMatchStatus() == MatchStatus.PAID) {
                 if (datingSurvey.getGender() == Gender.FEMALE) {
@@ -112,6 +111,13 @@ public class UserService {
                         datingSurvey.getDatingMatching().getPayment().updateNeedRefundStatus(true);
                         datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
                     }
+                    // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
+                    else {
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
+                    }
+                }
+                else {
+                    // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
         }
