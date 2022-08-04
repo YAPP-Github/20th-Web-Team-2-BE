@@ -57,9 +57,11 @@ public class UserEntity {
 
     public void changeMeetingSurvey(MeetingSurveyEntity meetingSurvey) {
         this.meetingSurvey = meetingSurvey;
+        meetingSurvey.changeUser(this);
     }
 
     public void changeDatingSurvey(DatingSurveyEntity datingSurvey) {
         this.datingSurvey = datingSurvey;
+        datingSurvey.changeUser(this);
     }
 }

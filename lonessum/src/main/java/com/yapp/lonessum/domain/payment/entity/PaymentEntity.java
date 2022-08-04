@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "payment")
 public class PaymentEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -38,6 +39,14 @@ public class PaymentEntity {
 
     public void updateNeedRefundStatus(Boolean isNeedRefund) {
         this.isNeedRefund = isNeedRefund;
+    }
+
+    public void changeMeetingMatching(MeetingMatchingEntity meetingMatching) {
+        this.meetingMatching = meetingMatching;
+    }
+
+    public void changeDatingMatching(DatingMatchingEntity datingMatching) {
+        this.datingMatching = datingMatching;
     }
 
     public void payForMatching(MatchType matchType) {

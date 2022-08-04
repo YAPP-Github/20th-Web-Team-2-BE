@@ -4,6 +4,7 @@ import com.yapp.lonessum.common.algorithm.MatchingInfo;
 import com.yapp.lonessum.domain.constant.DomesticArea;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
+import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.meeting.algorithm.MeetingMatchingAlgorithm;
 import com.yapp.lonessum.domain.meeting.dto.MeetingMatchResultDto;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
@@ -13,16 +14,22 @@ import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
+import com.yapp.lonessum.domain.meeting.scheduler.MeetingMatchingScheduler;
+import com.yapp.lonessum.domain.payment.entity.MatchType;
+import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.university.UniversityService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +38,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MeetingMatchingService {
+
+    private final MeetingMatchingScheduler meetingMatchingScheduler;
 
     private final UniversityService universityService;
     private final AbroadAreaService abroadAreaService;
@@ -57,25 +67,29 @@ public class MeetingMatchingService {
         }
         // 매칭 성공했을 때
         else if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
-            // 내가 남자일 때
+            // 내가 남자일 때만 해당
+            // 내가 결제 안했을 때
+            if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
+                return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), meetingSurvey.getMeetingMatching().getPayment().getPayName());
+            }
+        }
+        else if (meetingSurvey.getMatchStatus() == MatchStatus.PAID) {
+            // 내가 여자일 때
+            if (meetingSurvey.getGender() == Gender.FEMALE) {
+                // 상대가 결제 안했을 때
+                if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
+                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), null);
+                }
+            }
+
+            // 모두 결제했을 때 -> 매칭 상대 정보
             if (meetingSurvey.getGender() == Gender.MALE) {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getFemaleSurvey();
-                // 내가 결제 안했을 때
-
-                if (!meetingSurvey.getMeetingMatching().getPayment().getIsPaid()) {
-                    return new MeetingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, meetingSurvey.getMeetingMatching().getMatchedTime().plusDays(1L), meetingSurvey.getMeetingMatching().getPayment().getPayName());
-                }
             }
-            // 내가 여자일 때
             else {
                 partnerSurvey = meetingSurvey.getMeetingMatching().getMaleSurvey();
-                // 상대가 결제 안했을 때
-
-                if (!partnerSurvey.getMeetingMatching().getPayment().getIsPaid()) {
-                    return new MeetingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
-                }
             }
-            // 모두 결제했을 때 -> 매칭 상대 정보
+
             MeetingPartnerSurveyDto meetingPartnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
 
             List<String> universityNames = universityService.getUniversityNameFromId(partnerSurvey.getOurUniversities());
@@ -98,64 +112,23 @@ public class MeetingMatchingService {
         else if(meetingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new MeetingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
-        else {
-            return new MeetingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
-        }
+        //환불이 필요한 경우
+        return new MeetingMatchResultDto(7006, SurveyErrorCode.CANCELED_OR_NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional
     public List<TestMeetingMatchingResultDto> testMatch() {
-        List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
-
-        Map<Long, MeetingSurveyEntity> meetingSurveyMap = new HashMap<>();
-        for (MeetingSurveyEntity ms : meetingSurveyList) {
-            meetingSurveyMap.put(ms.getId(), ms);
+        meetingMatchingScheduler.runMatch();
+        List<MeetingMatchingEntity> matchingEntityList = meetingMatchingRepository.findAll();
+        if (matchingEntityList == null || matchingEntityList.size() == 0) {
+            log.info("matching size is 0");
+            return new ArrayList<>();
         }
-
-        List<MeetingSurveyDto> meetingSurveyDtoList = new ArrayList<>();
-        for (MeetingSurveyEntity ms : meetingSurveyList) {
-            MeetingSurveyDto meetingSurveyDto = meetingSurveyMapper.toDto(ms);
-            meetingSurveyDto.setId(ms.getId());
-            meetingSurveyDtoList.add(meetingSurveyDto);
-        }
-
-        MeetingMatchingAlgorithm meetingMatchingAlgorithm = new MeetingMatchingAlgorithm();
-        List<MatchingInfo<MeetingSurveyDto>> result = meetingMatchingAlgorithm.getResult(meetingSurveyDtoList);
-        for (MatchingInfo mi : result) {
-            MeetingSurveyDto firstDto = (MeetingSurveyDto) mi.getFirst();
-            MeetingSurveyDto secondDto = (MeetingSurveyDto) mi.getSecond();
-
-            MeetingSurveyEntity firstEntity = meetingSurveyMap.get(firstDto.getId());
-            MeetingSurveyEntity secondEntity = meetingSurveyMap.get(secondDto.getId());
-
-            MeetingMatchingEntity meetingMatching = mi.toMeetingMatchingEntity(firstEntity, secondEntity);
-            firstEntity.changeMeetingMatching(meetingMatching);
-            secondEntity.changeMeetingMatching(meetingMatching);
-
-            meetingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
-            meetingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
-
-            String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
-            String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
-
-//            emailService.sendMatchResult(emailA);
-//            emailService.sendMatchResult(emailB);
-
-            meetingMatchingRepository.save(meetingMatching);
-        }
-
-        meetingSurveyList.forEach((meetingSurvey -> {
-            if (meetingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
-                meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
-            }
-        }));
-
-        return meetingMatchingRepository.findAll()
+        return matchingEntityList
                 .stream().map((matchingEntity) -> TestMeetingMatchingResultDto.builder()
                 .matchId(matchingEntity.getId())
-                .maleSurveyId(matchingEntity.getMaleSurvey().getId())
-                .femaleSurveyId(matchingEntity.getFemaleSurvey().getId())
+                .maleKakaoId(matchingEntity.getMaleSurvey().getKakaoId())
+                .femaleKakaoId(matchingEntity.getFemaleSurvey().getKakaoId())
                 .build()).collect(Collectors.toList());
     }
 }

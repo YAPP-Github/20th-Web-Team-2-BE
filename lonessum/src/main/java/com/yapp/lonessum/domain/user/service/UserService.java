@@ -3,13 +3,8 @@ package com.yapp.lonessum.domain.user.service;
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.constant.Gender;
 import com.yapp.lonessum.domain.constant.MatchStatus;
-import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
-import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
-import com.yapp.lonessum.domain.meeting.entity.MeetingMatchingEntity;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
-import com.yapp.lonessum.domain.meeting.repository.MeetingMatchingRepository;
-import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.client.KakaoApiClient;
 import com.yapp.lonessum.domain.user.dto.*;
@@ -34,8 +29,6 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
-    private final MeetingMatchingRepository meetingMatchingRepository;
-    private final DatingMatchingRepository datingMatchingRepository;
 
     @Transactional
     public LoginResponse login(KakaoTokenResponse token) {
@@ -79,48 +72,52 @@ public class UserService {
 
         //미팅 case
         if (!Objects.isNull(meetingSurvey)) {
-            //남자 탈퇴 (여자는 환불 필요 x)
-            if (meetingSurvey.getGender() == Gender.MALE) {
-                //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
-                meetingSurvey.getMeetingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
-            } else if (meetingSurvey.getGender() == Gender.FEMALE) {
-                //여자 탈퇴 (남자 환불 필요 o)
-                Optional<MeetingMatchingEntity> meetingMatchingEntity =
-                        meetingMatchingRepository.findWithFeMaleSurvey(meetingSurvey.getId());
-
-                if (meetingMatchingEntity.isPresent()) {
-                    PaymentEntity payment = meetingMatchingEntity.get().getPayment();
-
-                    if(payment.getIsPaid()) {
-                        payment.updateNeedRefundStatus(true);
-
-                        //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+            if (meetingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
+                // 남자 탈퇴, 입금 전 -> 여자 실패
+                if (meetingSurvey.getGender() == Gender.MALE) {
+                    meetingSurvey.getMeetingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
+                }
+            }
+            else if (meetingSurvey.getMatchStatus() == MatchStatus.PAID) {
+                if (meetingSurvey.getGender() == Gender.FEMALE) {
+                    // 여자 탈퇴, 입금 후 -> 남자 환불(NEED_REFUND)
+                    if (meetingSurvey.getMeetingMatching().getPayment().getIsPaid() == true) {
+                        meetingSurvey.getMeetingMatching().getPayment().updateNeedRefundStatus(true);
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
                     }
+                    // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
+                    else {
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
+                    }
+                }
+                else {
+                    // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
         }
 
         //dating case
         if (!Objects.isNull(datingSurvey)) {
-            //남자 탈퇴 (여자는 환불 필요 x)
-            if (datingSurvey.getGender() == Gender.MALE) {
-                //TODO : 만약 남자가 탈퇴했을 때에 여자쪽에 추가 조치가 필요한 해당 부분에 반영
-                datingSurvey.getDatingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
-            } else if (datingSurvey.getGender() == Gender.FEMALE) {
-                //여자 탈퇴 (남자 환불 필요 o)
-                Optional<DatingMatchingEntity> datingMatchingEntity =
-                        datingMatchingRepository.findWithFeMaleSurvey(datingSurvey.getId());
-
-                if (datingMatchingEntity.isPresent()) {
-                    PaymentEntity payment = datingMatchingEntity.get().getPayment();
-
-                    if(payment.getIsPaid()) {
-                        payment.updateNeedRefundStatus(true);
-
-                        //TODO : 남자 유저 환불 대상임 알림 코드 필요하면 추가 위치
-                        datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.NEED_REFUND);
+            if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
+                // 남자 탈퇴, 입금 전 -> 여자 실패
+                if (datingSurvey.getGender() == Gender.MALE) {
+                    datingSurvey.getDatingMatching().getFemaleSurvey().changeMatchStatus(MatchStatus.FAILED);
+                }
+            }
+            else if (datingSurvey.getMatchStatus() == MatchStatus.PAID) {
+                if (datingSurvey.getGender() == Gender.FEMALE) {
+                    // 여자 탈퇴, 입금 후 -> 남자 환불(NEED_REFUND)
+                    if (datingSurvey.getDatingMatching().getPayment().getIsPaid() == true) {
+                        datingSurvey.getDatingMatching().getPayment().updateNeedRefundStatus(true);
+                        datingSurvey.getDatingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
                     }
+                    // 여자 탈퇴, 입금 전 -> 남자 취소(CANCELED)
+                    else {
+                        meetingSurvey.getMeetingMatching().getMaleSurvey().changeMatchStatus(MatchStatus.CANCELED_OR_NEED_REFUND);
+                    }
+                }
+                else {
+                    // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
         }

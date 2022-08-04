@@ -24,14 +24,22 @@ public class AdminController {
     }
 
     @PatchMapping("/users/meeting/payment")
-    public ResponseEntity<List<UserStatusDto>> setUserMeetingPayment(@RequestBody PaymentDto paymentDto) {
-        adminService.setUserMeetingPayment(paymentDto);
-        return ResponseEntity.ok(adminService.getUserDatingStatusList());
+    public ResponseEntity<PaymentStatusDto> setUserMeetingPayment(@RequestBody PaymentDto paymentDto) {
+        return ResponseEntity.ok(adminService.setUserMeetingPayment(paymentDto));
     }
 
     @PatchMapping("/users/dating/payment")
-    public ResponseEntity<List<UserStatusDto>> setUserDatingPayment(@RequestBody PaymentDto paymentDto) {
-        adminService.setUserDatingPayment(paymentDto);
-        return ResponseEntity.ok(adminService.getUserDatingStatusList());
+    public ResponseEntity<PaymentStatusDto> setUserDatingPayment(@RequestBody PaymentDto paymentDto) {
+        return ResponseEntity.ok(adminService.setUserDatingPayment(paymentDto));
+    }
+
+    @GetMapping("/meeting/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getMeetingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getMeetingPaymentTargetList());
+    }
+
+    @GetMapping("/dating/payment-targets")
+    public ResponseEntity<List<PaymentTargetDto>> getDatingPaymentTargets() {
+        return ResponseEntity.ok(adminService.getDatingPaymentTargetList());
     }
 }

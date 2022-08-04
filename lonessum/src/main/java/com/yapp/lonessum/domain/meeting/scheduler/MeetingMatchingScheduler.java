@@ -12,11 +12,14 @@ import com.yapp.lonessum.domain.email.service.EmailService;
 import com.yapp.lonessum.domain.payment.entity.MatchType;
 import com.yapp.lonessum.domain.payment.entity.PaymentEntity;
 import com.yapp.lonessum.domain.payment.repository.PaymentRepository;
+import com.yapp.lonessum.domain.payment.service.PayNameService;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.exception.errorcode.SurveyErrorCode;
+import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import com.yapp.lonessum.mapper.MeetingSurveyMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,18 +32,19 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MeetingMatchingScheduler {
 
     private final EmailService emailService;
     private final MeetingSurveyMapper meetingSurveyMapper;
     private final MeetingSurveyRepository meetingSurveyRepository;
     private final MeetingMatchingRepository meetingMatchingRepository;
-    private final PaymentService paymentService;
+    private final PayNameService payNameService;
     private final PaymentRepository paymentRepository;
 
     @Transactional
     @Scheduled(cron = "00 00 22 * * ?")
-    public void runMatch() throws MessagingException {
+    public void runMatch() {
         List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
@@ -75,15 +79,25 @@ public class MeetingMatchingScheduler {
             String emailA = meetingMatching.getMaleSurvey().getUser().getUniversityEmail();
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
 
-            emailService.sendMatchResult(emailA);
-            emailService.sendMatchResult(emailB);
+            try {
+                emailService.sendMatchResult(emailA);
+                emailService.sendMatchResult(emailB);
+            } catch (MessagingException e) {
+                log.warn("매칭 결과 이메일 전송 실패", emailA);
+                log.warn("매칭 결과 이메일 전송 실패", emailB);
+                throw new RestApiException(UserErrorCode.FAIL_TO_SEND_EMAIL);
+            }
 
-            paymentRepository.save(PaymentEntity.builder()
-                    .payName(paymentService.generatePayName())
+            PaymentEntity payment = PaymentEntity.builder()
+                    .payName(payNameService.getPayName())
                     .matchType(MatchType.MEETING)
                     .meetingMatching(meetingMatching)
                     .isPaid(false)
-                    .build());
+                    .isNeedRefund(false)
+                    .build();
+            paymentRepository.save(payment);
+
+            meetingMatching.changePayment(payment);
 
             meetingMatchingRepository.save(meetingMatching);
         }
@@ -91,6 +105,13 @@ public class MeetingMatchingScheduler {
         meetingSurveyList.forEach((meetingSurvey -> {
             if (meetingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
                 meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
+                String email = meetingSurvey.getUser().getUniversityEmail();
+                try {
+                    emailService.sendMatchResult(email);
+                } catch (MessagingException e) {
+                    log.warn("매칭 결과 이메일 전송 실패", email);
+                    throw new RestApiException(UserErrorCode.FAIL_TO_SEND_EMAIL);
+                }
             }
         }));
     }

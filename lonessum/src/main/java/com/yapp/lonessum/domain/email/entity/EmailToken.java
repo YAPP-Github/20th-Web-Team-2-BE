@@ -10,11 +10,10 @@ import java.io.Serializable;
 
 @Getter
 @Builder
-@RedisHash(value = "emailToken", timeToLive = 180)
+@RedisHash(value = "emailToken", timeToLive = 180L)
 public class EmailToken implements Serializable {
     @Id
-    private Long id;
+    private String userId;
     @Indexed
-    private Long userId;
     private String authCode;
 }

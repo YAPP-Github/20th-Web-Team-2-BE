@@ -5,6 +5,7 @@ import com.yapp.lonessum.domain.university.UniversityEntity;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.university.UniversityRepository;
 import com.yapp.lonessum.domain.university.UniversityService;
+import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,9 @@ public class EmailService {
     private final EmailTokenService emailTokenService;
     private final UniversityService universityService;
 
+    private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
 
-    @Transactional
     public LocalDateTime updateAndSendEmail(UserEntity user, String email) throws MessagingException {
         // 유저 대학 이메일 정보 등록
         updateUniversityEmail(user, email);
@@ -71,8 +72,21 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setFrom(new InternetAddress(SERVICE_EMAIL));
         message.addRecipients(MimeMessage.RecipientType.TO, email);
-        message.setSubject("[외딴썸] 매칭결과를 확인해주세요.");
+        message.setSubject("[외딴썸] 매칭 결과를 확인해주세요.");
         message.setText(setMatchResultContext(), "utf-8", "html");
+
+        javaMailSender.send(message);
+    }
+
+    @Async
+    @Transactional
+    public void sendPartnerSurvey(String email) throws MessagingException {
+        //이메일 메시지 생성
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.setFrom(new InternetAddress(SERVICE_EMAIL));
+        message.addRecipients(MimeMessage.RecipientType.TO, email);
+        message.setSubject("[외딴썸] 매칭된 상대의 정보를 확인해주세요.");
+        message.setText(setPartnerSurveyContext(), "utf-8", "html");
 
         javaMailSender.send(message);
     }
@@ -88,12 +102,16 @@ public class EmailService {
         return templateEngine.process("MatchResult", context); // MatchResult.html
     }
 
+    private String setPartnerSurveyContext() { // 타임리프 설정하는 코드
+        Context context = new Context();
+        return templateEngine.process("PartnerSurvey", context); // MatchResult.html
+    }
+
     public boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9+-\\_.]+@(?:\\w+\\.)+\\w+$";
         return Pattern.matches(regex, email);
     }
 
-    @Transactional
     public void updateUniversityEmail(UserEntity user, String email) {
         if (!isValidEmail(email)) {
             throw new RestApiException(UserErrorCode.INVALID_EMAIL);
@@ -103,6 +121,7 @@ public class EmailService {
             throw new RestApiException(UserErrorCode.UNSUPPORTED_EMAIL);
         }
         user.registerUniversityEmail(email);
+        userRepository.save(user);
     }
 
     @Transactional

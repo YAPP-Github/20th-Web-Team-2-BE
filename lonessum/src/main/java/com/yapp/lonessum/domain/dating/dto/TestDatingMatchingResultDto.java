@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TestDatingMatchingResultDto {
     private Long matchId;
-    private Long maleSurveyId;
-    private Long femaleSurveyId;
+    private String maleKakaoId;
+    private String femaleKakaoId;
 }

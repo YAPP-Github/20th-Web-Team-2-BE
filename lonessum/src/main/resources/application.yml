@@ -44,3 +44,7 @@ server:
     key-store-password: lonessum
     key-alias: lonessum
     enabled: true
+
+payname:
+  resource:
+    path: C:\Users\rlacksgus\Desktop\isoland\20th-Web-Team-2-BE\lonessum\src\main\resources\payNameInfo.txt

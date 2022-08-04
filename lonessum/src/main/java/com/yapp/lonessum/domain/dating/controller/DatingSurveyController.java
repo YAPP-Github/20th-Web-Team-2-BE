@@ -2,6 +2,7 @@ package com.yapp.lonessum.domain.dating.controller;
 
 import com.yapp.lonessum.config.jwt.JwtService;
 import com.yapp.lonessum.domain.dating.dto.DatingSurveyDto;
+import com.yapp.lonessum.domain.dating.dto.MyDatingSurveyDto;
 import com.yapp.lonessum.domain.dating.service.DatingSurveyService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class DatingSurveyController {
     }
 
     @GetMapping
-    public ResponseEntity<DatingSurveyDto> readSurvey() {
+    public ResponseEntity<MyDatingSurveyDto> readSurvey() {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(datingSurveyService.readSurvey(user));
     }
@@ -38,5 +39,11 @@ public class DatingSurveyController {
     public ResponseEntity<Long> updateSurvey(@RequestBody DatingSurveyDto datingSurveyDto) {
         UserEntity user = jwtService.getUserFromJwt();
         return ResponseEntity.ok(datingSurveyService.updateSurvey(user, datingSurveyDto));
+    }
+
+    @PutMapping("/rollback")
+    public ResponseEntity rollBackToWaiting() {
+        datingSurveyService.rollBackToWaiting();
+        return ResponseEntity.ok().build();
     }
 }

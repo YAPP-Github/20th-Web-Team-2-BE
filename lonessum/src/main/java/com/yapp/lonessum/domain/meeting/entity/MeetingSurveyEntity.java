@@ -93,6 +93,10 @@ public class MeetingSurveyEntity {
 
     private Boolean isRandom;
 
+    public void changeUser(UserEntity user) {
+        this.user = user;
+    }
+
     public void changeMatchStatus(MatchStatus matchStatus) {
         this.matchStatus = matchStatus;
     }

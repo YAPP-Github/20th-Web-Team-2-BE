@@ -1,7 +1,9 @@
 package com.yapp.lonessum.domain.meeting.service;
 
+import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
+import com.yapp.lonessum.domain.meeting.dto.MyMeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.entity.MeetingSurveyEntity;
 import com.yapp.lonessum.domain.meeting.repository.MeetingSurveyRepository;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
@@ -13,12 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MeetingSurveyService {
 
+    private final AbroadAreaService abroadAreaService;
     private final MeetingSurveyMapper meetingSurveyMapper;
     private final MeetingSurveyRepository meetingSurveyRepository;
 
@@ -63,12 +66,13 @@ public class MeetingSurveyService {
     }
 
     @Transactional(readOnly = true)
-    public MeetingSurveyDto readSurvey(UserEntity user) {
+    public MyMeetingSurveyDto readSurvey(UserEntity user) {
         MeetingSurveyEntity meetingSurvey = user.getMeetingSurvey();
         if (meetingSurvey == null) {
             throw new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY);
         }
-        return meetingSurveyMapper.toDto(meetingSurvey);
+        List<String> stringAbroadAreas = abroadAreaService.getAreaNameFromId(meetingSurvey.getAbroadAreas());
+        return new MyMeetingSurveyDto(meetingSurveyMapper.toDto(meetingSurvey), stringAbroadAreas);
     }
 
     @Transactional
@@ -90,5 +94,12 @@ public class MeetingSurveyService {
         }
         meetingSurveyRepository.delete(meetingSurvey);
         return meetingSurvey.getId();
+    }
+
+    @Transactional
+    public void rollBackToWaiting() {
+        meetingSurveyRepository.findAll().forEach((meetingSurvey -> {
+            meetingSurvey.changeMatchStatus(MatchStatus.WAITING);
+        }));
     }
 }

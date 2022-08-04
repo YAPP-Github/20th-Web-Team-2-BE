@@ -13,6 +13,7 @@ import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
 import com.yapp.lonessum.domain.dating.repository.DatingSurveyRepository;
+import com.yapp.lonessum.domain.dating.scheduler.DatingMatchingScheduler;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.abroadArea.AbroadAreaService;
 import com.yapp.lonessum.domain.university.UniversityService;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DatingMatchingService {
+
+    private final DatingMatchingScheduler datingMatchingScheduler;
 
     private final UniversityService universityService;
     private final AbroadAreaService abroadAreaService;
@@ -58,25 +61,29 @@ public class DatingMatchingService {
         }
         // 매칭 성공했을 때
         else if (datingSurvey.getMatchStatus() == MatchStatus.MATCHED) {
-            // 내가 남자일 때
+            // 내가 남자일 때만 해당
+            // 내가 결제 안했을 때
+            if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
+                return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), datingSurvey.getDatingMatching().getPayment().getPayName());
+            }
+        }
+        else if (datingSurvey.getMatchStatus() == MatchStatus.PAID) {
+            // 내가 여자일 때
+            if (datingSurvey.getGender() == Gender.FEMALE) {
+                // 상대가 결제 안했을 때
+                if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
+                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), null);
+                }
+            }
+
+            // 모두 결제했을 때 -> 매칭 상대 정보
             if (datingSurvey.getGender() == Gender.MALE) {
                 partnerSurvey = datingSurvey.getDatingMatching().getFemaleSurvey();
-                // 내가 결제 안했을 때
-
-                if (!datingSurvey.getDatingMatching().getPayment().getIsPaid()) {
-                    return new DatingMatchResultDto(7002, SurveyErrorCode.PAY_FOR_MATCH.getMessage(), null, datingSurvey.getDatingMatching().getMatchedTime().plusDays(1L), datingSurvey.getDatingMatching().getPayment().getPayName());
-                }
             }
-            // 내가 여자일 때
             else {
                 partnerSurvey = datingSurvey.getDatingMatching().getMaleSurvey();
-                // 상대가 결제 안했을 때
-
-                if (!partnerSurvey.getDatingMatching().getPayment().getIsPaid()) {
-                    return new DatingMatchResultDto(7003, SurveyErrorCode.WAITING_FOR_PAY.getMessage(), null, null, null);
-                }
             }
-            // 모두 결제했을 때 -> 매칭 상대 정보
+
             DatingPartnerSurveyDto datingPartnerSurveyDto = partnerSurvey.toPartnerSurveyDto();
 
             datingPartnerSurveyDto.setUniversity(partnerSurvey.getUser().getUniversity().getName());
@@ -98,65 +105,19 @@ public class DatingMatchingService {
         else if (datingSurvey.getMatchStatus() == MatchStatus.FAILED) {
             return new DatingMatchResultDto(7005, SurveyErrorCode.MATCH_FAIL.getMessage(), null, null, null);
         }
-        else {
-            return new DatingMatchResultDto(7006, SurveyErrorCode.NEED_REFUND.getMessage(), null, null, null);
-        }
+        // 환불이 필요한 경우
+        return new DatingMatchResultDto(7006, SurveyErrorCode.CANCELED_OR_NEED_REFUND.getMessage(), null, null, null);
     }
 
     @Transactional
     public List<TestDatingMatchingResultDto> testMatch() {
-        List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
-                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
-
-        Map<Long, DatingSurveyEntity> datingSurveyMap = new HashMap<>();
-        for (DatingSurveyEntity ds : datingSurveyList) {
-            datingSurveyMap.put(ds.getId(), ds);
-        }
-
-        List<DatingSurveyDto> datingSurveyDtoList = new ArrayList<>();
-        for (DatingSurveyEntity ds : datingSurveyList) {
-            DatingSurveyDto datingSurveyDto = datingSurveyMapper.toDto(ds);
-            datingSurveyDto.setId(ds.getId());
-            datingSurveyDtoList.add(datingSurveyDto);
-        }
-
-        DatingMatchingAlgorithm datingMatchingAlgorithm = new DatingMatchingAlgorithm();
-        List<MatchingInfo<DatingSurveyDto>> result = datingMatchingAlgorithm.getResult(datingSurveyDtoList);
-
-        for (MatchingInfo mi : result) {
-            DatingSurveyDto firstDto = (DatingSurveyDto) mi.getFirst();
-            DatingSurveyDto secondDto = (DatingSurveyDto) mi.getSecond();
-
-            DatingSurveyEntity firstEntity = datingSurveyMap.get(firstDto.getId());
-            DatingSurveyEntity secondEntity = datingSurveyMap.get(secondDto.getId());
-
-            DatingMatchingEntity datingMatching = mi.toDatingMatchingEntity(firstEntity, secondEntity);
-            firstEntity.changeDatingMatching(datingMatching);
-            secondEntity.changeDatingMatching(datingMatching);
-
-            datingMatching.getMaleSurvey().changeMatchStatus(MatchStatus.MATCHED);
-            datingMatching.getFemaleSurvey().changeMatchStatus(MatchStatus.PAID);
-
-            String emailA = datingMatching.getMaleSurvey().getUser().getUniversityEmail();
-            String emailB = datingMatching.getFemaleSurvey().getUser().getUniversityEmail();
-
-//            emailService.sendMatchResult(emailA);
-//            emailService.sendMatchResult(emailB);
-
-            datingMatchingRepository.save(datingMatching);
-        }
-
-        datingSurveyList.forEach((datingSurvey -> {
-            if (datingSurvey.getMatchStatus().equals(MatchStatus.WAITING)) {
-                datingSurvey.changeMatchStatus(MatchStatus.FAILED);
-            }
-        }));
+        datingMatchingScheduler.runMatch();
 
         return datingMatchingRepository.findAll()
                 .stream().map((matchingEntity) -> TestDatingMatchingResultDto.builder()
                         .matchId(matchingEntity.getId())
-                        .maleSurveyId(matchingEntity.getMaleSurvey().getId())
-                        .femaleSurveyId(matchingEntity.getFemaleSurvey().getId())
+                        .maleKakaoId(matchingEntity.getMaleSurvey().getKakaoId())
+                        .femaleKakaoId(matchingEntity.getFemaleSurvey().getKakaoId())
                         .build()).collect(Collectors.toList());
     }
 }
