@@ -5,7 +5,6 @@ import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -77,20 +77,15 @@ public class UniversityService {
         return universityNames;
     }
 
-//     @EventListener
-    public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
 //        registerUniInfo();
-        UniversityEntity university1 = new UniversityEntity();
-        university1.setDomain("google.com");
-        university1.setName("GOOGLE");
-        UniversityEntity university2 = new UniversityEntity();
-        university2.setDomain("naver.com");
-        university2.setName("NAVER");
-        UniversityEntity university3 = new UniversityEntity();
-        university3.setDomain("kakao.com");
-        university3.setName("KAKAO");
-        universityRepository.save(university1);
-        universityRepository.save(university2);
-        universityRepository.save(university3);
+        Optional<UniversityEntity> university = universityRepository.findByDomain("lonessum.com");
+        if (university.isEmpty()) {
+            UniversityEntity university1 = new UniversityEntity();
+            university1.setDomain("lonessum.com");
+            university1.setName("Lonessum");
+            universityRepository.save(university1);
+        }
     }
 }

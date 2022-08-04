@@ -21,6 +21,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -130,8 +131,8 @@ public class EmailService {
             String email = user.getUniversityEmail();
             int idx = email.indexOf("@");
             String domain = email.substring(idx+1);
-            UniversityEntity university = universityRepository.findByDomain(domain);
-            user.authenticatedWithEmail(university);
+            Optional<UniversityEntity> university = universityRepository.findByDomain(domain);
+            user.authenticatedWithEmail(university.get());
             return true;
         }
         return false;
