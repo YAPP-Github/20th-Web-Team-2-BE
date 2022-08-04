@@ -1,6 +1,5 @@
 package com.yapp.lonessum.domain.admin;
 
-import com.yapp.lonessum.domain.constant.MatchStatus;
 import com.yapp.lonessum.domain.dating.entity.DatingMatchingEntity;
 import com.yapp.lonessum.domain.dating.entity.DatingSurveyEntity;
 import com.yapp.lonessum.domain.dating.repository.DatingMatchingRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,46 +63,6 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<UserStatusDto> getUserMeetingStatusList() {
-        List<MeetingSurveyEntity> meetingSurveyList = meetingSurveyRepository.findAll();
-        List<UserStatusDto> userStatusDtoList = new ArrayList<>();
-        for (MeetingSurveyEntity ms : meetingSurveyList) {
-            boolean isPaid;
-            if (ms.getMatchStatus().equals(MatchStatus.PAID)) {
-                isPaid = true;
-            } else {
-                isPaid = false;
-            }
-            userStatusDtoList.add(UserStatusDto.builder()
-                    .kakaoId(ms.getKakaoId())
-                    .matchStatus(ms.getMatchStatus())
-                    .isPaid(isPaid)
-                    .build());
-        }
-        return userStatusDtoList;
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserStatusDto> getUserDatingStatusList() {
-        List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAll();
-        List<UserStatusDto> userStatusDtoList = new ArrayList<>();
-        for (DatingSurveyEntity ms : datingSurveyList) {
-            boolean isPaid;
-            if (ms.getMatchStatus().equals(MatchStatus.PAID)) {
-                isPaid = true;
-            } else {
-                isPaid = false;
-            }
-            userStatusDtoList.add(UserStatusDto.builder()
-                    .kakaoId(ms.getKakaoId())
-                    .matchStatus(ms.getMatchStatus())
-                    .isPaid(isPaid)
-                    .build());
-        }
-        return userStatusDtoList;
-    }
-
     @Transactional
     public PaymentStatusDto setUserMeetingPayment(PaymentDto paymentDto) {
         MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
@@ -143,5 +101,53 @@ public class AdminService {
             throw new RestApiException(UserErrorCode.FAIL_TO_SEND_EMAIL);
         }
         return new PaymentStatusDto(datingSurvey.getDatingMatching().getPayment().getIsPaid());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RefundTargetDto> getMeetingRefundTargets() {
+        List<MeetingMatchingEntity> paymentTargetList = meetingMatchingRepository.findPaymentTargetList();
+
+        return paymentTargetList.stream()
+                .map(p -> new RefundTargetDto(
+                                p.getMaleSurvey().getKakaoId(),
+                                p.getFemaleSurvey().getKakaoId(),
+                                p.getPayment().getPayName(),
+                                p.getPayment().getIsNeedRefund()
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RefundTargetDto> getDatingRefundTargets() {
+        List<DatingMatchingEntity> paymentTargetList = datingMatchingRepository.findPaymentTargetList();
+
+        return paymentTargetList.stream()
+                .map(p -> new RefundTargetDto(
+                                p.getMaleSurvey().getKakaoId(),
+                                p.getFemaleSurvey().getKakaoId(),
+                                p.getPayment().getPayName(),
+                                p.getPayment().getIsNeedRefund()
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PaymentStatusDto setUserMeetingRefund(PaymentDto paymentDto) {
+        MeetingSurveyEntity meetingSurvey = meetingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
+        meetingSurvey.getMeetingMatching().getPayment().updateNeedRefundStatus(false);
+
+        return new PaymentStatusDto(meetingSurvey.getMeetingMatching().getPayment().getIsNeedRefund());
+    }
+
+    @Transactional
+    public PaymentStatusDto setUserDatingRefund(PaymentDto paymentDto) {
+        DatingSurveyEntity datingSurvey = datingSurveyRepository.findByKakaoId(paymentDto.getKakaoId())
+                .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_EXISTING_SURVEY));
+        datingSurvey.getDatingMatching().getPayment().updateNeedRefundStatus(false);
+
+        return new PaymentStatusDto(datingSurvey.getDatingMatching().getPayment().getIsNeedRefund());
     }
 }
