@@ -28,6 +28,7 @@ public class EmailController {
     @PostMapping
     public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}) send email", emailRequest.getEmail());
         return ResponseEntity.ok(emailService.updateAndSendEmail(user, emailRequest.getEmail()));
     }
 
