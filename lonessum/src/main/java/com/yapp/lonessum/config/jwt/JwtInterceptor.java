@@ -21,7 +21,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        log.info("url = " + request.getRequestURI());
+        log.info("url = " + request.getMethod() + request.getRequestURI());
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }

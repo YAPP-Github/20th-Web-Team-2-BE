@@ -45,8 +45,10 @@ public class MeetingMatchingScheduler {
     private final PayNameCountRepository payNameCountRepository;
 
     @Transactional
-    @Scheduled(cron = "00 00 22 * * ?")
+    @Scheduled(cron = "02 00 22 * * ?")
     public void runMatch() {
+
+        log.info("Start Today's Meeting Matching");
 
         payNameCountRepository.setPayNameCounter(0);
 
@@ -85,6 +87,8 @@ public class MeetingMatchingScheduler {
             String emailB = meetingMatching.getFemaleSurvey().getUser().getUniversityEmail();
 
             try {
+                log.info("send match result to"+emailA);
+                log.info("send match result to"+emailB);
                 emailService.sendMatchResult(emailA);
                 emailService.sendMatchResult(emailB);
             } catch (MessagingException e) {
@@ -112,6 +116,7 @@ public class MeetingMatchingScheduler {
                 meetingSurvey.changeMatchStatus(MatchStatus.FAILED);
                 String email = meetingSurvey.getUser().getUniversityEmail();
                 try {
+                    log.info("send match result(failed) to"+email);
                     emailService.sendMatchResult(email);
                 } catch (MessagingException e) {
                     log.warn("매칭 결과 이메일 전송 실패", email);
@@ -119,6 +124,8 @@ public class MeetingMatchingScheduler {
                 }
             }
         }));
+
+        log.info("Finished Today's Meeting Matching");
     }
 
     // 결제 마감 시간까지 결제하지 않은 유저는 MatchStatus가 MATCHED -> FAILED로 변경
