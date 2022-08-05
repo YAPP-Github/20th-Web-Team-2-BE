@@ -45,7 +45,7 @@ public class MeetingMatchingScheduler {
     private final PayNameCountRepository payNameCountRepository;
 
     @Transactional
-    @Scheduled(cron = "00 00 22 * * ?")
+    @Scheduled(cron = "02 00 22 * * ?")
     public void runMatch() {
 
         payNameCountRepository.setPayNameCounter(0);
