@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UniversityDto {
+public class AddUniversityDto {
     private String name;
     private String domain;
 }

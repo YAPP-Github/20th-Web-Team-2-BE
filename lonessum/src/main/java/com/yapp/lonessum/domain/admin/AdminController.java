@@ -60,23 +60,23 @@ public class AdminController {
     }
 
     @PostMapping("/universities")
-    public ResponseEntity<UniversityDto> registerUniversityInfo(@RequestBody UniversityDto universityDto) {
+    public ResponseEntity<AddUniversityDto> registerUniversityInfo(@RequestBody AddUniversityDto addUniversityDto) {
         UniversityEntity universityEntity = new UniversityEntity();
-        universityEntity.setDomain(universityDto.getDomain());
-        universityEntity.setName(universityDto.getName());
+        universityEntity.setDomain(addUniversityDto.getDomain());
+        universityEntity.setName(addUniversityDto.getName());
 
         universityRepository.save(universityEntity);
 
-        return ResponseEntity.ok(new UniversityDto(universityEntity.getName(), universityEntity.getDomain()));
+        return ResponseEntity.ok(new AddUniversityDto(universityEntity.getName(), universityEntity.getDomain()));
     }
 
     @PostMapping("/areas")
-    public ResponseEntity<AbroadAreaDto> registerAreaInfo(@RequestBody AbroadAreaDto abroadAreaDto) {
+    public ResponseEntity<AddAbroadAreaDto> registerAreaInfo(@RequestBody AddAbroadAreaDto addAbroadAreaDto) {
         AbroadAreaEntity abroadAreaEntity = new AbroadAreaEntity();
-        abroadAreaEntity.setName(abroadAreaDto.getName());
+        abroadAreaEntity.setName(addAbroadAreaDto.getName());
 
         abroadAreaRepository.save(abroadAreaEntity);
 
-        return ResponseEntity.ok(new AbroadAreaDto(abroadAreaEntity.getName()));
+        return ResponseEntity.ok(new AddAbroadAreaDto(abroadAreaEntity.getName()));
     }
 }
