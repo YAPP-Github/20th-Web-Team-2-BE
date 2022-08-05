@@ -14,6 +14,8 @@ import com.yapp.lonessum.domain.user.repository.UserRepository;
 import com.yapp.lonessum.exception.errorcode.UserErrorCode;
 import com.yapp.lonessum.exception.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UniversityRepository universityRepository;
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
     public LoginResponse login(KakaoTokenResponse token) {
@@ -41,12 +44,15 @@ public class UserService {
                     .isAuthenticated(false)
                     .isAdult(false)
                     .build());
+            logger.info("User({}) register", newUser.getId());
+
             return LoginResponse.builder()
                     .accessToken(jwtService.createAccessToken(newUser.getId()))
                     .isAuthenticated(newUser.getIsAuthenticated())
                     .isAdult(newUser.getIsAdult())
                     .build();
         } else {
+            logger.info("User({}) login", user.get().getId());
             return LoginResponse.builder()
                     .accessToken(jwtService.createAccessToken(user.get().getId()))
                     .isAuthenticated(user.get().getIsAuthenticated())
@@ -128,6 +134,7 @@ public class UserService {
             datingSurvey.setMatchStatus(MatchStatus.FAILED);
         }
 
+        logger.info("User({}) withdraw", userId);
         userRepository.deleteById(userId);
     }
 

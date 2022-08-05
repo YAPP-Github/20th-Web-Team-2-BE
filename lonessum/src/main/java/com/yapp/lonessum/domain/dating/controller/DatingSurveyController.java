@@ -6,6 +6,8 @@ import com.yapp.lonessum.domain.dating.dto.MyDatingSurveyDto;
 import com.yapp.lonessum.domain.dating.service.DatingSurveyService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,16 +18,19 @@ public class DatingSurveyController {
 
     private final JwtService jwtService;
     private final DatingSurveyService datingSurveyService;
+    private final Logger logger = LoggerFactory.getLogger(DatingSurveyController.class);
 
     @PostMapping
     public ResponseEntity<Long> createSurvey(@RequestBody DatingSurveyDto datingSurveyDto) {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) create dating survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(datingSurveyService.createSurvey(user, datingSurveyDto));
     }
 
     @PostMapping("/rematch")
     public ResponseEntity<Long> rematchSurvey() {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) rematch dating survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(datingSurveyService.rematchSurvey(user));
     }
 
@@ -38,6 +43,7 @@ public class DatingSurveyController {
     @PatchMapping
     public ResponseEntity<Long> updateSurvey(@RequestBody DatingSurveyDto datingSurveyDto) {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) update dating survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(datingSurveyService.updateSurvey(user, datingSurveyDto));
     }
 

@@ -6,6 +6,8 @@ import com.yapp.lonessum.domain.meeting.dto.MyMeetingSurveyDto;
 import com.yapp.lonessum.domain.meeting.service.MeetingSurveyService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,7 @@ public class MeetingSurveyController {
 
     private final JwtService jwtService;
     private final MeetingSurveyService meetingSurveyService;
-
+    private final Logger logger = LoggerFactory.getLogger(MeetingSurveyController.class);
     /*
     * 매칭 시작하기 버튼
     * 설문을 처음부터 작성하는 경우
@@ -26,6 +28,7 @@ public class MeetingSurveyController {
     @PostMapping
     public ResponseEntity<Long> createSurvey(@RequestBody MeetingSurveyDto meetingSurveyDto) {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) create meeting survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(meetingSurveyService.createSurvey(user, meetingSurveyDto));
     }
 
@@ -35,6 +38,7 @@ public class MeetingSurveyController {
     @PostMapping("/rematch")
     public ResponseEntity<Long> rematchSurvey() {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) rematch meeting survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(meetingSurveyService.rematchSurvey(user));
     }
 
@@ -47,12 +51,14 @@ public class MeetingSurveyController {
     @PatchMapping
     public ResponseEntity<Long> updateSurvey(@RequestBody MeetingSurveyDto meetingSurveyDto) {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) update meeting survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(meetingSurveyService.updateSurvey(user, meetingSurveyDto));
     }
 
     @DeleteMapping
     public ResponseEntity<Long> deleteSurvey() {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) delete meeting survey", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(meetingSurveyService.deleteSurvey(user));
     }
 

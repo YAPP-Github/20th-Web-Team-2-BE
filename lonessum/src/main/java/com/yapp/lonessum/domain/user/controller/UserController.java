@@ -7,6 +7,8 @@ import com.yapp.lonessum.domain.user.entity.UserEntity;
 import com.yapp.lonessum.domain.user.service.BlackListService;
 import com.yapp.lonessum.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final KakaoApiClient kakaoApiClient;
     private final JwtService jwtService;
@@ -45,6 +48,8 @@ public class UserController {
 
         blackListService.registerBlackList(userId, jwt);
 
+        logger.info("User({}) logout ", userId);
+
         return ResponseEntity.ok().build();
     }
 
@@ -52,6 +57,8 @@ public class UserController {
     public ResponseEntity withdraw() {
         UserEntity user = jwtService.getUserFromJwt();
         userService.withdraw(user.getId());
+
+        logger.info("User({}, {}) withdraw ", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok().build();
     }
 
