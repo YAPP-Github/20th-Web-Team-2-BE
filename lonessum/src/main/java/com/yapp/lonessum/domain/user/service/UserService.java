@@ -94,6 +94,9 @@ public class UserService {
                     // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
+
+            //미팅 실패 처리
+            meetingSurvey.setMatchStatus(MatchStatus.FAILED);
         }
 
         //dating case
@@ -120,6 +123,9 @@ public class UserService {
                     // 남자 탈퇴, 입금 후 -> 그대로
                 }
             }
+
+            //데이팅 실패 처리
+            datingSurvey.setMatchStatus(MatchStatus.FAILED);
         }
 
         userRepository.deleteById(userId);
