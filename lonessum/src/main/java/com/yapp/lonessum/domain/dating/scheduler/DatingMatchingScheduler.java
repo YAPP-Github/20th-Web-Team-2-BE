@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,9 @@ public class DatingMatchingScheduler {
     @Transactional
     @Scheduled(cron = "02 00 22 * * ?")
     public void runMatch() {
+
+        log.info("Start Today's Dating Matching");
+
         List<DatingSurveyEntity> datingSurveyList = datingSurveyRepository.findAllByMatchStatus(MatchStatus.WAITING)
                 .orElseThrow(() -> new RestApiException(SurveyErrorCode.NO_WAITING_SURVEY));
 
@@ -80,6 +84,8 @@ public class DatingMatchingScheduler {
             String emailB = datingMatching.getFemaleSurvey().getUser().getUniversityEmail();
 
             try {
+                log.info("send match result to"+emailA);
+                log.info("send match result to"+emailB);
                 emailService.sendMatchResult(emailA);
                 emailService.sendMatchResult(emailB);
             } catch (MessagingException e) {
@@ -107,6 +113,7 @@ public class DatingMatchingScheduler {
                 datingSurvey.changeMatchStatus(MatchStatus.FAILED);
                 String email = datingSurvey.getUser().getUniversityEmail();
                 try {
+                    log.info("send match result(failed) to"+email);
                     emailService.sendMatchResult(email);
                 } catch (MessagingException e) {
                     log.warn("매칭 결과 이메일 전송 실패", email);
@@ -114,6 +121,8 @@ public class DatingMatchingScheduler {
                 }
             }
         }));
+
+        log.info("Finished Today's Dating Matching");
     }
 
     // 결제 마감 시간까지 결제하지 않은 유저는 MatchStatus가 MATCHED -> FAILED로 변경
