@@ -4,6 +4,8 @@ import com.yapp.lonessum.common.algorithm.MatchingAlgorithm;
 import com.yapp.lonessum.domain.constant.*;
 import com.yapp.lonessum.domain.dating.dto.DatingSurveyDto;
 import com.yapp.lonessum.domain.meeting.dto.MeetingSurveyDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +14,15 @@ import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.findSameInEachRan
 import static com.yapp.lonessum.common.algorithm.AlgorithmUtil.isValueInRange;
 
 public class DatingMatchingAlgorithm extends MatchingAlgorithm<DatingSurveyDto> {
+    private final Logger logger = LoggerFactory.getLogger(DatingMatchingAlgorithm.class);
+
     @Override
     public <T> int calAllCasesScore(T first, T second) {
         DatingSurveyDto datingSurvey1 = (DatingSurveyDto)first;
         DatingSurveyDto datingSurvey2 = (DatingSurveyDto)second;
 
         if(!isMatchingTarget(datingSurvey1, datingSurvey2)) {
+            logger.info("{} and {} dating matching 필수조건 만족 x", datingSurvey1.getKakaoId(), datingSurvey2.getKakaoId());
             return Integer.MIN_VALUE;
         }
 
