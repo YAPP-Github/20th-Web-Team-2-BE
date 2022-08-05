@@ -5,6 +5,8 @@ import com.yapp.lonessum.domain.payment.dto.*;
 import com.yapp.lonessum.domain.payment.service.PaymentService;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +20,7 @@ public class PaymentController {
 
     private final JwtService jwtService;
     private final PaymentService paymentService;
+    private final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     /*
     * 구매하기 버튼 -> 페이플 서버로 파트너 인증 요청 -> 파트너 인증 결과를 반환
@@ -46,12 +49,14 @@ public class PaymentController {
     @PostMapping("/meeting")
     public ResponseEntity payMeeting() {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) meeting pay", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(paymentService.payMeeting(user.getMeetingSurvey()));
     }
 
     @PostMapping("/dating")
     public ResponseEntity payDating() {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}, {}) dating pay", user.getId(), user.getUniversityEmail());
         return ResponseEntity.ok(paymentService.payDating(user.getDatingSurvey()));
     }
 }

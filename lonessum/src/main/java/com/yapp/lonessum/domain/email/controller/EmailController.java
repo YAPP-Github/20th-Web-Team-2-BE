@@ -7,6 +7,8 @@ import com.yapp.lonessum.domain.email.dto.TestEmailRequest;
 import com.yapp.lonessum.domain.user.dto.AuthCodeRequest;
 import com.yapp.lonessum.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ public class EmailController {
 
     private final EmailService emailService;
     private final JwtService jwtService;
+    private final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
     @PostMapping
     public ResponseEntity<LocalDateTime> updateAndSendEmail(@RequestBody EmailRequest emailRequest) throws MessagingException {
@@ -31,6 +34,8 @@ public class EmailController {
     @PutMapping
     public ResponseEntity<Boolean> authenticateWithEmail(@RequestBody AuthCodeRequest authCodeRequest) {
         UserEntity user = jwtService.getUserFromJwt();
+        logger.info("User({}) email authenticate", user.getUniversityEmail());
+
         return ResponseEntity.ok(emailService.authenticateWithEmail(user, authCodeRequest.getAuthCode()));
     }
 
