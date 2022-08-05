@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AbroadAreaDto {
+public class AddAbroadAreaDto {
     private String name;
 }
